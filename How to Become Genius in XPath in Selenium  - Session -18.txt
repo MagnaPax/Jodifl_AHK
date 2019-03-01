@@ -1,0 +1,117 @@
+http://www.zvon.org/xxl/XPathTutorial//Output/example7.html
+
+
+?? ?? ?? ??
+//*
+//*[@*='']
+
+
+link: Features
+1. //a[text()='Features']
+2. //a[contains(text(), 'Features')]      ; recommended
+3. //a[text()='Alerts']
+
+
+???? ?? ? ? ??? ?? ? ????? ??
+//*[contains(text(), 'OP123039231')]
+
+
+
+button:
+//button[@type='button' and @class='btn']
+//button[contains(text(), 'Sign Up')]
+
+//div[@class='dropdown']//button[@type='button' and @class='btn btn-secondary dropdown-toggle' and @id='dropdownMenuButton']
+
+//button[@id='dropdownMenuButton']
+
+
+//*[@id="vContactsForm"]/table/tbody/tr[6]/td[1]/input
+
+
+
+
+
+
+
+
+//a[ext()='text2 text2']//parent::td[@class='datalistrow']//preceding-sibling::td[@class='datalistrow']//input
+
+
+
+Xpath = //a[contains(text(),'%element%')]//parent::div//parent::td//following-sibling::td//child::table//child::tbody//child::div[@class='check-square']
+
+
+StyleNoMatched_Xpath = (//a[contains(text(),'%StyleNo%')]//ancestor::tr//descendant::div[@class='check-square'])[%#ofCheckBox%]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//tbody//a[contains(text(),'B1059')]
+
+
+//tbody
+
+<td _ngcontent-c7="" class="align-top text-center" rowspan="100%">1</td>
+
+//td[@class='align-top text-center']1
+//td[contains(text(),'1')]
+
+
+
+
+
+
+
+<div _ngcontent-c7="" class="check-square"><div _ngcontent-c7="" class="check-inner-square"></div></div>
+
+//div[@class='check-square']
+
+//child::div[@class='check-square']
+
+
+
+
+
+
+//a[contains(text(),'B1059')]
+
+
+
+
+//a[contains(text(),'B1059')]//parent::div//parent::td//following-sibling::td//child::table//child::tbody//child::tr//following-sibling::tr
+
+
+
+//a[contains(text(),'B1059')]//parent::div//parent::td//following-sibling::td//child::table//child::tbody//child::div[@class='check-square']
+
+
+
+
+
+
+
+
+

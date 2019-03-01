@@ -1,0 +1,195 @@
+
+<LASHOWROOM 여러개>
+, Sales #37836/PO #OP032015034, Sales #39354/PO #OP040516341, Sales #42376/PO #OP051519990, Sales #43341/PO #OP052420816, Sales #43798/PO #OP053121354, Sales #44816/PO #OP061122269 TRACKING#
+
+<패션고만 두 개>
+, Sales #42310/PO #MTR1B24498EE1, Sales #42348/PO #MTR1B254C35B8 TRACKING#
+
+<웹만 여러개>
+, Sales #44421/PO #MTR171DD8, Sales #44422/PO #MTR171F73 TRACKING# 1ZW947530366034327
+
+<패션고 하나>
+, Sales #42761/PO #MTR1B370DDB96 TRACKING# 1ZW947530366833053
+
+<전화 오더 하나 있었는데 내용이 하나도 없었음>
+
+
+
+
+
+<WEB, 전화, TIFFANY가 주문받은 전화주문 >
+, Sales #43321/PO #MTR171EC8, Sales #43320/PO #PHONE ORDER, Sales #43320/PO #YULIAM 7/7/2017, Sales #43320/PO #TIFFANY, Sales #44310/PO #MTR171F67, Sales #45015/PO #MTR171FC7, Sales #48103/PO #7/21/17 TRACKING#
+
+
+
+
+
+<FASHIONGO, SHOW>
+, Sales #39715/PO #120-AT0417, Sales #42782/PO #MTR1B3844B399 TRACKING#
+
+<FASHIONGO, SHOW>
+, Sales #38449/PO #74-DA0317, Sales #39447/PO #MTR1AAEF6C0F8, Sales #40509/PO #MTR1AD46DAD36 TRACKING# 1ZW947530366101825
+
+<FASHIONGO, WEB>
+, Sales #39830/PO #MTR171C6E, Sales #44156/PO #MTR1B6E051D32, Sales #44271/PO #MTR1B73DF4CED TRACKING#
+
+<WEB>
+, Sales #43907/PO #MTR171F20 TRACKING#
+
+<WEB>
+, Sales #45392/PO #240-DL0617 TRACKING#
+
+<WEB, 맨 마지막에 메모가 있는 경우>
+, Sales #44421/PO #MTR171DD8     ps number 0FF511 TRACKING#
+
+<주소란에 메모를 적어놓은 경우>
+Attn: SAGE c/o 1902 Forsythe Avenue	
+
+<패션고, 메모>
+, Sales #44336/PO #MTR1B7682DF98   GIVE TO ROONY PLEASE THANK YOU, Sales #44448/PO #MTR1B7A3DF7CB
+
+<패션고만 여러개>
+, Sales #37692/PO #MTR1A6E6C51B0, Sales #41447/PO #MTR2B2EAAB11, Sales #42582/PO #MTR1B2D9747A0
+
+<패션고 중 짧은 PO넘버 MTR45664821>
+, Sales #39962/PO #MTR1ABE915DE8, Sales #42160/PO #MTR45664821, Sales #45056/PO #MTR1B8C9818B4 TRACKING# 1ZW947530366285084
+
+<디클라인 되고 메모 여러개>
+, Sales #36289/PO #MTR1A29F0CA08, Sales #42550/PO #MTR2B7A0634F
+TRACKING #
+CC DECLIEND LVM & SENT EMAIL, VOID IF NO PAYMENT BY 6/20 -EUNICE 6/15/17 LEM 6/20/17 K.A., Sales #45269/PO #96-DL0617. USE CC 6011-3985-6587-7844, EXP: 03/19, CVV:440.
+
+<WEB, LA쇼룸>
+, Sales #37523/PO #MTR171A7E, Sales #37686/PO #MTR171AEB, Sales #39600/PO #MTR171C4B, Sales #40284/PO #OP041517043, Sales #41314/PO #MTR171C90, Sales #41711/PO #MTR171DAD, Sales #45647/PO #MTR171EEC TRACKING# 1ZW947530364386282,1ZW947530364828492
+
+
+
+
+
+
+
+<조디플 홈페이지에 도시 이름이 들어가야 될 자리에 아파트 호수가 적혀있었음>
+Penny Lane Boutique	
+Chris Hambrick	
+6311 Stadium Drive	
+Suite B / NC / 27012	
+3366618336	
+
+<패션고 주소>
+Pretty On Me
+Randi Tyrrell
+19743 Collins Rd.
+Santa Clarita, CA 91351,   United States
+
+<고객 이름이 없는 경우-패션고 주소>
+Beyond Urban
+
+1094 E Henri De Tonti Blvd, Suite B
+Springdale, AR 72762,   United States
+
+
+
+
+
+
+<ADDRESS2에 들어갈 주소가 #로 시작하는 경우>
+4674 McDermott Road #309	
+Plano / Texas / 75024	
+
+<아파트 번호가 Ste 로 시작하는 경우. 소문자+대문자 조합일 경우(LASHWOROOM - OP051319924)>
+190 Riverwind Drive, Ste 301
+
+<아파트 번호가 Suite 로 시작하는 경우(LASHWOROOM - OP051319924)>
+190 Riverwind Drive, Suite 301
+
+<길 이름이 숫자로 끝나고 그 뒤에 아파트 번호 있는 경우>
+14015 RANCH ROAD 12 #6
+
+<ADD2가 숫자로 시작하는 경우- LA쇼룸>
+7045 S. Constance
+1B
+Chicago
+IL
+60649
+United States
+
+<ADD2가 SPACE로 시작한 경우>
+4600 Southwest Highway
+Space#2205
+Oaklawn
+IL
+60453
+United States
+
+<ADD2가 BLDG로 시작한 경우 - LA쇼룸>
+Red Door Couture
+145 Main Street
+Bldg A-11
+Vineyard Haven
+MA
+
+
+<아파트 번호 종류>
+unit 100 Suite 100 Ste 100 #100 Apt 100 1B Space#2205
+SUITE #100 Suite 400-235 Bldg 5
+
+
+
+
+
+
+
+
+<주소가 동네 UPS 픽업 장소 주소인 것 - 그냥 복사하면 됨>
+caravan imports-109526
+bruce becker
+UPS Center-Hold for Pickup, 3860 Cypress
+
+<캐나다 주소 - 패션고>
+AMAnecer fashion boutique
+Alejandra Mathisen
+1107 Wellington St W
+Ottawa, ON K1Y 2Y4,   Canada
+우편번호는 K1Y2Y4
+
+<PUERTO RICO - 패션고 San Juan 옆 PR은 주 이름이 아니라 나라이름 Puerto Rico의 이니셜>
+bali hai (001)
+nadine sala
+Galeria Paseos Mall, 100 Gran Boulevar
+San Juan, PR 00926,   United States
+
+<Puerto Rico - LA쇼룸 Country에 Puerto Rico 되어있었음>
+Company Name :	SOHO by Janpierre
+Address Line 1 :	carr 149, km 1.3 reparto villa alberta BO. Cotto s
+Address Line 2 :	Paseo del antena #98
+City :	Manati
+State :	USA
+Zip :	00674
+Country :	Puerto Rico
+Contact :	Janpierre Gonzalez
+Tel. Number :	+7875674316
+
+<벤쿠버라고 되어있지만 미국 영토였음 - 패션고 71346>
+Willows
+104 Grand Blvd Unit 106
+Vancouver, WA 98661,   United States
+
+<똑같은게 CONFIRMED와 BACK모두에 있음 MTR1B3871613F>
+
+<Puerto Rico - 패션고 72253 MTR1B55947039>
+Tallulah
+AVE LOS VETERANOS, Urb. Villa Rosa 3 B-5
+Guayama, Guayama 00785,   Puerto Rico
+
+<캐나다 패션고 MTR1BC5636B4D>
+modessa fashions
+monica mamann
+441 clark ave west unit # 16 a
+thornhill, ON l4j 6w8,   Canada
+
+
+<캐나다 패션고 MTR1BCF9ECABF>
+Anarchy Gallery
+angelina wrona
+147 st. Lawrence street merrickville
+merrickville, ON k0g 1n0,   Canada

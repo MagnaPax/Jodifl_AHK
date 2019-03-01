@@ -1,0 +1,87 @@
+
+MTR1BCAD4B453의 주문 주소
+http://vendoradmin2.fashiongo.net/OrderDetails.aspx?po=MTR1BCAD4B453
+
+
+
+MTR2CA8E3390관련 전체 주소
+http://vendoradmin3.fashiongo.net/Orders.aspx#&&DateTo=&DateFrom=&SortByIndex=0&MainOrderStatusIndex=0&SearchFieldIndex=1&SearchText=MTR2CA8E3390&PeriodIndex=0
+
+
+MTR1BE428BA0D관련 전체 주소
+http://vendoradmin3.fashiongo.net/Orders.aspx#&&DateTo=&DateFrom=&SortByIndex=0&MainOrderStatusIndex=0&SearchFieldIndex=1&SearchText=MTR1BE428BA0D&PeriodIndex=0
+
+
+
+
+이 문장 뒤에 po넘버 오고 클릭하면 넘어감
+
+차례대로 new, confirmed, partially shipped, fully shipped, cancelled, back order
+OrderDetails.aspx?po=
+
+OrderDetails.aspx?po=MTR1BCAD4B453
+
+
+
+
+회사명, 수신인, 주소등 정규식 사용 시 참고
+
+orderGeneralDetail_lblShipCompanyName">Goose Feathers</span></td>
+
+orderGeneralDetail_lblShipAttention">Keri Chavis</span>
+
+orderGeneralDetail_lblShipAddress">110 S Main St</span>
+
+orderGeneralDetail_lblShipAddress2">Travelers Rest, SC 29690</span>
+
+orderGeneralDetail_lblShipCountry">United States</span>
+
+orderGeneralDetail_lblPhoneShipping">+1 864-834-2777</span>
+
+
+첫째 두째 셋째 아이템.
+ctrl0, ctrl1, ctrl2로 바뀌는 것에 주목
+
+orderItemDetail_lvOrderItems_ctrl0_lblStyleNo">D1364-1</span>
+orderItemDetail_lvOrderItems_ctrl0_lblColorName">FUCHSIA MIX</span>
+
+orderItemDetail_lvOrderItems_ctrl1_lblStyleNo">P2059-1</span>
+orderItemDetail_lvOrderItems_ctrl1_lblColorName">ROSE PINK</span>
+
+orderItemDetail_lvOrderItems_ctrl2_lblStyleNo">P2284</span>
+orderItemDetail_lvOrderItems_ctrl2_lblColorName">CHARCOAL</span>
+
+
+
+
+
+
+중간에 StaffOnlyNote 있는 것 주목
+
+orderItemDetail_tbStaffOnlyNote" style="width: 225px;
+                                                            height: 100px; font-weight: bold">
+</textarea>
+
+
+
+
+커스토머 노트
+Please ship items together. I love your stuff! Thsnk you! Will tou let me know if something wasnt produced?
+
+
+
+orderItemDetail_tbCustomerNote" style="width: 225px;
+                                                            height: 100px; color: #ff0000; font-weight: bold">
+Please ship items together. I love your stuff! Thsnk you! Will tou let me know if something wasnt produced?</textarea>                                                     
+                                                    </td>
+
+
+
+
+Please ship today!!라고 쓴 고객 노트가 있는 곳
+중간에 CustomerNote 있는 것 주목
+orderItemDetail_tbCustomerNote 이 부분은 전체 웹 페이지에서 이것 하나밖에 없음
+
+orderItemDetail_tbCustomerNote" style="width: 225px;
+                                                            height: 100px; color: #ff0000; font-weight: bold">
+Please ship today!!</textarea>                                                     
