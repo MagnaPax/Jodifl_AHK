@@ -329,32 +329,39 @@ checkValuesAndDropItems(X, Y, Style#, StyleColor, OrderQty, DropAll){
 	
 	
 	; allValuesOfItems 값 중 지금 읽은 스타일 번호 값이 들어있다면
-	IfInString, allValuesOfItems, %Style#_onTheScreen%
+	;~ IfInString, allValuesOfItems, %Style#_onTheScreen%
+	
+	; allValuesOfItems 값 중 현재 위치 Desc 의 Y 좌표값이 들어있다면
+	IfInString, allValuesOfItems, %Y%
 	{
-		StringGetPos, locOf_Style#, allValuesOfItems, %Style#_onTheScreen%
-		StringGetPos, locOf_Color, allValuesOfItems, %Color_onTheScreen%, , locOf_Style#	; 먼저 찾은 locOf_Style# 위치 다음부터 검색
+		StringGetPos, locOf_Y, allValuesOfItems, %Y%
+		StringGetPos, locOf_Style#, allValuesOfItems, %Style#_onTheScreen%, , locOf_Y		; 먼저 찾은 locOf_Y 위치 다음부터 검색
+		StringGetPos, locOf_Color, allValuesOfItems, %Color_onTheScreen%, , locOf_Style#	; locOf_Style# 위치 다음부터 검색
 		StringGetPos, locOf_Qty, allValuesOfItems, %OrderQTY_onTheScreen%, , locOf_Color	; locOf_Qty 위치 다음부터 검색
 		
 		
-			if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
-				MsgBox, 262144, title, 지금 읽은 아이템 정보와 일치하는 아이템 정보값을 allValuesOfItems 변수에서 찾았습니다. 즉, 이 화면은 두 번째 들어온 것입니다.
-			} ; 끝 - if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
-
-
-;~ ;		MsgBox, % "locOf_Style# : " . locOf_Style# . "`nlocOf_Color : " . locOf_Color . "`nlocOf_Qty : " . locOf_Qty
-		
-		;~ ; 일단 StringGetPos 명령을 실행한 결과중 하나라도 거짓이면 자세히 살펴볼 것도 없이 무조건 똑같은 아이템 정보가 이 화면에는 없다는 뜻
-		;~ if ErrorLevel   ; 즉, 비어 있지 않거나 0이면.
-			;~ MsgBox, 중복값이 없습니다.
-		
-		;~ ; 아이템에 관련된 세 가지 값을 allValuesOfItems 안에서 모두 찾았을 때
-		;~ ; 하지만 이런 경우에도 2번째 아이템과 아이템 번호가 같고 4번째 아이템과 색깔이 같고 4번째 아이템과 주문량이 같을 수 있다. StringGetPos 함수는 어떤 변수 안에서 찾으려는 값이 있기만 하면 위치를 반환하기 때문
-		;~ ; 정확히 중복된 아이템이라면 처음 찾은 아이템 번호의 위치를 기준으로 아이템 색깔과 아이템 주문량을 찾은 위치가 아이템 번호를 찾은 위치 바로 옆에 있어야 된다
-		;~ else{
 			;~ if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
 				;~ MsgBox, 262144, title, 지금 읽은 아이템 정보와 일치하는 아이템 정보값을 allValuesOfItems 변수에서 찾았습니다. 즉, 이 화면은 두 번째 들어온 것입니다.
 			;~ } ; 끝 - if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
-		;~ } ; 끝 - else
+
+
+		MsgBox, % "Y값이 있음" . Y . "`n`nlocOf_Y : " . locOf_Y . "`nlocOf_Style# : " . locOf_Style# . "`nlocOf_Color : " . locOf_Color . "`nlocOf_Qty : " . locOf_Qty
+		Sleep 500
+		
+		; 일단 StringGetPos 명령을 실행한 결과중 하나라도 거짓이면 자세히 살펴볼 것도 없이 무조건 똑같은 아이템 정보가 이 화면에는 없다는 뜻
+		if ErrorLevel   ; 즉, 비어 있지 않거나 0이면.
+			MsgBox, 중복값이 없습니다.
+		
+		; 아이템에 관련된 네 가지 값을 allValuesOfItems 안에서 모두 찾았을 때
+		; 하지만 이런 경우에도 2번째 아이템과 아이템 번호가 같고 4번째 아이템과 색깔이 같고 4번째 아이템과 주문량이 같을 수 있다. StringGetPos 함수는 어떤 변수 안에서 찾으려는 값이 있기만 하면 위치를 반환하기 때문
+		; 정확히 중복된 아이템이라면 allValuesOfItems 변수에서 처음 찾은 Y좌표의 위치를 기준으로 아이템번호, 아이템 색깔, 아이템 주문량을 찾은 위치가 Y좌표를 찾은 위치 바로 옆에 있어야 된다
+		else{
+			;~ if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
+			if(locOf_Y+10 >= locOf_Style# && locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
+				MsgBox, 262144, title, 지금 읽은 아이템 정보와 일치하는 아이템 정보값을 allValuesOfItems 변수에서 찾았습니다. 즉, 이 화면은 두 번째 들어온 것입니다.
+				MsgBox, % "allValuesOfItems값은`n`n" . allValuesOfItems . "`n`n`n`n" . "locOf_Y : " . locOf_Y . "`nlocOf_Style# : " . locOf_Style# . "`nlocOf_Color : " . locOf_Color . "`nlocOf_Qty : " . locOf_Qty
+			} ; 끝 - if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
+		} ; 끝 - else
 		
 		
 	} ; 끝 - IfInString, allValuesOfItems, %Style#_onTheScreen%
@@ -408,7 +415,7 @@ checkValuesAndDropItems(X, Y, Style#, StyleColor, OrderQty, DropAll){
 	
 	
 	; 현재 화면에서 읽어온 아이템 정보들 allValuesOfItems 변수에 저장. 나중에 이 변수를 이용해 마지막 화면인지 확인하게 됨
-	allValuesOfItems := allValuesOfItems . "| " . Style#_onTheScreen . " | " . Color_onTheScreen . " | " . OrderQTY_onTheScreen . "`n"
+	allValuesOfItems := allValuesOfItems . "<" . Y . ">| " . Style#_onTheScreen . " | " . Color_onTheScreen . " | " . OrderQTY_onTheScreen . "`n"
 	  
 	return theItemFound
 }
@@ -449,7 +456,7 @@ clickDownArrow8Times(){
 			X:=ok.1.1, Y:=ok.1.2, W:=ok.1.3, H:=ok.1.4, Comment:=ok.1.5, X+=W//2, Y+=H//2
 			Click, %X%, %Y%
 			;MouseMove, X, Y
-			Sleep 200
+			Sleep 300
 		}
 		else
 			return 0  ; 화살표를 못 찾았으면 0 리턴함
