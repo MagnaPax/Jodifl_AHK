@@ -377,6 +377,7 @@ global currentItems_Arr := object() ; 현재 아이템을 저장하기 위한 �
 			
 			
 			MsgBox, % "allValuesOfItems값은`n`n" . allValuesOfItems
+			Sleep 500
 			
 			; 아래쪽 화살표 8번 클릭하기
 			doesTheArrowButtonExist := clickDownArrow8Times()
