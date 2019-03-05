@@ -2389,8 +2389,8 @@ MsgBox, % "WINDOW TITLE OF THIS PAGE IS : " . NamePreviousGoogleBrowser
 		{			
 			
 			; ID 입력 후 엔터, 비밀번호 입력 후 엔터치기
-			driver.FindElementByXPath(ID_Xpath).SendKeys(ID).sendKeys(driver.Keys.ENTER)
-			driver.FindElementByXPath(Password_Xpath).SendKeys(PW).sendKeys(driver.Keys.ENTER)
+			driver.FindElementByXPath(ID_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys(ID)
+			driver.FindElementByXPath(Password_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys(PW).sendKeys(driver.Keys.ENTER)
 			
 			driver.executeScript("return document.readyState").toString().equals("complete") ; 페이지가 로딩이 끝날때까지 기다립니다
 
