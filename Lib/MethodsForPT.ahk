@@ -2325,7 +2325,8 @@ class JODIFL extends CommWeb{
 		
 		; 오더 페이지 열기 위한 기본 url
 		; 여기에 개별 Customer PO 번호를 더해서 해당 오더 페이지를 열게된다
-		BasicUrlOfEachOrderPages = https://www.jodifl.com/index.php/admin/sales_order/view/order_id/
+		BasicUrlOfEachOrderPages = https://www.jodifl.com/index.php/admin/sales_order/view/order_id/ ; 옛날 주소
+		BasicUrlOfEachOrderPages = https://www.jodifl.com/index.php/__admin/sales_order/view/order_id/
 		
 		
 		
@@ -2386,7 +2387,7 @@ MsgBox, % "WINDOW TITLE OF THIS PAGE IS : " . NamePreviousGoogleBrowser
 		
 		; 만약 현재 페이지에 패스워드 입력칸 Xpath 가 나타나 있다면 이건 로그인 페이지라는 뜻
 		if(driver.FindElementByXPath(Password_Xpath))
-		{			
+		{
 			
 			; ID 입력 후 엔터, 비밀번호 입력 후 엔터치기
 			driver.FindElementByXPath(ID_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys(ID)
@@ -2454,7 +2455,8 @@ MsgBox, % "WINDOW TITLE OF THIS PAGE IS : " . NamePreviousGoogleBrowser
 		; 마무리하고 프로그램 끝내기 (다시 시작하기)
 		
 		; 전체화면 url		
-		URLofDashBoardOfJodiflcom = https://www.jodifl.com/index.php/admin/sales_order/index/key/		
+		URLofDashBoardOfJodiflcom = https://www.jodifl.com/index.php/admin/sales_order/index/key/
+		URLofDashBoardOfJodiflcom = https://www.jodifl.com/index.php/__admin/sales_order/index/key/
 		
 		if CurrentURL contains %URLofDashBoardOfJodiflcom%
 		{
