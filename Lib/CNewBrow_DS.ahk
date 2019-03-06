@@ -1266,6 +1266,7 @@ Magento_LoginOnly(driver){
 	
 		; Magento 로그인 페이지로 이동
 		URL = https://www.jodifl.com/index.php/admin/
+		URL = https://www.jodifl.com/__admin
 		driver.Get(URL)
 
 
