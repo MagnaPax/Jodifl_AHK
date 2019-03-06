@@ -546,6 +546,7 @@ openItemListOnMagento(driver, DropStyle#, StyleColor){
 	
 	; Catalog - Manage Product 페이지로 이동
 	URL = https://www.jodifl.com/index.php/admin/catalog_product/index/key/
+	URL = https://www.jodifl.com/index.php/__admin/catalog_product/index/key/
 	driver.Get(URL)
 	Sleep 500
 
