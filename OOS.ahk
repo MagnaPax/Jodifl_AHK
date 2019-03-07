@@ -52,6 +52,7 @@ SO#_Arr := object()
 CustCode_Arr := object()
 CustPO#_Arr := object()
 OrderQty_Arr := object()
+itemsInfoThatJustReadFromScreen_Arr := object()
 
 	
 ; 배열 초기화 해주기
@@ -61,6 +62,7 @@ SO#_Arr := []
 CustCode_Arr := []
 CustPO#_Arr := []
 OrderQty_Arr := []
+itemsInfoThatJustReadFromScreen_Arr := []
 ;~ preItems_Arr := []
 ;~ currentItems_Arr := []
 
@@ -320,8 +322,15 @@ for index, element in SO#_Arr
 ; ##########################################################################################################################################################################################################################################
 	
 					; Desc 위치를 기준 삼아서 스타일번호, 색깔, 수량을 읽은 뒤 드롭해야 되는 스타일이면 드롭하기
-					doesTheItemFound = 0
-					doesTheItemFound := checkValuesAndDropItems(X, XY_Arr[2][2nd_index], OOSStyle#, OOSColor, OrderQty, DropAll)
+					itemsInfoThatJustReadFromScreen_Arr := checkValuesAndDropItems(X, XY_Arr[2][2nd_index], OOSStyle#, OOSColor, OrderQty, DropAll)
+
+					; 지금 읽은 아이템 정보가 allValuesOfItems 변수에 있는지 비교해서 두 번째 읽는 화면이면 아이템 읽는 동작 중단하고 나가기
+					isThis2ndReadScreen(XY_Arr[2][2nd_index], itemsInfoThatJustReadFromScreen_Arr)
+					
+					; 현재 화면에서 읽어온 아이템 정보들 allValuesOfItems 변수에 저장. 나중에 이 변수를 이용해 마지막 화면인지 확인하게 됨
+					saveInfoOfTheItemsJustReadToallValuesOfItemsVariable(XY_Arr[2][2nd_index], itemsInfoThatJustReadFromScreen_Arr)
+					
+
 					
 					; Drop All 이 아니고 화면에서 드롭할 아이템을 찾아 드롭했다면 모든 Desc를 찾을 필요 없이 For 문 빠져나가기
 					if(!DropAll && doesTheItemFound){
