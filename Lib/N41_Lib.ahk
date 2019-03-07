@@ -324,100 +324,10 @@ checkValuesAndDropItems(X, Y, Style#, StyleColor, OrderQty, DropAll){
 	else if(DropAll && Style# == Style#_onTheScreen){
 		MsgBox, 262144, correct drop item, Drop All 이 선택되었음. 아이템을 드롭합니다.
 		dropThisStyle(X, Y)
-	}
+	}	
 	
-	
-	
-	; allValuesOfItems 값 중 지금 읽은 스타일 번호 값이 들어있다면
-	;~ IfInString, allValuesOfItems, %Style#_onTheScreen%
-	
-	; allValuesOfItems 값 중 현재 위치 Desc 의 Y 좌표값이 들어있다면
-	IfInString, allValuesOfItems, %Y%
-	{
-		StringGetPos, locOf_Y, allValuesOfItems, %Y%
-		StringGetPos, locOf_Style#, allValuesOfItems, %Style#_onTheScreen%, , locOf_Y		; 먼저 찾은 locOf_Y 위치 다음부터 검색
-		StringGetPos, locOf_Color, allValuesOfItems, %Color_onTheScreen%, , locOf_Style#	; locOf_Style# 위치 다음부터 검색
-		StringGetPos, locOf_Qty, allValuesOfItems, %OrderQTY_onTheScreen%, , locOf_Color	; locOf_Qty 위치 다음부터 검색
-		
-		
-			;~ if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
-				;~ MsgBox, 262144, title, 지금 읽은 아이템 정보와 일치하는 아이템 정보값을 allValuesOfItems 변수에서 찾았습니다. 즉, 이 화면은 두 번째 들어온 것입니다.
-			;~ } ; 끝 - if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
 
-
-		MsgBox, % "Y값이 있음" . Y . "`n`nlocOf_Y : " . locOf_Y . "`nlocOf_Style# : " . locOf_Style# . "`nlocOf_Color : " . locOf_Color . "`nlocOf_Qty : " . locOf_Qty
-		Sleep 500
-		
-		; 일단 StringGetPos 명령을 실행한 결과중 하나라도 거짓이면 자세히 살펴볼 것도 없이 무조건 똑같은 아이템 정보가 이 화면에는 없다는 뜻
-		if ErrorLevel   ; 즉, 비어 있지 않거나 0이면.
-			MsgBox, 중복값이 없습니다.
-		
-		; 아이템에 관련된 네 가지 값을 allValuesOfItems 안에서 모두 찾았을 때
-		; 하지만 이런 경우에도 2번째 아이템과 아이템 번호가 같고 4번째 아이템과 색깔이 같고 4번째 아이템과 주문량이 같을 수 있다. StringGetPos 함수는 어떤 변수 안에서 찾으려는 값이 있기만 하면 위치를 반환하기 때문
-		; 정확히 중복된 아이템이라면 allValuesOfItems 변수에서 처음 찾은 Y좌표의 위치를 기준으로 아이템번호, 아이템 색깔, 아이템 주문량을 찾은 위치가 Y좌표를 찾은 위치 바로 옆에 있어야 된다
-		else{
-			;~ if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
-			if(locOf_Y+10 >= locOf_Style# && locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
-				MsgBox, 262144, title, 지금 읽은 아이템 정보와 일치하는 아이템 정보값을 allValuesOfItems 변수에서 찾았습니다. 즉, 이 화면은 두 번째 들어온 것입니다.
-				MsgBox, % "allValuesOfItems값은`n`n" . allValuesOfItems . "`n`n`n`n" . "locOf_Y : " . locOf_Y . "`nlocOf_Style# : " . locOf_Style# . "`nlocOf_Color : " . locOf_Color . "`nlocOf_Qty : " . locOf_Qty
-			} ; 끝 - if(locOf_Style#+15 >= locOf_Color && locOf_Color+20 >= locOf_Qty){
-		} ; 끝 - else
-		
-		
-	} ; 끝 - IfInString, allValuesOfItems, %Style#_onTheScreen%
-	
-	
-	;~ if(pre_Style# == Style#_onTheScreen && pre_Color == Color_onTheScreen && pre_Qty == OrderQTY_onTheScreen){
-		;~ MsgBox, 262144, correct drop item, 이전에 읽은 값과 같음. 이거 마지막 화면인가?
-	;~ }
-	
-	
-	
-	; #######################################################################################################################################################################################################################################################
-	; #######################################################################################################################################################################################################################################################
-	; #######################################################################################################################################################################################################################################################
-	; 왼쪽 10번째 문자부터 검색을 시작합니다
-	;~ StringGetPos, OutputVar, InputVar, abc, , 9
-	;~ StringGetPos, OutputVar, InputVar, abc, , 9
-	;~ StringGetPos, OutputVar, InputVar, abc, , 9
-	
-	
-	
-	;~ ; allValuesOfItems 값 중 지금 읽은 스타일 번호 값이 들어있다면
-	;~ IfInString, allValuesOfItems, %Style#_onTheScreen%
-	;~ {
-		;~ locOf_Style# := INSTR(allValuesOfItems, Style#_onTheScreen)
-		;~ MsgBox, % allValuesOfItems . "`n`n`n" . Style#_onTheScreen . " 스타일 번호가 있는 위치 : " . locOf_Style#
-		
-		;~ ; allValuesOfItems 값 중 지금 읽은 스타일 색깔 값이 들어있다면
-		;~ IfInString, allValuesOfItems, %Color_onTheScreen%
-		;~ {
-			;~ locOf_Color := INSTR(allValuesOfItems, Color_onTheScreen)
-			
-			;~ ; 색깔 값이 스타일 값과 15이내의 거리에 떨어져 있다면. 즉 스타일값과 색깔 값이 같은 정보가 allValuesOfItems 안에 나란히 있다면
-			;~ if(locOf_Style#+15 >= Color_onTheScreen){				
-				;~ MsgBox, 262144, title, %Style#_onTheScreen% 스타일 번호 바로 뒤에 %Color_onTheScreen% 색깔 값이 있는게 allValuesOfItems 변수 안에 있음
-				
-				;~ ; allValuesOfItems 값 중 지금 읽은 스타일 색깔 값이 들어있다면
-				;~ IfInString, allValuesOfItems, %Color_onTheScreen%
-				;~ {
-					;~ locOf_Qty := INSTR(allValuesOfItems, Color_onTheScreen)
-					
-					
-				;~ } ; 끝 - IfInString, allValuesOfItems, %Color_onTheScreen%				
-			;~ } ; 끝 - if(locOf_Style#+15 >= Color_onTheScreen)
-		;~ } ; 끝 - IfInString, allValuesOfItems, %Color_onTheScreen%
-	;~ } ; 끝 - IfInString, allValuesOfItems, %Style#_onTheScreen%
-	
-	; 만약 지금 읽은 스타일 번호 값이 allValuesOfItems 변수 전체를 찾아봐도 들어있지 않다면 현재 화면은 100% 새로운 화면이므로 화면에서 읽은 값들을 저장하는 allValuesOfItems 변수를 초기화 한다
-	;~ else
-		;~ allValuesOfItems := ""	;이전 화면에서 읽어서 저장한 값들 초기화
-	
-	
-	; 현재 화면에서 읽어온 아이템 정보들 allValuesOfItems 변수에 저장. 나중에 이 변수를 이용해 마지막 화면인지 확인하게 됨
-	allValuesOfItems := allValuesOfItems . "<" . Y . ">| " . Style#_onTheScreen . " | " . Color_onTheScreen . " | " . OrderQTY_onTheScreen . "`n"
-	  
-	return theItemFound
+	return [Style#_onTheScreen, Color_onTheScreen, OrderQTY_onTheScreen]
 }
 	
 
