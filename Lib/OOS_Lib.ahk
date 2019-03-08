@@ -32,17 +32,19 @@ isThis2ndReadScreen(Y, itemsInfoThatJustReadFromScreen_Arr){
 	Color_onTheScreen := itemsInfoThatJustReadFromScreen_Arr[2]
 	OrderQTY_onTheScreen := itemsInfoThatJustReadFromScreen_Arr[3]	
 
-	infoOfTheItemBeingJustRead = <%Y%>\s\|\s%Style#_onTheScreen%\s\|\s%Color_onTheScreen%\s\|\s%OrderQTY_onTheScreen%
+	infoOfTheItemBeingJustRead = <%Y%>\|\s%Style#_onTheScreen%\s\|\s%Color_onTheScreen%\s\|\s%OrderQTY_onTheScreen%
 	FoundPos := RegExMatch(allValuesOfItems, infoOfTheItemBeingJustRead)
 
-	if(FoundPos)
-		MsgBox, 262144, 두 번째 읽음, 방금 읽은 아이템 정보들과 정확히 일치하는 값들이 allValuesOfItems변수에 있습니다. 즉 현재 페이지를 두 번째 읽은 것입니다.
+	if(FoundPos){
+;		MsgBox, 262144, 두 번째 읽음, 방금 읽은 아이템 정보들과 정확히 일치하는 값들이 allValuesOfItems변수에 있습니다. 즉 현재 페이지를 두 번째 읽은 것입니다.
+		return 0
+	}
 
 
 ;	MsgBox, % "Y : " . Y . "`nStyle#_onTheScreen : " . Style#_onTheScreen . "`nColor_onTheScreen : " . Color_onTheScreen . "`nOrderQTY_onTheScreen : " . OrderQTY_onTheScreen . "`n`ninfoOfTheItemBeingJustRead`n" . infoOfTheItemBeingJustRead . "`n`n`nallValuesOfItems`n`n" . allValuesOfItems
 
 
-	return
+	return 1
 }
 
 
@@ -60,16 +62,6 @@ saveInfoOfTheItemsJustReadToallValuesOfItemsVariable(Y, itemsInfoThatJustReadFro
 	
 	; 현재 화면에서 읽어온 아이템 정보들 전역변수 allValuesOfItems 에 저장. 나중에 이 변수를 이용해 마지막 화면인지 확인하게 됨
 	allValuesOfItems := allValuesOfItems . "<" . Y . ">| " . Style#_onTheScreen . " | " . Color_onTheScreen . " | " . OrderQTY_onTheScreen . "`n"	
-	
-	
-;	MsgBox, % "Y : " . Y
-;	MsgBox, % "Style#_onTheScreen : " . Style#_onTheScreen
-;	MsgBox, % "Color_onTheScreen : " . Color_onTheScreen
-;	MsgBox, % "OrderQTY_onTheScreen : " . OrderQTY_onTheScreen
-;	MsgBox, % "allValuesOfItems`n`n" . allValuesOfItems
-
-	Clipboard := allValuesOfItems
-	
 	
 	return
 }
