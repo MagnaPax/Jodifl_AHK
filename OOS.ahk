@@ -151,68 +151,166 @@ Click_btn:
 
 
 
-/*
-	Loop
-	{
-		; Style 클릭하기
-		CommN41_driver.click_Style()
+
+
+
+
+	; Drop All 일때 목록 읽어오기
+	if(DropAll){
+		Loop
+		{
+			; Style 클릭하기
+			CommN41_driver.click_Style()
+			
+			; Style 탭 안에 있는 Style 클릭하기
+			CommN41_driver.click_StyleButtonInTheStyleTab()
+			
+			; 스타일 입력칸 찾아서 클릭하기
+			CommN41_driver.findTheSearchBoxOfStyle()
+			
+			; 입력칸에 이미 있던 값 지우기
+			Loop, 30{
+				Send, {Del}
+				Sleep 50
+			}
+			; 스타일 번호 입력
+			Send, %OOSStyle#%
+			Send, {Enter}
+		;	Sleep 1000
 		
-		; Style 탭 안에 있는 Style 클릭하기
-		CommN41_driver.click_StyleButtonInTheStyleTab()
+			
+			; 화면에 제대로 들어왔는 확인키 위해 화면에서 스타일 번호 읽기
+			Style#_OnTheScreen := CommN41_driver.getStyleNumberOnStyleTab()
+			
+			; 화면에 제대로 들어왔는 확인키 위해 화면에서 색깔 읽기
+;			Color_OnTheScreen := CommN41_driver.getColorOnStyleTab()
+			
+			
+	;MsgBox, % Style#_OnTheScreen . "`n`n" . Color_OnTheScreen
+			
+			; 화면에서 읽은 값들과 입력한 값들이 같으면 루프 빠져나가기
+			if(OOSStyle# == Style#_OnTheScreen)
+				break
+		}
 		
-		; 스타일 입력칸 찾아서 클릭하기
-		CommN41_driver.findTheSearchBoxOfStyle()
+		; Style So Detail 버튼 눌러서 창 열기		
+		CommN41_driver.clickStyleSODetailButton()
+
+		WinWaitActive, Sales Order Detail List by Customer
+		Sleep 700
+		WinActivate, Sales Order Detail List by Customer
+		
+
+		; Sales Order Detail by Customer 새창에서 Color 입력칸 찾아서 클릭하기
+		CommN41_driver.clickTheBlankOfColorOfSalesOrderDetailListbyCustomer()
 		
 		; 입력칸에 이미 있던 값 지우기
-		Loop, 30{
+		Loop, 20{
 			Send, {Del}
 			Sleep 50
-		}
-		; 스타일 번호 입력
-		Send, %OOSStyle#%
-		Send, {Enter}
-	;	Sleep 1000
+		}		
 		
+		; 돋보기 아이콘 찾아서 클릭하기
+		CommN41_driver.clickTheIconOfMagnifying_glass()
 		
-		; 색깔 입력칸 찾아서 클릭하기
-		CommN41_driver.findTheSearchBoxOfColor()
-		
-		; 색깔 입력
-		Send, %OOSColor%	
-		Send, {Enter}
-	;	Sleep 1000
-		
-		
-		; 화면에 제대로 들어왔는 확인키 위해 화면에서 스타일 번호 읽기
-		Style#_OnTheScreen := CommN41_driver.getStyleNumberOnStyleTab()
-		
-		; 화면에 제대로 들어왔는 확인키 위해 화면에서 색깔 읽기
-		Color_OnTheScreen := CommN41_driver.getColorOnStyleTab()
-		
-		
-;MsgBox, % Style#_OnTheScreen . "`n`n" . Color_OnTheScreen
-		
-		; 화면에서 읽은 값들과 입력한 값들이 같으면 루프 빠져나가기
-		if(OOSStyle# == Style#_OnTheScreen && OOSColor == Color_OnTheScreen)
-			break
-	}
-	
-	
 
-	; On Order 의 돋보기 버튼 눌러서 창 열기
-	CommN41_driver.clickMagnifierNextTo_OnOrder()
+		; 적당한 창 위치에서 (이 경우에는 손가락 화살표를 찾은 뒤 그 위에 마우스를 위치했음) 마우스 오른쪽 버튼 클릭 후 Excel 파일 만들기 메뉴에서 엔터치기
+		CommN41_driver.findFingerArrow_ThenActiveDownloadExcelFileFunction()
+
+; ##################################################################################################################################################################################################################
+; 여기까지 만들었음
+; ##################################################################################################################################################################################################################
+MsgBox, 262144, title, pause
+
+		
+		; 엑셀파일을 바탕화면에 저장하기
+		CommN41_driver.makeTheExcelFileOfTheStyleOnDesktopScreen(OOSStyle#, OOSColor)
+		
+		
+		; 바탕화면에 저장된 엑셀 파일 옮기기
+		moveTheFileOnDesktopFromItToTheExcelFileFolder(OOSStyle#, OOSColor)		
+		
+		
+		
+		
+	} ; end끝 - if(DropAll)
+
+
+MsgBox, 262144, title, 다 잘 됐남
+
+
+
+
+
+/*
+	; Drop All 아닐때 동작
+	if(!DropAll){	
 	
+		Loop
+		{
+			; Style 클릭하기
+			CommN41_driver.click_Style()
+			
+			; Style 탭 안에 있는 Style 클릭하기
+			CommN41_driver.click_StyleButtonInTheStyleTab()
+			
+			; 스타일 입력칸 찾아서 클릭하기
+			CommN41_driver.findTheSearchBoxOfStyle()
+			
+			; 입력칸에 이미 있던 값 지우기
+			Loop, 30{
+				Send, {Del}
+				Sleep 50
+			}
+			; 스타일 번호 입력
+			Send, %OOSStyle#%
+			Send, {Enter}
+		;	Sleep 1000
+			
+			
+			; 색깔 입력칸 찾아서 클릭하기
+			CommN41_driver.findTheSearchBoxOfColor()
+			
+			; 색깔 입력
+			Send, %OOSColor%	
+			Send, {Enter}
+		;	Sleep 1000
+			
+			
+			; 화면에 제대로 들어왔는 확인키 위해 화면에서 스타일 번호 읽기
+			Style#_OnTheScreen := CommN41_driver.getStyleNumberOnStyleTab()
+			
+			; 화면에 제대로 들어왔는 확인키 위해 화면에서 색깔 읽기
+			Color_OnTheScreen := CommN41_driver.getColorOnStyleTab()
+			
+			
+	;MsgBox, % Style#_OnTheScreen . "`n`n" . Color_OnTheScreen
+			
+			; 화면에서 읽은 값들과 입력한 값들이 같으면 루프 빠져나가기
+			if(OOSStyle# == Style#_OnTheScreen && OOSColor == Color_OnTheScreen)
+				break
+		}
+		
+		
+
+		; On Order 의 돋보기 버튼 눌러서 창 열기
+		CommN41_driver.clickMagnifierNextTo_OnOrder()
+		
+		
+		; 적당한 창 위치에서 (이 경우에는 Close 버튼을 찾은 뒤 그 위에 마우스를 위치했음) 마우스 오른쪽 버튼 클릭 후 Excel 파일 만들기 메뉴에서 엔터치기
+		CommN41_driver.activeDownloadExcelFileFunction()
+		
+		
+		; 엑셀파일을 바탕화면에 저장하기
+		CommN41_driver.makeTheExcelFileOfTheStyleOnDesktopScreen(OOSStyle#, OOSColor)
+		
+		
+		; 바탕화면에 저장된 엑셀 파일 옮기기
+		moveTheFileOnDesktopFromItToTheExcelFileFolder(OOSStyle#, OOSColor)	
+		
 	
-	; 적당한 창 위치에서 (이 경우에는 Close 버튼을 찾은 뒤 그 위에 마우스를 위치했음) 마우스 오른쪽 버튼 클릭 후 Excel 파일 만들기 메뉴에서 엔터치기
-	CommN41_driver.activeDownloadExcelFileFunction()
-	
-	
-	; 엑셀파일을 바탕화면에 저장하기
-	CommN41_driver.makeTheExcelFileOfTheStyleOnDesktopScreen(OOSStyle#, OOSColor)
-	
-	
-	; 바탕화면에 저장된 엑셀 파일 옮기기
-	moveTheFileOnDesktopFromItToTheExcelFileFolder(OOSStyle#, OOSColor)
+	} ; end끝 - if(!DropAll)
+
 	
 */	
 	
