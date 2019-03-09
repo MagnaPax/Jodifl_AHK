@@ -1948,12 +1948,130 @@ class CommN41{
 		
 		return
 	}
+	
+	
+	
+	
+	
+	
+	
+	; Style탭에 있는 Style So Detail 버튼 누르기
+	clickStyleSODetailButton(){
 
+		Text:="|<Style SO Detail>*184$15.zzw01bzAU9Z9AktUNAktUVAkNU5AztU8Qz7U1w0Tzzw"
+		if ok:=FindText(888,128,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Click
+			Sleep 150
+		}
+		
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+			CommN41.clickStyleSODetailButton()
+		
+		return
+	}
+
+
+
+
+
+
+
+	; Sales Order Detail by Customer 새창에서 Color 입력칸 찾아서 클릭하기
+	clickTheBlankOfColorOfSalesOrderDetailListbyCustomer(){
+
+
+		Text:="|<blank of Color on Sales Order Detain List by Custoer>*210$41.zzzzzzzzzzzzzw00000DU00000TE00000yUS0E01x1a0U03u21tSQ7oA2OakDcMArB0TEENiO0yUnHIo1x0wwj83u000007o00000Dc00000TE00000yU00001w000003s000007nzzzzzzw"
+		if ok:=FindText(500,66,150000,150000,0,0,Text)
+		{
+			Sleep 500
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			;~ MouseMove, X+W//2, Y+H//2
+			MouseMove, X+W, Y+H//2
+			Sleep 150
+			Click
+			Sleep 150
+		}
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+			CommN41.clickTheBlankOfColorOfSalesOrderDetailListbyCustomer()
+		
+		return
+	}
+	
+	
+	
+	
+	
+	
+	
+	; 돋보기 아이콘 찾아서 클릭하기
+	clickTheIconOfMagnifying_glass(){		
+
+		Text:="|<magnifying glass>*190$12.1s2A42838383834264DsQ0w0s0U"
+		if ok:=FindText(27,40,150000,150000,0,0,Text)
+		{
+			Sleep 150
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Click
+			Sleep 150
+		}
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+			CommN41.clickTheIconOfMagnifying_glass()				
+		
+		
+		return
+	}
 
 
 	
 	
 	
+	
+	
+	; 적당한 창 위치에서 (이 경우에는 손가락 화살표를 찾은 뒤 그 위에 마우스를 위치했음) 마우스 오른쪽 버튼 클릭 후 Excel 파일 만들기 메뉴에서 엔터치기
+	findFingerArrow_ThenActiveDownloadExcelFileFunction(){
+		
+
+		Text:="|<Finger arrow>*198$23.000U07n00ku027zU801zk0P20Dw60R0A1w0M1s0k3U1UDU3UD0bzw3zzs7rzU8"
+		if ok:=FindText(15,127,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+
+			Sleep 150
+			
+			; 적당한 창 위치에서 (이 경우에는 Close 버튼을 찾은 뒤 그 위에 마우스를 위치했음) 마우스 오른쪽 버튼 클릭 후 Excel 파일 만들기 메뉴에서 엔터치기
+			Send, {RButton}
+			Loop, 7
+			{
+				Sleep 150
+				Send, {Down}
+			}
+			Send, {Enter}
+			Sleep 150
+		}
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+			CommN41.findFingerArrow_ThenActiveDownloadExcelFileFunction()
+
+		return
+	}
+
+
+
+
+
+
 	
 	
 	
