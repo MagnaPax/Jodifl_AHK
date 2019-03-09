@@ -2152,42 +2152,68 @@ return
 
 ;~ MsgBox, 262144, Title, totlaPrice : %totlaPrice%
 		
-		
-		; 수량에 맞는 금액 입력하기
-	;	SoundPlay, %A_WinDir%\Media\Ring06.wav
-		;~ if #ofCheckBoxes between 1 and 4
-		;~ if total#OfQty between 1 and 24
-		if totlaPrice between 1 and 399
-		{
-			driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("40")
-	;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $50
+		Loop, 3{
+			; 수량에 맞는 금액 입력하기
+		;	SoundPlay, %A_WinDir%\Media\Ring06.wav
+			;~ if #ofCheckBoxes between 1 and 4
+			;~ if total#OfQty between 1 and 24
+			if totlaPrice between 1 and 399
+			{
+				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("40")
+		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $50
+			}
+			;~ else if #ofCheckBoxes between 5 and 10
+			else if totlaPrice between 399.1 and 899
+			{
+				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("60")
+		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $70
+			}
+			;~ else if #ofCheckBoxes between 11 and 100
+			else if totlaPrice between 899.1 and 1300
+			{
+				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("130")
+		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $90
+			}
+			else
+			{
+				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("150")
+				MsgBox, 262144, Title, totlaPrice : $%totlaPrice%`nPUT IN $170
+			}
+			
+			; Save 버튼 클릭 후 Authorize 버튼 클릭하기
+			Sleep 100
+			driver.FindElementByXPath(SaveButton_Xpath).click()
+			Sleep 300
+			
+			
+		;~ shippingCostWhichHasBeenPutIn := driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("innerText")
+		;~ MsgBox, 262144, Title, shippingCostWhichHasBeenPutIn : %shippingCostWhichHasBeenPutIn%
+		;~ Sleep 300
+		;~ MsgBox, % "outerHTML : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("outerHTML")
+		;~ MsgBox, % "textContent : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("textContent")
+		;~ MsgBox, % "innerText : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("innerText")
+		;~ MsgBox, % "option value : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("option value")
+		;~ MsgBox, % "innerTEXT : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("innerTEXT")
+		;~ MsgBox, % "getElementByXpath : " . driver.getElementByXpath(TheBlankOfShippingFee_Xpath)
+		;~ MsgBox, % "getElementsByXpath : " . driver.getElementsByXpath(TheBlankOfShippingFee_Xpath)
+			
+			; 배송료가 입력됐으면 루프 빠져나감
+;			if(driver.FindElementByXPath(TheBlankOfShippingFee_Xpath.Attribute("innerText"))){
+;				break			
+;			}
+;			else
+;				MsgBox, 262144, Title, 배송료가 입력되지 않았음. 다시 입력함				
 		}
-		;~ else if #ofCheckBoxes between 5 and 10
-		else if totlaPrice between 399.1 and 899
-		{
-			driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("60")
-	;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $70
-		}
-		;~ else if #ofCheckBoxes between 11 and 100
-		else if totlaPrice between 899.1 and 1300
-		{
-			driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("130")
-	;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $90
-		}
-		else
-		{
-			driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("150")
-			MsgBox, 262144, Title, totlaPrice : $%totlaPrice%`nPUT IN $170
-		}
+
 		
 		
 ;MsgBox, 262144, Title, totlaPrice : %totlaPrice%`n`n`n`n$1 ~ $399 = $60`n$400 ~ $899 = $80`n$900 ~ $1300 = $150`n`n배송료 제대로 입력됐나?
 		
 		
 		; Save 버튼 클릭 후 Authorize 버튼 클릭하기
-		Sleep 3000
-		driver.FindElementByXPath(SaveButton_Xpath).click()
-		Sleep 1500
+;		Sleep 3000
+;		driver.FindElementByXPath(SaveButton_Xpath).click()
+;		Sleep 1000
 		
 		; Authorize 버튼 생길때까지 기다린 뒤 클릭한 뒤 확인창이 나오면 OK 버튼 클릭하기
 		Loop{
