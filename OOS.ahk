@@ -217,34 +217,65 @@ Click_btn:
 		; 적당한 창 위치에서 (이 경우에는 손가락 화살표를 찾은 뒤 그 위에 마우스를 위치했음) 마우스 오른쪽 버튼 클릭 후 Excel 파일 만들기 메뉴에서 엔터치기
 		CommN41_driver.findFingerArrow_ThenActiveDownloadExcelFileFunction()
 
+
+		; Sales Order Detail 창에서 엑셀파일을 만든 뒤 바탕화면에 저장하기
+		CommN41_driver.makeExcelFileOfDropAllSelectedStyle(OOSStyle#)
+
+
+		; 바탕화면에 저장된 Drop All 엑셀 파일 옮기기	
+		moveDropAllSelectedStyleExcelFileFromDeskTopFolderToExcelFileFolder(OOSStyle#)
+
+
+		; Path 에 위치한 엑셀창 열기
+		Path = %A_ScriptDir%\CreatedFiles\Excel Files\%OOSStyle#%-All.xlsx
+		Xl := openTheExcelFile(Path)
+		
+		
+		; 필요 없는 열들 지우기
+		; 맨 처음 유효값이 시작되기 1전 값과 맨 끝에 지울 줄 갯수 변수에 넣기
+		; 만약 5째줄부터 유효값이 시작되면 맨처음 4줄을 지우기 위해 1before_StartRow# 변수에 4를 넣고 마지막에 1줄을 지우고 싶으면 #oflasUselessRows 변수에 2를 넣는다
+		1before_StartRow# = 1
+		#oflasUselessRows = 2
+		
+		deleteUselessRows(Xl, 1before_StartRow#, #oflasUselessRows)
+
+
+
+		SO#_rowLetter = B
+		customerCode_rowLetter = G
+		custPO#_rowLetter = I
+		orderQTY_rowLetter = O
+		Info_Arr := getInfoFronExcel(Xl, SO#_rowLetter, customerCode_rowLetter, custPO#_rowLetter, orderQTY_rowLetter)
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		; Info_Arr[1][*] <- SO#				;
+		; Info_Arr[2][*] <- Customer Code	;
+		; Info_Arr[3][*] <- Custoer PO#		;
+		; Info_Arr[4][*] <- Order QTY		;
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
 ; ##################################################################################################################################################################################################################
 ; 여기까지 만들었음
+;MsgBox, 262144, title, pause
 ; ##################################################################################################################################################################################################################
-MsgBox, 262144, title, pause
 
-		
-		; 엑셀파일을 바탕화면에 저장하기
-		CommN41_driver.makeTheExcelFileOfTheStyleOnDesktopScreen(OOSStyle#, OOSColor)
-		
-		
-		; 바탕화면에 저장된 엑셀 파일 옮기기
-		moveTheFileOnDesktopFromItToTheExcelFileFolder(OOSStyle#, OOSColor)		
-		
-		
-		
+
+
+
+
 		
 	} ; end끝 - if(DropAll)
 
 
-MsgBox, 262144, title, 다 잘 됐남
 
 
 
 
 
-/*
+
 	; Drop All 아닐때 동작
-	if(!DropAll){	
+	if(!DropAll){
 	
 		Loop
 		{
@@ -309,39 +340,46 @@ MsgBox, 262144, title, 다 잘 됐남
 		moveTheFileOnDesktopFromItToTheExcelFileFolder(OOSStyle#, OOSColor)	
 		
 	
+		; Path 에 위치한 엑셀창 열기
+		Path = %A_ScriptDir%\CreatedFiles\Excel Files\%OOSStyle#%-%OOSColor%.xlsx
+		;~ Xl := openTheExcelFile(Path, OOSStyle#, OOSColor)
+		Xl := openTheExcelFile(Path)
+		
+		
+		; 필요 없는 열들 지우기
+		; 맨 처음 유효값이 시작되기 1전 값과 맨 끝에 지울 줄 갯수 변수에 넣기
+		; 만약 5째줄부터 유효값이 시작되면 맨처음 4줄을 지우기 위해 1before_StartRow# 변수에 4를 넣고 마지막에 1줄을 지우고 싶으면 #oflasUselessRows 변수에 2를 넣는다
+		1before_StartRow# = 4
+		#oflasUselessRows = 2
+		
+		deleteUselessRows(Xl, 1before_StartRow#, #oflasUselessRows)
+		
+
+		SO#_rowLetter = B
+		customerCode_rowLetter = F
+		custPO#_rowLetter = U
+		orderQTY_rowLetter = AC
+		Info_Arr := getInfoFronExcel(Xl, SO#_rowLetter, customerCode_rowLetter, custPO#_rowLetter, orderQTY_rowLetter)
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		; Info_Arr[1][*] <- SO#				;
+		; Info_Arr[2][*] <- Customer Code	;
+		; Info_Arr[3][*] <- Custoer PO#		;
+		; Info_Arr[4][*] <- Order QTY		;
+		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+		
+		
 	} ; end끝 - if(!DropAll)
 
+
+
+
 	
-*/	
-	
-	; Path 에 위치한 엑셀창 열기
-	Path = %A_ScriptDir%\CreatedFiles\Excel Files\%OOSStyle#%-%OOSColor%.xlsx
-	Xl := openTheExcelFile(Path, OOSStyle#, OOSColor)
-	
-	
-/*
-	; 필요 없는 열들 지우기 위해 변수값 지정
-	; 맨 처음 유효값이 시작되기 1전 값과 맨 끝에 지울 줄 갯수 변수에 넣기
-	1before_StartRow# = 4
-	#oflasUselessRows = 2
+
 	
 	
-	; 필요 없는 열들 지우기
-	deleteUselessRows(Xl, 1before_StartRow#, #oflasUselessRows)
-*/	
-	
-	
-	SO#_rowLetter = B
-	customerCode_rowLetter = F
-	custPO#_rowLetter = U
-	orderQTY_rowLetter = AC
-	Info_Arr := getInfoFronExcel(Xl, SO#_rowLetter, customerCode_rowLetter, custPO#_rowLetter, orderQTY_rowLetter)
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; Info_Arr[1][*] <- SO#				;
-	; Info_Arr[2][*] <- Customer Code	;
-	; Info_Arr[3][*] <- Custoer PO#		;
-	; Info_Arr[4][*] <- Order QTY		;
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 	
 
 
@@ -370,20 +408,32 @@ For 1st_index, Row in Info_Arr{
 			OrderQty_Arr.Insert(element)
 		}		
 		
-		;~ MsgBox, % "1st : " . 1st_index . "`n`n2nd : " . 2nd_index . "`n`n" . "Array" . "[" . 1st_index . "][" . 2nd_index . "]" . "`n`nelement : " . element
+;		MsgBox, % "1st : " . 1st_index . "`n`n2nd : " . 2nd_index . "`n`n" . "Array" . "[" . 1st_index . "][" . 2nd_index . "]" . "`n`nelement : " . element
 	}
 }
 
 
+
+
 ; 배열에 들어있는 값의 갯수만큼 반복(엑셀 파일에 있는 주문 갯수만큼 반복)
 ; 어차피 어떤 배열이든 들어있는 값의 갯수는 같기 때문에 어떤 배열을 써도 무방함. 꼭 SO#_Arr 배열이 아니어도 됨
+QTY_index = 1
 for index, element in SO#_Arr
 {	
 	; Desc 갯수가 8개 나온 화면이 몇 개 인지 누적하는 변수값 초기화
 	HowMany8DescScrrenHasBeenAppeared = 0
 	
+	; ##############################################################################################################################################################################################
+	; 수량 값을 못 얻고 있음
+	; 인덱스를 따로 증가시켜서 OrderQty_Arr 배열에서 따로 읽어야 되는지 생각하기
+	; MsgBox, % "SO#_Arr[index] : " . SO#_Arr[index]
+	; MsgBox, % "element : " . element
+	; MsgBox, % "OrderQty_Arr[QTY_index] : " . OrderQty_Arr[QTY_index]
+	; MsgBox, % "OrderQty_Arr[2] : " . OrderQty_Arr[2]
+	; ##############################################################################################################################################################################################
+	
 	; Sales Order 창 열기
-;	openSO(element)
+	openSO(element)
 
 
 	; 현재 화면에서 Desc 를 모두 찾아서 각각의 X,Y 위치값을 얻은 뒤 그 X,Y 값을 기준으로 스타일번호, 색깔, 수량값을 읽고 드롭할 값과 비교한 뒤 맞으면 드롭하기
@@ -409,6 +459,7 @@ for index, element in SO#_Arr
 					
 ; ##########################################################################################################################################################################################################################################
 ; 테스트를 위해 엑셀에서 읽은 값을 아래의 값으로 바꿨음
+/*
 	OOSStyle# = B1772
 	OOSStyle# = J2801
 	OOSStyle# = P3015
@@ -417,10 +468,12 @@ for index, element in SO#_Arr
 	OOSColor = BLACK
 	OrderQty = 6
 	DropAll = 0
+*/
 ; ##########################################################################################################################################################################################################################################
 	
 					; Desc 위치를 기준 삼아서 스타일번호, 색깔, 수량을 읽은 뒤 드롭해야 되는 스타일이면 드롭하기
-					itemsInfoThatJustReadFromScreen_Arr := checkValuesAndDropItems(X, XY_Arr[2][2nd_index], OOSStyle#, OOSColor, OrderQty, DropAll)
+					;~ itemsInfoThatJustReadFromScreen_Arr := checkValuesAndDropItems(X, XY_Arr[2][2nd_index], OOSStyle#, OOSColor, OrderQty, DropAll)
+					itemsInfoThatJustReadFromScreen_Arr := checkValuesAndDropItems(X, XY_Arr[2][2nd_index], OOSStyle#, OOSColor, OrderQty_Arr[QTY_index], DropAll)
 
 
 					; 지금 읽은 아이템 정보가 allValuesOfItems 변수에 있는지 비교해서 두 번째 읽는 화면이면 아이템 읽는 동작 중단하고 나가기
@@ -476,23 +529,26 @@ for index, element in SO#_Arr
 		
 	} ; end끝 - Loop{
 
-	MsgBox, 262144, title, 저장하기. 저장할 때 나올 수 있는 경고창 어떻게 처리할 지 생각하기
+	MsgBox, 262144, title, 저장하기. 저장할 때 나올 수 있는 경고창 어떻게 처리할 지 생각하기`n`n이 메세지 창 닫은 뒤에는 다음 주문으로 넘어가야 됨
 	
-	MsgBox, 262144, title, 화살표가 있으면 8번 클릭하는것 넣기
+	; 아이템 주문 수량 값을 읽기 위한 인덱스 값 1 증가 시키기
+	QTY_index++
 	
-	MsgBox, % XY_Arr[1][1]
-	MsgBox, % XY_Arr[1][1]
-	MsgBox, % XY_Arr[1][1]
-	MsgBox, % XY_Arr[1][1]
+	;~ MsgBox, 262144, title, 화살표가 있으면 8번 클릭하는것 넣기
 	
-	;~ ; 스타일 번호, 색깔, 수량이 맞는 곳의 Desc. X와 Y 좌표 얻기
-	;~ ; DropAll 체크됐으면 번호만 찾아서 모두 다 내리기
+	;~ MsgBox, % XY_Arr[1][1]
+	;~ MsgBox, % XY_Arr[1][1]
+	;~ MsgBox, % XY_Arr[1][1]
+	;~ MsgBox, % XY_Arr[1][1]
+	
+	; 스타일 번호, 색깔, 수량이 맞는 곳의 Desc. X와 Y 좌표 얻기
+	; DropAll 체크됐으면 번호만 찾아서 모두 다 내리기
 	;~ OrderQty := OrderQty_Arr[index]
 	;~ findTheStyleOnSalesOrderTab(OOSStyle#, OOSColor, OrderQty, DropAll)
 	
 	
-	MsgBox % "Element number " . index . " is " . element
-	MsgBox, % index . " 번째 Customer Code 번호 : "  . CustCode_Arr[index]
+	;~ MsgBox % "Element number " . index . " is " . element
+	;~ MsgBox, % index . " 번째 Customer Code 번호 : "  . CustCode_Arr[index]
 }
 
 
