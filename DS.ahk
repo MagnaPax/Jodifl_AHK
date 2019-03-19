@@ -53,11 +53,11 @@ WinSet, AlwaysOnTop, On, Drop Styles
 
 ;Input Start Order Id
 Gui, Add, Text, x22 y21 Cred , Drop Style #
-Gui, Add, Edit, x92 y20 w100 h20 vDropStyle#, ;P2392 	;C1116-8 ;P2276-1 ;b1323 ;P2471 ;B3595-1(drop all) ;P4030 ;p2420-12(DROP ALL)             				            ;P4061 ;B3610 ;S1229 ;P2933
+Gui, Add, Edit, x92 y20 w100 h20 vDropStyle#, H3074 ;P2392 	;C1116-8 ;P2276-1 ;b1323 ;P2471 ;B3595-1(drop all) ;P4030 ;p2420-12(DROP ALL)             				            ;P4061 ;B3610 ;S1229 ;P2933
 
 ;Input End Order Id
 Gui, Add, Text, x22 y51 CBlue , Color
-Gui, Add, Edit, x92 y50 w100 h20 vStyleColor, ;BURGUNDY ;navy mix ; olive mix
+Gui, Add, Edit, x92 y50 w100 h20 vStyleColor, taupe ;BURGUNDY ;navy mix ; olive mix
 
 ;Check Box For Drop All
 Gui, Add, CheckBox, x22 y70 w80 h40 vDropAll, Drop All
@@ -119,7 +119,7 @@ Click_btn:
 
 
 
-;~ /*
+/*
 	; ##################################################################
 	; ###################### LAS 에서 아이템 내리기 ######################
 	; ##################################################################
@@ -264,7 +264,9 @@ Click_btn:
 		; 검색된 아이템 중 DropStyle# 와 StyleColor 가 맞는 아이템의 체크박스 체크하기. 예를들어 P4030 INK BLACK 으로 검색했으면 P4030, P4030-1, P4030-2 중에서 P4030의 INK BLACK 만 딱 짚어서 해당 체크박스 체크하기
 		IsItRecursiveCall = 0
 		driver := checkTheCheckBoxOfCorrectItemOnMagento(driver, DropStyle#, StyleColor, IsItRecursiveCall)
-	
+		
+MsgBox, pause to disable a item
+
 		; 위에서 체크된 아이템 상태 disable 로 만들기
 		driver := disableTheStatusOfTheStyle(driver)
 
@@ -331,7 +333,7 @@ Click_btn:
 		Sleep 300	
 	}
 	
-
+MsgBox, TO SAVE
 	; Save 버튼 클릭해서 저장하기
 	driver := clickSaveButton(driver, DropStyle#, StyleColor, DropAll)
 
