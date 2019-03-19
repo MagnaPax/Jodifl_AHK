@@ -1096,6 +1096,83 @@ class CommN41{
 	
 	
 	
+	
+	; PMT Method 를 FG-CC 나 LAS-CC 로 바꾸기
+	changePMTMethodToFGorLAS(CustomerPO){
+		
+
+		Text:="|<PMT Method>*175$57.wnTVa0G00QKMkAk2E03Wn61aCvnnwKMkAmOGGHwx61uTGGSQ5ck/G2GHnUh61OHGGGQ5ck/FnGSTU"
+		if ok:=FindText(733,248,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, (X+W)+20, Y+H//2
+			Click
+			Sleep 150
+		}
+				
+		
+		if CustomerPO contains MTR
+		{
+			Send, FG-CC
+			Sleep 150
+			Send, {Enter}
+			Sleep 150
+		}
+		else if CustomerPO contains OP
+		{
+			Send, LAS-CC
+			Sleep 150
+			Send, {Enter}
+			Sleep 150			
+		}
+		
+		
+		; PM Method 를 제대로 입력했는지 확인하기
+		MouseMove, (X+W)+20, Y+H//2	; 마우스 위치 다시 이동하기
+		
+		; PM Method 위에서 마우스 오른쪽 버튼 클릭 후 코드 복사메뉴에서 엔터치기
+		Send, {RButton}
+		Loop, 4
+		{
+			Sleep 150
+			Send, {Down}
+			;~ Sleep 150
+		}
+		Send, {Enter}
+		Sleep 150
+			
+		PMTMethod := Clipboard
+		Sleep 150		
+		
+		
+		; 값이 제대로 입력됐는지 화인하기
+		if CustomerPO contains MTR
+		{
+			if PMTMethod not in FG-CC
+			{
+				MsgBox, 262144, Title, FG-CC 로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+				CommN41.changePMTMethodToFGorLAS(CustomerPO)
+			}
+		}
+		else if CustomerPO contains OP
+		{
+			if PMTMethod not in LAS-CC
+			{
+				MsgBox, 262144, Title, LAS-CC 로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+				CommN41.changePMTMethodToFGorLAS(CustomerPO)
+			}			
+		}
+		
+		
+		return
+		
+	} ; END끝 - changePMTMethodToFGorLAS(CustomerPO)
+	
+	
+	
+	
+	
 	; SO Manager 화면의 왼쪽 밑 Pick Ticket 섹션에서 Pick Date 날짜 가져오기
 	getPickDateOnPickTicketSectionOfSOManager(){
 		
@@ -1903,7 +1980,7 @@ class CommN41{
 
 
 	; 엑셀파일을 바탕화면에 저장하기
-	makeTheExcelFileOfTheStyleOnDesktopScreen(OOSStyle#, OOSColor){		
+	makeTheExcelFileOfTheStyleOnDesktopScreen(OOSStyle#, OOSColor){
 
 		; 엑셀 저장 창의 Desktop 버튼 클릭하기
 		Text:="|<desktop Button>*165$42.0zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00jzzxI00zzzzw00000000000000000000000000000000000000000000000000000000000000000000000y00E000X00EE00V00EE00VbDHwwyVccKFYmVDgQF6XV87QF6XXA3KFYmw7iHQsy000000U000000U000000UU"
@@ -2016,7 +2093,7 @@ class CommN41{
 		Text:="|<magnifying glass>*190$12.1s2A42838383834264DsQ0w0s0U"
 		if ok:=FindText(27,40,150000,150000,0,0,Text)
 		{
-			Sleep 150
+			Sleep 300
 			CoordMode, Mouse
 			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 			MouseMove, X+W//2, Y+H//2
@@ -2044,6 +2121,7 @@ class CommN41{
 		Text:="|<Finger arrow>*198$23.000U07n00ku027zU801zk0P20Dw60R0A1w0M1s0k3U1UDU3UD0bzw3zzs7rzU8"
 		if ok:=FindText(15,127,150000,150000,0,0,Text)
 		{
+			Sleep 300
 			CoordMode, Mouse
 			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 			MouseMove, X+W//2, Y+H//2
@@ -2066,6 +2144,66 @@ class CommN41{
 
 		return
 	}
+
+
+
+
+
+
+	; Sales Order Detail 창에서 엑셀파일을 만든 뒤 바탕화면에 저장하기
+	makeExcelFileOfDropAllSelectedStyle(OOSStyle#){
+
+		; 엑셀 저장 창의 Desktop 버튼 클릭하기
+		Text:="|<desktop Button>*165$42.0zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00zzzzw00jzzxI00zzzzw00000000000000000000000000000000000000000000000000000000000000000000000y00E000X00EE00V00EE00VbDHwwyVccKFYmVDgQF6XV87QF6XXA3KFYmw7iHQsy000000U000000U000000UU"
+		if ok:=FindText(54,198,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Click
+			Sleep 300
+			
+			; File name 으로 넘어가서 해당스타일번호-색깔 형식으로 파일명을 만들어서 (바탕화면에) 저장 후 Done! 윈도우 창이 나오면 엔터치기
+			Send, !n
+			Sleep 100
+			;~ Send, %OOSStyle#%-%OOSColor%
+			Send, %OOSStyle#%-All
+			Sleep 100
+			Send, {Enter}
+			Sleep 100
+
+			; Done 창 닫기
+			WinWaitActive, Done!			
+			IfWinActive, Done!
+				Send, {Enter}
+			Sleep 500
+			
+			
+			; Sales Order Detail List by Customer 창 닫기
+			WinClose, Sales Order Detail List by Customer			
+
+		}
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+			CommN41.makeExcelFileOfDropAllSelectedStyle(OOSStyle#)
+		
+		
+		return
+	}
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
 
 
 

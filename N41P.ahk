@@ -361,7 +361,7 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 
 			i = 0
 			Loop
-			{					
+			{
 				; Sale Order 에 있는 Customer PO 번호 얻기
 				CustomerPO := N_driver.GetCustPONumber()
 				i++
@@ -381,6 +381,26 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 
 			; Sales Order 에서 Order Type 얻기
 			orderType := N_driver.getOrderType()
+			
+
+			; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
+			if CustomerPO contains MTR, OP
+			{				
+				N_driver.changePMTMethodToFGorLAS(CustomerPO)
+				
+				; 저장하기
+				send, ^s^s
+				Sleep 100
+				N_driver.ClickSave()
+				
+				Sleep 3000
+				
+				; 커서 상태가 작업처리중이면 로딩 중이면 끝날때까지 기다리기
+;				while (A_cursor = "Wait")
+;					Sleep 2000
+			}
+
+			
 
 
 /*
@@ -2152,7 +2172,7 @@ return
 
 ;~ MsgBox, 262144, Title, totlaPrice : %totlaPrice%
 		
-		Loop, 3{
+		Loop, 2{
 			; 수량에 맞는 금액 입력하기
 		;	SoundPlay, %A_WinDir%\Media\Ring06.wav
 			;~ if #ofCheckBoxes between 1 and 4
