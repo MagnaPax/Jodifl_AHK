@@ -2633,7 +2633,7 @@ MsgBox, % "WINDOW TITLE OF THIS PAGE IS : " . NamePreviousGoogleBrowser
 ; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
 updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline){
 	
-	return ; 더이상 파일에 안 써도 되는것 같다. 그냥 메소드 나가자
+;	return ; 더이상 파일에 안 써도 되는것 같다. 그냥 메소드 나가자
 	
 	
 ;	MsgBox, 262144, Title, updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) 메소드 들어왔음
@@ -2694,7 +2694,7 @@ BlockInput, MouseMove
 			FileAppend, %pick#%`t%custCode%`t%updDate%`tN41 PA`n, %A_ScriptDir%\CreatedFiles\P.T. Status\PT_CH_%TodaysDate%.txt
 		}
 		else if(CBS_or_ccDecline){
-			FileAppend, %pick#%`t%custCode%`t%updDate%`tCBS`n, %A_ScriptDir%\CreatedFiles\P.T. Status\PT_CH_%TodaysDate%.txt
+			FileAppend, %pick#%`t%custCode%`t%updDate%`tCBS or BTR`n, %A_ScriptDir%\CreatedFiles\P.T. Status\PT_CH_%TodaysDate%.txt
 		}
 	}
 	
