@@ -8,13 +8,14 @@
 
 
 ; Path 에 위치한 엑셀창 열기
-openTheExcelFile(Path, OOSStyle#, OOSColor){
+;~ openTheExcelFile(Path, OOSStyle#, OOSColor){
+openTheExcelFile(Path){
 	
 	Xl := ComObjCreate("Excel.Application")
 	Xl.Workbooks.Open(Path) ;open an existing file
 	Xl.Visible := True
 	
-	return Xl	
+	return Xl
 }
 
 
@@ -41,10 +42,13 @@ deleteUselessRows(Xl, 1before_StartRow#, #oflasUselessRows){
 	
 
 	delRow# := total#ofRows
+	
+;MsgBox, % "총 " . total#ofRows . " 개의 줄이 있음"
+
 	Loop{
 		
 		if(A_Index == #oflasUselessRows){
-;MsgBox, 다 지웠음 루프 빠져나감
+;MsgBox, % "A_Index : " . A_Index . "`n#oflasUselessRows : " . #oflasUselessRows . "`n`n`n`n다 지웠음 루프 빠져나감"
 			break
 		}
 		

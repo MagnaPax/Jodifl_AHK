@@ -22,6 +22,23 @@ moveTheFileOnDesktopFromItToTheExcelFileFolder(OOSStyle#, OOSColor){
 
 
 
+; 바탕화면에 저장된 Drop All 엑셀 파일 옮기기
+moveDropAllSelectedStyleExcelFileFromDeskTopFolderToExcelFileFolder(OOSStyle#){
+
+	;~ FileMove, C:\Users\JODIFL4\Desktop\%OOSStyle#%-%OOSColor%.xls*, %A_ScriptDir%\CreatedFiles\Excel Files
+	FileMove, C:\Users\JODIFL4\Desktop\%OOSStyle#%-All.xls*, %A_ScriptDir%\CreatedFiles\Excel Files
+	
+	Sleep 1000
+	
+	IfNotExist, %A_ScriptDir%\CreatedFiles\Excel Files\%OOSStyle#%-All.xls*
+		MsgBox, 262144, NO FILE ERROR, NO FILE EXIST. THE APPLICATION IS RESTARTING.	
+	
+	return
+}
+
+
+
+
 
 
 

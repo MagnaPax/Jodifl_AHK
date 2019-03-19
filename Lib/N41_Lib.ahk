@@ -233,7 +233,8 @@ MsgBox, 262144, Title, pause
 ; X, Y : Desc 위치
 checkValuesAndDropItems(X, Y, Style#, StyleColor, OrderQty, DropAll){
 	
-;MsgBox, 262144, title, 메소드 시작
+;MsgBox, 262144, title, 드롭해야 되는 스타일번호, 색깔, 수량`n`n%Style#%	%StyleColor%	%OrderQty%
+	
 	
 	; 변수 초기화
 	Clipboard := ""
