@@ -189,11 +189,12 @@ class CommN41{
 		  Click
 		  Sleep 300
 		}
-
-		; 커서 상태가 작업처리중이면 끝날때까지 기다리기
-;		while (A_cursor = "Wait")
-;			Sleep 2000				
-
+		else
+		{
+			; 못 찾으면 계속 재귀호출 해서 찾아보기
+			Sleep 700
+			CommN41.ClickSalesOrderOnTheMenuBar()
+		}
 		
 		return
 	}
@@ -577,8 +578,13 @@ class CommN41{
 		  Sleep 150
 		  Send, {Enter}
 		  Sleep 150
-		}	
-		
+		}
+		else
+		{
+			; 못 찾으면 계속 재귀호출 해서 찾아보기
+			Sleep 700
+			CommN41.PutMemoIntoHouseMemoOnPickTicket()
+		}
 	}
 
 
@@ -1110,6 +1116,12 @@ class CommN41{
 			Click
 			Sleep 150
 		}
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 300
+			CommN41.changePMTMethodToFGorLAS(CustomerPO)
+		}
 				
 		
 		if CustomerPO contains MTR
@@ -1151,7 +1163,7 @@ class CommN41{
 		{
 			if PMTMethod not in FG-CC
 			{
-				MsgBox, 262144, Title, FG-CC 로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+;				MsgBox, 262144, Title, FG-CC 로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 				CommN41.changePMTMethodToFGorLAS(CustomerPO)
 			}
 		}
@@ -1159,7 +1171,7 @@ class CommN41{
 		{
 			if PMTMethod not in LAS-CC
 			{
-				MsgBox, 262144, Title, LAS-CC 로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+;				MsgBox, 262144, Title, LAS-CC 로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 				CommN41.changePMTMethodToFGorLAS(CustomerPO)
 			}			
 		}
@@ -1512,7 +1524,7 @@ class CommN41{
 			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 			MouseMove, X+W//2, Y+H//2
 			Click
-			Sleep 300
+			Sleep 200
 		}
 		
 		return
@@ -2197,7 +2209,39 @@ class CommN41{
 
 
 
+	; Pick Ticket 탭에 있는 Sales Order 로 이동하기
+	moveToSONumTab(){
 
+		Text:="|<SO# on Pick Ticket Tab>*179$29.zzzzy0000Q0000s0001rUS0jl1a1LU24Dzk48BQM8EKsMEVzskn1Hz8w2b0000C0000Q0000zzzzzzzzzzzzzzzU"
+		if ok:=FindText(276,187,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			;~ MouseMove, X+W//2, Y+H//2
+			MouseMove, (X+W)+20, Y+H//2
+
+		
+			; SO# 번호로 이동하기
+			Send, {RButton}
+			Loop, 9
+			{
+				Sleep 150
+				Send, {Down}
+				;~ Sleep 150
+			}
+			Send, {Enter}
+			Sleep 150
+		}
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+		{
+			CommN41.moveToSONumTab()
+		}
+			
+		return
+		
+	} ; END끝 - moveToSO#Tab()
+	
 
 
 

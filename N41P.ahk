@@ -383,7 +383,9 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 			orderType := N_driver.getOrderType()
 			
 
+/*
 			; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
+			; ############################################################################################################################################################################################################################################################
 			if CustomerPO contains MTR, OP
 			{				
 				N_driver.changePMTMethodToFGorLAS(CustomerPO)
@@ -399,7 +401,7 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 ;				while (A_cursor = "Wait")
 ;					Sleep 2000
 			}
-
+*/
 			
 
 
@@ -750,7 +752,10 @@ if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 
 							ccInfo := N_driver.checkCC()
 								
 							; 카드가 있으면
-							if(ccInfo){								
+							if(ccInfo){
+								
+								; Sales Order 탭으로 가서 PMT Method 를 Credit Card로 바꾼뒤 SO Manager 탭으로 다시 돌아오기
+								
 								; pre-authorized 받고 프린트하기
 								N41_ProcessingForPT_driver.Alloc_Print_WITH_PreAuthorized(CustomerPO)
 								

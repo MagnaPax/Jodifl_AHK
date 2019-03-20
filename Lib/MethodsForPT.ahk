@@ -862,7 +862,27 @@ BlockInput, MouseMoveOff
 											}
 										}
 										
+										; 객체 생성
 										CommN41_driver := New CommN41
+										
+										; 먼저 Sales Order 탭으로 이동하기
+										;~ CommN41.ClickSalesOrderOnTheMenuBar()
+										CommN41_driver.clickPickTicketButton()
+										CommN41.moveToSONumTab()
+										
+										; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
+										if CustomerPO contains MTR, OP
+										{				
+											CommN41.changePMTMethodToFGorLAS(CustomerPO)
+											
+											; 저장하기
+											send, ^s^s
+											Sleep 100
+											CommN41.ClickSave()
+											
+											Sleep 3000
+										}										
+										
 										CommN41_driver.clickPickTicketButton()
 										CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
 										Send, FG PA
@@ -1105,8 +1125,28 @@ BlockInput, MouseMoveOff
 											MsgBox, 262144, PAYMENT ERROR, IT'S NOT PREAUTHORIZED. 결제 됐는지 확인 후 진행
 										}
 								}									
-
+									
+									; 객체 생성
 									CommN41_driver := New CommN41
+									
+									; 먼저 Sales Order 탭으로 이동하기
+									;~ CommN41.ClickSalesOrderOnTheMenuBar()
+									CommN41_driver.clickPickTicketButton()
+									CommN41.moveToSONumTab()
+										
+									; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
+									if CustomerPO contains MTR, OP
+									{				
+										CommN41.changePMTMethodToFGorLAS(CustomerPO)
+											
+										; 저장하기
+										send, ^s^s
+										Sleep 100
+										CommN41.ClickSave()
+											
+										Sleep 3000
+									}
+									
 									CommN41_driver.clickPickTicketButton()
 									CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
 									Send, FG PA
@@ -1363,7 +1403,27 @@ BlockInput, MouseMoveOff
 							}
 						}						
 						
+						; 객체 생성
 						CommN41_driver := New CommN41
+						
+						; 먼저 Sales Order 탭으로 이동하기
+						;~ CommN41.ClickSalesOrderOnTheMenuBar()
+						CommN41_driver.clickPickTicketButton()
+						CommN41.moveToSONumTab()
+										
+						; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
+						if CustomerPO contains MTR, OP
+						{				
+							CommN41.changePMTMethodToFGorLAS(CustomerPO)
+											
+							; 저장하기
+							send, ^s^s
+							Sleep 100
+							CommN41.ClickSave()
+											
+							Sleep 3000
+						}
+						
 						CommN41_driver.clickPickTicketButton()
 						CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
 						Send, FG PA
@@ -2633,7 +2693,7 @@ MsgBox, % "WINDOW TITLE OF THIS PAGE IS : " . NamePreviousGoogleBrowser
 ; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
 updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline){
 	
-;	return ; 더이상 파일에 안 써도 되는것 같다. 그냥 메소드 나가자
+	return ; 더이상 파일에 안 써도 되는것 같다. 그냥 메소드 나가자
 	
 	
 ;	MsgBox, 262144, Title, updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) 메소드 들어왔음
