@@ -561,23 +561,20 @@ class CommN41{
 	
 	; Pick Ticket 탭에 있는 House Memo 에 메모 넣기 위해
 	PutMemoIntoHouseMemoOnPickTicket(){
-		
-		Clipboard := ""
-		
-		WinActivate, ahk_class FNWND3126
 
-		Text:="|<House Memo ON Pick Ticket>*161$37.000003cU0001oE0000u9t9ssRwYYYaCWHGQT7F9d3c3cYYgoloHnnlks00000Q00000C000007000003U00001k00000sn0001QNU003yAlnywr6NB9GTWoyYdVlOEGIksh9d+EQKXYZsC000007000003U00001s"
-		if ok:=FindText(1099,226,150000,150000,0,0,Text)
+		Text:="|<HOUSE MEMO>*166$29.W0001400029t9szmGGGMYob7l9d3cWGGnH4wwwQ00000000000000000000000000000n0001a0003AQzj6NB9G/HuGaKY4ZAh9d+FOCGLc"
+		if ok:=FindText(1096,225,150000,150000,0,0,Text)
 		{
-		  CoordMode, Mouse
-		  X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
-		  MouseMove, (X+W)+2, Y+H//2
-		  Click
-		  Sleep 150
-		  Send, {End}
-		  Sleep 150
-		  Send, {Enter}
-		  Sleep 150
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, (X+W)+30, Y+H//2
+			Sleep 500
+			Click
+			Sleep 150
+			Send, {End}
+			Sleep 150
+			Send, {Enter}
+			Sleep 150
 		}
 		else
 		{
@@ -585,6 +582,8 @@ class CommN41{
 			Sleep 700
 			CommN41.PutMemoIntoHouseMemoOnPickTicket()
 		}
+		
+		return
 	}
 
 
@@ -1112,71 +1111,94 @@ class CommN41{
 		{
 			CoordMode, Mouse
 			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			X_position = (X+W)+20
+			Y_position = Y+H//2
 			MouseMove, (X+W)+20, Y+H//2
 			Click
 			Sleep 150
-		}
+				
+			
+			if CustomerPO contains MTR
+			{
+				Send, FG-CC
+				Sleep 150
+				Send, {Tab}			
+				Sleep 150
+			}
+			else if CustomerPO contains OP
+			{
+				Send, LAS-CC
+				Sleep 150
+				Send, {Tab}
+				Sleep 150			
+			}
+			
+			Sleep 500
+			
+			; 저장하기
+			send, ^s
+			CommN41.ClickSave()
+			Sleep 700
+			IfWinActive, Sales Order
+			{
+				Send, {Enter}
+				Sleep 300
+			}
+			Sleep 1000
+			
+			
+			; PM Method 를 제대로 입력했는지 확인하기
+			MouseMove, (X+W)+20, Y+H//2	; 마우스 위치 다시 이동하기
+			;~ MouseMove, X_position, Y_position	; 마우스 위치 다시 이동하기
+			
+			; PM Method 위에서 마우스 오른쪽 버튼 클릭 후 코드 복사메뉴에서 엔터치기
+			Send, {RButton}
+			Loop, 4
+			{
+				Sleep 150
+				Send, {Down}
+				;~ Sleep 150
+			}
+			Send, {Enter}
+			Sleep 150
+				
+			PMTMethod := Clipboard
+			Sleep 150		
+			
+			
+			; 값이 제대로 입력됐는지 화인하기
+			if(PMTMethod != "FG-CC")
+			{
+				if(PMTMethod != "LAS-CC")
+				{
+
+	;				MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+					Sleep 2000
+					CommN41.changePMTMethodToFGorLAS(CustomerPO)
+				}
+			}
+			
+		} ; END끝 - if ok:=FindText(733,248,150000,150000,0,0,Text)
 		else
 		{
 			; 못 찾았으면 재귀호출해서 계속 찾기
 			Sleep 300
 			CommN41.changePMTMethodToFGorLAS(CustomerPO)
 		}
-				
+
+		; 저장하기
+		;~ send, ^s
+		;~ Sleep 300		
+		;~ IfWinActive, Sales Order
+		;~ {
+			;~ Send, {Enter}
+			;~ Sleep 300
+		;~ }
+		;~ CommN41.ClickSave()
+		;~ Sleep 2000
 		
-		if CustomerPO contains MTR
-		{
-			Send, FG-CC
-			Sleep 150
-			Send, {Enter}
-			Sleep 150
-		}
-		else if CustomerPO contains OP
-		{
-			Send, LAS-CC
-			Sleep 150
-			Send, {Enter}
-			Sleep 150			
-		}
-		
-		
-		; PM Method 를 제대로 입력했는지 확인하기
-		MouseMove, (X+W)+20, Y+H//2	; 마우스 위치 다시 이동하기
-		
-		; PM Method 위에서 마우스 오른쪽 버튼 클릭 후 코드 복사메뉴에서 엔터치기
-		Send, {RButton}
-		Loop, 4
-		{
-			Sleep 150
-			Send, {Down}
-			;~ Sleep 150
-		}
-		Send, {Enter}
-		Sleep 150
-			
-		PMTMethod := Clipboard
-		Sleep 150		
-		
-		
-		; 값이 제대로 입력됐는지 화인하기
-		if CustomerPO contains MTR
-		{
-			if PMTMethod not in FG-CC
-			{
-;				MsgBox, 262144, Title, FG-CC 로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
-				CommN41.changePMTMethodToFGorLAS(CustomerPO)
-			}
-		}
-		else if CustomerPO contains OP
-		{
-			if PMTMethod not in LAS-CC
-			{
-;				MsgBox, 262144, Title, LAS-CC 로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
-				CommN41.changePMTMethodToFGorLAS(CustomerPO)
-			}			
-		}
-		
-		
+		MsgBox, 262144, 무제, 다 끝났음 리턴하기 직전
+
 		return
 		
 	} ; END끝 - changePMTMethodToFGorLAS(CustomerPO)
@@ -1558,6 +1580,9 @@ class CommN41{
 	
 	; Pick Ticket 화면에 있는 Customer PO 값 가져오기
 	getCustPONumberOnPickTicketScreen(){	
+		
+		Clipboard := ""
+		CustomerPO# := ""
 
 		Text:="|<Cust_PO#>*179$49.zzzzzzzzU0000001k0000000s0000000Rs011sD2zY00UWAlLUGSsF4/zk9988W4ps4b47V2Kw2Eu20VTzB/B10NZCwwwkV7Wb00000003U0000001k0000000zzzzzzzzy"
 		if ok:=FindText(612,186,150000,150000,0,0,Text)
@@ -1579,18 +1604,23 @@ class CommN41{
 			Sleep 150
 							
 			CustomerPO# := Clipboard
-			Sleep 150
+			Sleep 700
 			
 			; Customer PO 값 못 읽었으면 재귀호출
 			if(!CustomerPO#){
+				MsgBox, 262144, Title, 값 못 읽었음. 재귀호출로 다시 시작함
 				CommN41.getCustPONumberOnPickTicketScreen()
 			}
 			
 			return CustomerPO#			
 			
-		}		
+		}
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+			CommN41.getCustPONumberOnPickTicketScreen()
 		
 		return
+		
 	} ; getCustPO#OnPickTicketScreen() 메소드 끝
 	
 	
@@ -2234,9 +2264,7 @@ class CommN41{
 		}
 		; 못 찾았으면 재귀호출로 계속 찾기
 		else
-		{
 			CommN41.moveToSONumTab()
-		}
 			
 		return
 		

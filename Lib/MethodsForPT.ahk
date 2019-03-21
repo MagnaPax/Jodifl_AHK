@@ -835,19 +835,14 @@ BlockInput, MouseMoveOff
 									}
 								}
 								
-								
-								; 쇼 오더가 아닐때 실행
-								;~ if CustomerPO not contains 200
-								;~ {
-
-									SoundPlay, %A_WinDir%\Media\Ring06.wav		
-									MsgBox, 266243, OPTIONS, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED`nYOU CAN CHOOSE OPTIONS BELOW`n`n`nYes : WRITE "FG PA" ON THE HOUSE MEMO`n`nNo : WRITE "LAS PA" ON THE HOUSE MEMO`n`nCancel : MOVE TO NEXT ORDER
 
 
-									; 하우스 메모에 FG PA 입력하기
+									SoundPlay, %A_WinDir%\Media\Ring06.wav
+									MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
+									
+									; 하우스 메모에 FG PA 혹은 LAS PA 입력한 뒤 SO번호에 해당하는 Sales Order 탭으로 이동해서 PMT Method 바꾸기
 									IfMsgBox, Yes
 									{
-
 										; 만약 현재 페이지가 FG 페이지라면
 										if(RegExMatch(driver.Url, "imU)fashiongo")){
 											
@@ -860,112 +855,69 @@ BlockInput, MouseMoveOff
 											{
 												MsgBox, 262144, PAYMENT ERROR, IT'S NOT PREAUTHORIZED. 결제 됐는지 확인 후 진행
 											}
-										}
+										} ; END끝 - if(RegExMatch(driver.Url, "imU)fashiongo"))
 										
 										; 객체 생성
 										CommN41_driver := New CommN41
 										
-										; 먼저 Sales Order 탭으로 이동하기
-										;~ CommN41.ClickSalesOrderOnTheMenuBar()
+										; Customer PO # 에 맞는 메모 남기기
 										CommN41_driver.clickPickTicketButton()
-										CommN41.moveToSONumTab()
+										CustomerPO := ""
+										Loop{
+											CustomerPO := CommN41_driver.getCustPONumberOnPickTicketScreen() ; CUSTOMER PO 가져오기
+											if(CustomerPO)
+												break
+										}
 										
-										; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
-										if CustomerPO contains MTR, OP
-										{				
-											CommN41.changePMTMethodToFGorLAS(CustomerPO)
-											
-											; 저장하기
-											send, ^s^s
+										CommN41_driver.PutMemoIntoHouseMemoOnPickTicket() ; 하우스 메모 위치로 이동
+										if CustomerPO contains MTR
+										{											
+											Send, FG PA
 											Sleep 100
-											CommN41.ClickSave()
-											
-											Sleep 3000
-										}										
+											Send, ^s
+										}
+										else if CustomerPO contains OP
+										{
+											Send, LAS PA
+											Sleep 100
+											Send, ^s
+										}
 										
-										CommN41_driver.clickPickTicketButton()
-										CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
-										Send, FG PA
-										Sleep 100
-										Send, ^s
-																				
+										
+										; Sales Order 탭으로 이동해서 PMT Method 바꾸기
+										CommN41.moveToSONumTab()						; Sales Order 탭으로 이동
+										CommN41.changePMTMethodToFGorLAS(CustomerPO)	; PMT Method 바꾸기
+
+										
 										; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-										FG_PA = 1
-										LAS_PA = 0
+										if CustomerPO contains MTR
+										{
+											FG_PA = 1
+											LAS_PA = 0
+										}
+										else if CustomerPO contains OP
+										{
+											FG_PA = 0
+											LAS_PA = 1											
+										}
 										N41_PA = 0
 										CBS_or_ccDecline = 0								
-										updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 현재 화면 pick ticket 의 상태를 파일에 저장하는 메소드
+										updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 현재 화면 pick ticket 의 상태를 파일에 저장하는 메소드										
+						
 										
-;										MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, 메모 업데이트 됐는지 확인
-										
-									}
-									; 하우스 메모에 LAS PA 입력하기
+									} ; END끝 - IfMsgBox, Yes
+									
+									
 									IfMsgBox, No
 									{
-										CommN41_driver := New CommN41
-										CommN41_driver.clickPickTicketButton()
-										CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
-										Send, LAS PA
-										Sleep 100
-										Send, ^s
-										
 										; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
 										FG_PA = 0
-										LAS_PA = 1
+										LAS_PA = 0
 										N41_PA = 0
-										CBS_or_ccDecline = 0								
-										updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 현재 화면 pick ticket 의 상태를 파일에 저장하는 메소드
+										CBS_or_ccDecline = 1
+										updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
 										
-;										MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, 메모 업데이트 됐는지 확인										
-										
-									}
-									
-									
-									; CANCEL 눌렀을 때
-									IfMsgBox, Cancel
-									{
-												; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-												FG_PA = 0
-												LAS_PA = 0
-												N41_PA = 0
-												CBS_or_ccDecline = 1
-												updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
-/*									
-										; YES : CBS OR CC DECLINE
-										; NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-										MsgBox, 4100, Wintitle, YES : CBS OR CC DECLINE`n`nNO : FIRST CC WAS DECLINE BUT OTHER CC WENT THROUGH
-										{
-											; YES : CBS OR CC DECLINE
-											IfMsgBox, Yes
-											{
-												; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-												FG_PA = 0
-												LAS_PA = 0
-												N41_PA = 0
-												CBS_or_ccDecline = 1
-												updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드								
-												
-;												MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, CBS로 메모 업데이트 됐는지 확인
-											} ; if ends - ; YES : CBS OR CC DECLINE
-											
-											; NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-											IfMsgBox, No
-											{
-												; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-												FG_PA = 0
-												LAS_PA = 0
-												N41_PA = 1
-												CBS_or_ccDecline = 0
-												updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드								
-												
-;												MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, N41 PA 로 메모 업데이트 됐는지 확인												
-											
-											} ; if ends - NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-										} ; if ends - 
-*/										
-									} ; if ends - CANCEL 눌렀을 때									
-											
-								;~ }
+									} ; END끝 - IfMsgBox, No
 
 							}
 							else if(result == 1){
@@ -980,11 +932,7 @@ BlockInput, MouseMoveOff
 ;								MsgBox, 262144, Approved Confirmed, 카드 통과됐음. 메모 저장됐는지 확인
 							}
 
-							
-;							CommN41_driver := New CommN41
-							
 							; SO Manager 탭 클릭해서 pick ticket 탭에서 나오기
-							;~ CommN41.OpenSOManager()
 							CN41_driver.OpenSOManager()
 							
 							; 아이템이 제대로 pick ticket에 들어갔는지 확인하기위해 SO Manager 에 있는 refresh 버튼 클릭해서
@@ -1107,127 +1055,83 @@ BlockInput, MouseMoveOff
 								}
 
 								SoundPlay, %A_WinDir%\Media\Ring06.wav
-								MsgBox, 266243, OPTIONS, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED`nYOU CAN CHOOSE OPTIONS BELOW`n`n`nYes : WRITE "FG PA" ON THE HOUSE MEMO`n`nNo : WRITE "LAS PA" ON THE HOUSE MEMO`n`nCancel : MOVE TO NEXT ORDER
-
-								; 하우스 메모에 FG PA 입력하기
+								MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
+													
+								; 하우스 메모에 FG PA 혹은 LAS PA 입력한 뒤 SO번호에 해당하는 Sales Order 탭으로 이동해서 PMT Method 바꾸기
 								IfMsgBox, Yes
 								{
 									; 만약 현재 페이지가 FG 페이지라면
 									if(RegExMatch(driver.Url, "imU)fashiongo")){
-											
+															
 										; 제대로 결제됐는지 확인
 										PaymentStatus_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[2]/div[2]/div[2]/div[1]/ul/li[1]/span[2]/div/span[1]
-											
+															
 										payment_Status := driver.FindElementByXPath(PaymentStatus_Xpath).Attribute("innerText")
-											
+														
 										if payment_Status not contains Authorized
 										{
 											MsgBox, 262144, PAYMENT ERROR, IT'S NOT PREAUTHORIZED. 결제 됐는지 확인 후 진행
 										}
-								}									
-									
+									} ; END끝 - if(RegExMatch(driver.Url, "imU)fashiongo"))
+														
 									; 객체 생성
 									CommN41_driver := New CommN41
-									
-									; 먼저 Sales Order 탭으로 이동하기
-									;~ CommN41.ClickSalesOrderOnTheMenuBar()
+														
+									; Customer PO # 에 맞는 메모 남기기
 									CommN41_driver.clickPickTicketButton()
-									CommN41.moveToSONumTab()
-										
-									; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
-									if CustomerPO contains MTR, OP
-									{				
-										CommN41.changePMTMethodToFGorLAS(CustomerPO)
-											
-										; 저장하기
-										send, ^s^s
-										Sleep 100
-										CommN41.ClickSave()
-											
-										Sleep 3000
+									CustomerPO := ""
+									Loop{
+										CustomerPO := CommN41_driver.getCustPONumberOnPickTicketScreen() ; CUSTOMER PO 가져오기
+										if(CustomerPO)
+											break
 									}
-									
-									CommN41_driver.clickPickTicketButton()
-									CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
-									Send, FG PA
-									Sleep 100
-									Send, ^s
-									
+									CommN41_driver.PutMemoIntoHouseMemoOnPickTicket() ; 하우스 메모 위치로 이동
+									if CustomerPO contains MTR
+									{
+										Send, FG PA
+										Sleep 100
+										Send, ^s
+									}
+									else if CustomerPO contains OP
+									{
+										Send, LAS PA
+										Sleep 100
+										Send, ^s
+									}
+														
+														
+									; Sales Order 탭으로 이동해서 PMT Method 바꾸기
+									CommN41.moveToSONumTab()						; Sales Order 탭으로 이동
+									CommN41.changePMTMethodToFGorLAS(CustomerPO)	; PMT Method 바꾸기
+
 									; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-									FG_PA = 1
-									LAS_PA = 0
+									if CustomerPO contains MTR
+									{
+										FG_PA = 1
+										LAS_PA = 0
+									}
+									else if CustomerPO contains OP
+									{
+										FG_PA = 0
+										LAS_PA = 1											
+									}
 									N41_PA = 0
 									CBS_or_ccDecline = 0								
-									updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
-																		
-;									MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, 메모 업데이트 됐는지 확인									
-									
-								}
-								; 하우스 메모에 LAS PA 입력하기
+									updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 현재 화면 pick ticket 의 상태를 파일에 저장하는 메소드										
+										
+														
+								} ; END끝 - IfMsgBox, Yes
+								
 								IfMsgBox, No
 								{
-									CommN41_driver := New CommN41
-									CommN41_driver.clickPickTicketButton()
-									CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
-									Send, LAS PA
-									Sleep 100
-									Send, ^s
-									
 									; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
 									FG_PA = 0
-									LAS_PA = 1
+									LAS_PA = 0
 									N41_PA = 0
-									CBS_or_ccDecline = 0								
+									CBS_or_ccDecline = 1
 									updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
-																		
-;									MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, 메모 업데이트 됐는지 확인									
-									
-								}
-								
-								; CANCEL 눌렀을 때
-								IfMsgBox, Cancel
-								{
-											; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-											FG_PA = 0
-											LAS_PA = 0
-											N41_PA = 0
-											CBS_or_ccDecline = 1
-											updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드									
-/*									
-									; YES : CBS OR CC DECLINE
-									; NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-									MsgBox, 4100, Wintitle, YES : CBS OR CC DECLINE`n`nNO : FIRST CC WAS DECLINE BUT OTHER CC WENT THROUGH
-									{
-										; YES : CBS OR CC DECLINE
-										IfMsgBox, Yes
-										{
-											; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-											FG_PA = 0
-											LAS_PA = 0
-											N41_PA = 0
-											CBS_or_ccDecline = 1
-											updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드								
-											
-;											MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, CBS로 메모 업데이트 됐는지 확인
-										} ; if ends - ; YES : CBS OR CC DECLINE
 										
-										; NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-										IfMsgBox, No
-										{
-											; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-											FG_PA = 0
-											LAS_PA = 0
-											N41_PA = 1
-											CBS_or_ccDecline = 0
-											updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드								
-											
-;											MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, N41 PA 로 메모 업데이트 됐는지 확인							
-																				
-										} ; if ends - NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-									} ; if ends -
-*/									
-								} ; if ends - CANCEL 눌렀을 때		
-								
+								} ; END끝 - IfMsgBox, No								
 
 							}
 
@@ -1378,138 +1282,88 @@ BlockInput, MouseMoveOff
 					}				
 				}
 
-				
-				;~ ; 쇼 오더가 아닐때 실행
-				;~ if CustomerPO not contains 200
-				;~ {
 
-					SoundPlay, %A_WinDir%\Media\Ring06.wav
-					MsgBox, 266243, OPTIONS, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED`nYOU CAN CHOOSE OPTIONS BELOW`n`n`nYes : WRITE "FG PA" ON THE HOUSE MEMO`n`nNo : WRITE "LAS PA" ON THE HOUSE MEMO`n`nCancel : MOVE TO NEXT ORDER
 
-					; 하우스 메모에 FG PA 입력하기
-					IfMsgBox, Yes
-					{
-						; 만약 현재 페이지가 FG 페이지라면
-						if(RegExMatch(driver.Url, "imU)fashiongo")){
+
+				SoundPlay, %A_WinDir%\Media\Ring06.wav
+				MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
+									
+				; 하우스 메모에 FG PA 혹은 LAS PA 입력한 뒤 SO번호에 해당하는 Sales Order 탭으로 이동해서 PMT Method 바꾸기
+				IfMsgBox, Yes
+				{
+					; 만약 현재 페이지가 FG 페이지라면
+					if(RegExMatch(driver.Url, "imU)fashiongo")){
 											
-							; 제대로 결제됐는지 확인
-							PaymentStatus_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[2]/div[2]/div[2]/div[1]/ul/li[1]/span[2]/div/span[1]
+						; 제대로 결제됐는지 확인
+						PaymentStatus_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[2]/div[2]/div[2]/div[1]/ul/li[1]/span[2]/div/span[1]
 											
-							payment_Status := driver.FindElementByXPath(PaymentStatus_Xpath).Attribute("innerText")
-											
-							if payment_Status not contains Authorized
-							{
-								MsgBox, 262144, PAYMENT ERROR, IT'S NOT PREAUTHORIZED. 결제 됐는지 확인 후 진행
-							}
-						}						
-						
-						; 객체 생성
-						CommN41_driver := New CommN41
-						
-						; 먼저 Sales Order 탭으로 이동하기
-						;~ CommN41.ClickSalesOrderOnTheMenuBar()
-						CommN41_driver.clickPickTicketButton()
-						CommN41.moveToSONumTab()
+						payment_Status := driver.FindElementByXPath(PaymentStatus_Xpath).Attribute("innerText")
 										
-						; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
-						if CustomerPO contains MTR, OP
-						{				
-							CommN41.changePMTMethodToFGorLAS(CustomerPO)
-											
-							; 저장하기
-							send, ^s^s
-							Sleep 100
-							CommN41.ClickSave()
-											
-							Sleep 3000
+						if payment_Status not contains Authorized
+						{
+							MsgBox, 262144, PAYMENT ERROR, IT'S NOT PREAUTHORIZED. 결제 됐는지 확인 후 진행
 						}
-						
-						CommN41_driver.clickPickTicketButton()
-						CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
+					} ; END끝 - if(RegExMatch(driver.Url, "imU)fashiongo"))
+										
+					; 객체 생성
+					CommN41_driver := New CommN41
+										
+					; Customer PO # 에 맞는 메모 남기기
+					CommN41_driver.clickPickTicketButton()
+					CustomerPO := ""
+					Loop{
+						CustomerPO := CommN41_driver.getCustPONumberOnPickTicketScreen() ; CUSTOMER PO 가져오기
+					if(CustomerPO)
+						break
+					}
+					CommN41_driver.PutMemoIntoHouseMemoOnPickTicket() ; 하우스 메모 위치로 이동
+					if CustomerPO contains MTR
+					{
 						Send, FG PA
 						Sleep 100
 						Send, ^s
-												
-						; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-						FG_PA = 1
-						LAS_PA = 0
-						N41_PA = 0
-						CBS_or_ccDecline = 0								
-						updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
-															
-;						MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, 메모 업데이트 됐는지 확인
-						
 					}
-					; 하우스 메모에 LAS PA 입력하기
-					IfMsgBox, No
+					else if CustomerPO contains OP
 					{
-						CommN41_driver := New CommN41
-						CommN41_driver.clickPickTicketButton()
-						CommN41_driver.PutMemoIntoHouseMemoOnPickTicket()
 						Send, LAS PA
 						Sleep 100
 						Send, ^s
-						
-						; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-						FG_PA = 0
-						LAS_PA = 1
-						N41_PA = 0
-						CBS_or_ccDecline = 0								
-						updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
-															
-;						MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, 메모 업데이트 됐는지 확인						
-						
 					}
-				
-					; CANCEL 눌렀을 때
-					IfMsgBox, Cancel
+										
+										
+					; Sales Order 탭으로 이동해서 PMT Method 바꾸기
+					CommN41.moveToSONumTab()						; Sales Order 탭으로 이동
+					CommN41.changePMTMethodToFGorLAS(CustomerPO)	; PMT Method 바꾸기
+
+					; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
+					if CustomerPO contains MTR
 					{
+						FG_PA = 1
+						LAS_PA = 0
+					}
+					else if CustomerPO contains OP
+					{
+						FG_PA = 0
+						LAS_PA = 1											
+					}
+					N41_PA = 0
+					CBS_or_ccDecline = 0								
+					updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 현재 화면 pick ticket 의 상태를 파일에 저장하는 메소드										
 						
-								; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-								FG_PA = 0
-								LAS_PA = 0
-								N41_PA = 0
-								CBS_or_ccDecline = 1
-								updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드						
-/*						
-						; YES : CBS OR CC DECLINE
-						; NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-						MsgBox, 4100, Wintitle, YES : CBS OR CC DECLINE`n`nNO : FIRST CC WAS DECLINE BUT OTHER CC WENT THROUGH
-						{
-							; YES : CBS OR CC DECLINE
-							IfMsgBox, Yes
-							{
-								; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-								FG_PA = 0
-								LAS_PA = 0
-								N41_PA = 0
-								CBS_or_ccDecline = 1
-								updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드								
-								
-;								MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, CBS로 메모 업데이트 됐는지 확인
-							} ; if ends - ; YES : CBS OR CC DECLINE
-							
-							; NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-							IfMsgBox, No
-							{
-								; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
-								FG_PA = 0
-								LAS_PA = 0
-								N41_PA = 1
-								CBS_or_ccDecline = 0
-								updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드								
-								
-;								MsgBox, 262144, PICK TICKET STATUS FILE UPDATED, N41 PA 로 메모 업데이트 됐는지 확인							}
-							
-							} ; if ends - NO  : 첫번째 카드 실패 후 다른 카드로 통과됐음
-						} ; if ends -
-*/						
-					} ; if ends - CANCEL 눌렀을 때
+										
+				} ; END끝 - IfMsgBox, Yes
+				
+				IfMsgBox, No
+				{
+					; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
+					FG_PA = 0
+					LAS_PA = 0
+					N41_PA = 0
+					CBS_or_ccDecline = 1
+					updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
+					
+				} ; END끝 - IfMsgBox, No				
 
-				;~ }
-
-
-				CommN41_driver := New CommN41
 				
 				; SO MANAGER 탭 누르고 끝내기
 				CN41_driver := New CommN41
