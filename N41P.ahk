@@ -2337,6 +2337,7 @@ return
 		WinActivate, Memo
 		WinActivate, UPS STATUS
 		WinActivate, NOT APPROVED
+		WinActivate, NOT PRE-AUTHORIZED
 
 		SoundPlay, %A_WinDir%\Media\Ring06.wav
 		
