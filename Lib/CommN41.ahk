@@ -1109,6 +1109,7 @@ class CommN41{
 		Text:="|<PMT Method>*175$57.wnTVa0G00QKMkAk2E03Wn61aCvnnwKMkAmOGGHwx61uTGGSQ5ck/G2GHnUh61OHGGGQ5ck/FnGSTU"
 		if ok:=FindText(733,248,150000,150000,0,0,Text)
 		{
+			Sleep 1000
 			CoordMode, Mouse
 			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 			X_position = (X+W)+20
@@ -1137,6 +1138,7 @@ class CommN41{
 			
 			; 저장하기
 			send, ^s
+			Sleep 150
 			CommN41.ClickSave()
 			Sleep 700
 			IfWinActive, Sales Order
@@ -1144,7 +1146,7 @@ class CommN41{
 				Send, {Enter}
 				Sleep 300
 			}
-			Sleep 1000
+			Sleep 2000
 			
 			
 			; PM Method 를 제대로 입력했는지 확인하기
@@ -1163,7 +1165,7 @@ class CommN41{
 			Sleep 150
 				
 			PMTMethod := Clipboard
-			Sleep 150		
+			Sleep 700
 			
 			
 			; 값이 제대로 입력됐는지 화인하기
@@ -1187,17 +1189,17 @@ class CommN41{
 		}
 
 		; 저장하기
-		;~ send, ^s
-		;~ Sleep 300		
-		;~ IfWinActive, Sales Order
-		;~ {
-			;~ Send, {Enter}
-			;~ Sleep 300
-		;~ }
+		send, ^s
+		Sleep 700
+		IfWinActive, Sales Order
+		{
+			Send, {Enter}
+			Sleep 300
+		}
 		;~ CommN41.ClickSave()
-		;~ Sleep 2000
+		;~ Sleep 500
 		
-		MsgBox, 262144, 무제, 다 끝났음 리턴하기 직전
+;		MsgBox, 262144, 무제, 다 끝났음 리턴하기 직전
 
 		return
 		
