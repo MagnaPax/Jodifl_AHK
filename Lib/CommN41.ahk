@@ -1105,6 +1105,8 @@ class CommN41{
 	; PMT Method 를 FG-CC 나 LAS-CC 로 바꾸기
 	changePMTMethodToFGorLAS(CustomerPO){
 		
+;		MsgBox, 262144, Title, CustomerPO : %CustomerPO%
+		
 
 		Text:="|<PMT Method>*175$57.wnTVa0G00QKMkAk2E03Wn61aCvnnwKMkAmOGGHwx61uTGGSQ5ck/G2GHnUh61OHGGGQ5ck/FnGSTU"
 		if ok:=FindText(733,248,150000,150000,0,0,Text)
@@ -1133,6 +1135,13 @@ class CommN41{
 				Send, {Tab}
 				Sleep 150			
 			}
+			else if CustomerPO contains Credit_Card
+			{
+				Send, CREDIT
+				Sleep 150
+				Send, {Tab}
+				Sleep 150			
+			}			
 			
 			Sleep 500
 			
@@ -1169,16 +1178,38 @@ class CommN41{
 			
 			
 			; 값이 제대로 입력됐는지 화인하기
-			if(PMTMethod != "FG-CC")
+			if CustomerPO not in Credit_Card
 			{
-				if(PMTMethod != "LAS-CC")
+				if(PMTMethod != "FG-CC")
 				{
-
-	;				MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+					if(PMTMethod != "LAS-CC")
+					{
+						MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+						Sleep 2000
+						CommN41.changePMTMethodToFGorLAS(CustomerPO)
+					}
+				}
+			}
+			else if CustomerPO in Credit_Card
+			{
+				if(PMTMethod != "CREDIT CARD")
+				{
+					MsgBox, 262144, Title, Credit Card로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 					Sleep 2000
 					CommN41.changePMTMethodToFGorLAS(CustomerPO)
 				}
-			}
+			}			
+			
+			;~ if(PMTMethod != "FG-CC")
+			;~ {
+				;~ if(PMTMethod != "LAS-CC")
+				;~ {
+
+	;~ ;				MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+					;~ Sleep 2000
+					;~ CommN41.changePMTMethodToFGorLAS(CustomerPO)
+				;~ }
+			;~ }
 			
 		} ; END끝 - if ok:=FindText(733,248,150000,150000,0,0,Text)
 		else
@@ -1548,8 +1579,11 @@ class CommN41{
 			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 			MouseMove, X+W//2, Y+H//2
 			Click
-			Sleep 200
+			Sleep 500
 		}
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+			CommN41.clickPickTicketButton()
 		
 		return
 		
@@ -2271,6 +2305,30 @@ class CommN41{
 		return
 		
 	} ; END끝 - moveToSO#Tab()
+	
+	
+	
+	; pre authorized 버튼 클릭
+	findAndClickPreAuthorizeCreditCardIcon(){
+		
+		
+		Text:="|<pre-authorize Button>*205$16.001zzbzyTztzzY0SE1tzzbzyTztzzc01zzy"
+		if ok:=FindText(718,129,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Click
+				
+			Sleep 2000
+		}
+		; 못 찾았으면 재귀호출로 계속 찾기
+		else
+			CommN41.findAndClickPreAuthorizeCreditCardIcon()
+		
+		return
+		
+	} ; end끝 - findAndClickPreAuthorizeCreditCardIcon()
 	
 
 

@@ -694,17 +694,26 @@ BlockInput, MouseMove
 		
 		
 			CN41_driver := New CommN41
-		
+
+			; Sales Order 탭으로 이동해서 PMT Method 바꾸기
+			CN41_driver.moveToSONumTab()						; Sales Order 탭으로 이동
+			CN41_driver.changePMTMethodToFGorLAS("Credit_Card")	; PMT Method 를 Credit Card로 바꾸기
+			CN41_driver.clickPickTicketButton()					; Pick Ticket 화면으로 다시 돌아오기
+			
 			; pre authorized 버튼 클릭
-			Text:="|<pre-authorize Button>*205$16.001zzbzyTztzzY0SE1tzzbzyTztzzc01zzy"
-			if ok:=FindText(718,129,150000,150000,0,0,Text)
-			{
-				CoordMode, Mouse
-				X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
-				MouseMove, X+W//2, Y+H//2
-				Click
+;MsgBox, 262144, Title, 카드 아이콘 클릭 예정
+			CN41_driver.findAndClickPreAuthorizeCreditCardIcon()
+		
+			;~ ; pre authorized 버튼 클릭
+			;~ Text:="|<pre-authorize Button>*205$16.001zzbzyTztzzY0SE1tzzbzyTztzzc01zzy"
+			;~ if ok:=FindText(718,129,150000,150000,0,0,Text)
+			;~ {
+				;~ CoordMode, Mouse
+				;~ X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+				;~ MouseMove, X+W//2, Y+H//2
+				;~ Click
 				
-				Sleep 2000
+				;~ Sleep 2000
 				
 				; Pre-Authorized 통과 됐거나 Declined 됐을 때
 				WinWaitActive Credit Card Processing, , 4
@@ -1159,7 +1168,13 @@ driver.quit()
 					
 				}
 
-			}
+			;~ }
+			;~ else
+			;~ {
+				;~ ; 카드 아이콘을 못 찾았으면 재귀호출해서 계속 찾기
+				;~ Sleep 500
+				;~ CN41_driver.FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation)
+			;~ }			
 
 		return
 	} ; FromClickingPreAuthorizedButton_To_PrintOutPickTicket 메소드 끝
@@ -2134,7 +2149,7 @@ class BO extends CommEXCEL{
 			}
 			
 			; 크롬 창 닫기
-			WinClose, ahk_class Chrome_WidgetWin_1
+			WinClose, ahk_exe chrome.exe
 
 		}
 		
