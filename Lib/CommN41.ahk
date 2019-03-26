@@ -1156,60 +1156,59 @@ class CommN41{
 				Sleep 300
 			}
 			Sleep 2000
-			
-			
-			; PM Method 를 제대로 입력했는지 확인하기
-			MouseMove, (X+W)+20, Y+H//2	; 마우스 위치 다시 이동하기
-			;~ MouseMove, X_position, Y_position	; 마우스 위치 다시 이동하기
-			
-			; PM Method 위에서 마우스 오른쪽 버튼 클릭 후 코드 복사메뉴에서 엔터치기
-			Send, {RButton}
-			Loop, 4
-			{
-				Sleep 150
-				Send, {Down}
-				;~ Sleep 150
-			}
-			Send, {Enter}
-			Sleep 150
+
+
+			; PM Method 의 상태값 읽기
+			Loop{
+				PMTMethod = ""
 				
-			PMTMethod := Clipboard
-			Sleep 700
-			
-			
-			; 값이 제대로 입력됐는지 화인하기
-			if CustomerPO not in Credit_Card
-			{
-				if(PMTMethod != "FG-CC")
+				MouseMove, (X+W)+20, Y+H//2	; 마우스 위치 다시 이동하기
+				
+				; PM Method 위에서 마우스 오른쪽 버튼 클릭 후 코드 복사메뉴에서 엔터치기
+				Send, {RButton}
+				Loop, 4
 				{
-					if(PMTMethod != "LAS-CC")
+					Sleep 150
+					Send, {Down}
+					;~ Sleep 150
+				}
+				Send, {Enter}
+				Sleep 150
+					
+				PMTMethod := Clipboard
+				Sleep 700
+				
+				; 값을 읽었으면 반복 끝내기
+				if(PMTMethod)
+					break
+				
+			}
+			
+			
+			; PM Method 값이 원하는 것으로 제대로 입력됐는지 확인하기
+			if CustomerPO not in Credit_Card	; 신용카드 결제하는 Pick Ticket이 아닐때
+			{
+				if(PMTMethod != "FG-CC")		; FG 도 아니고
+				{
+					if(PMTMethod != "LAS-CC")	; LAS 도 아니면						
 					{
+						; 신용카드 결제하는것도 아닌데 FG-CC 도 아니고 LAS-CC 도 아니면 제대로 바뀐것이 아니니 재귀호출로 다시 시작
 						MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 						Sleep 2000
 						CommN41.changePMTMethodToFGorLAS(CustomerPO)
 					}
 				}
 			}
-			else if CustomerPO in Credit_Card
+			else if CustomerPO in Credit_Card	; 신용카드 결제하는 Pick Ticket 일때
 			{
-				if(PMTMethod != "CREDIT CARD")
+				if(PMTMethod != "CREDIT CARD")	; PMTMethod 이 CREDIT CARD 로 바뀌지 않았으면 제대로 바뀐것이 아니므로 재귀호출로 다시 시작
 				{
 					MsgBox, 262144, Title, Credit Card로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 					Sleep 2000
 					CommN41.changePMTMethodToFGorLAS(CustomerPO)
 				}
-			}			
-			
-			;~ if(PMTMethod != "FG-CC")
-			;~ {
-				;~ if(PMTMethod != "LAS-CC")
-				;~ {
+			}
 
-	;~ ;				MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
-					;~ Sleep 2000
-					;~ CommN41.changePMTMethodToFGorLAS(CustomerPO)
-				;~ }
-			;~ }
 			
 		} ; END끝 - if ok:=FindText(733,248,150000,150000,0,0,Text)
 		else
