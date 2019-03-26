@@ -205,6 +205,9 @@ deleteTheColorOfDropStyle(driver, DropStyle#, StyleColor){
 		driver.FindElementByXPath("//div[@class='label margin-right-5' and text() = '" StyleColor "']").click() ; 이렇게 색깔을 먼저 클릭해야 옆의 x 가 표시돼기 때문에 일단 이것 클릭 후 밑에서 x 클릭해서 삭제		
 		Sleep 300
 		driver.FindElementByXPath("//div[@class='label margin-right-5' and text() = '" StyleColor "']//following-sibling::i").click() ; 지우려는 색깔 옆의 X 클릭
+		Sleep 2000
+		driver.FindElementByXPath("//div[@class='label margin-right-5' and text() = '" StyleColor "']//parent::div//preceding-sibling::div//descendant::div[@class='check-square']").click() ; 지우려는 색깔의 체크박스 클릭(체크가 이미 되어있으니 결과적으로 체크박스 해제)
+		Sleep 300
 	}
 	else
 	{
