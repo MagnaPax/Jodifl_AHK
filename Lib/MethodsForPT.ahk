@@ -847,7 +847,7 @@ BlockInput, MouseMoveOff
 
 
 									SoundPlay, %A_WinDir%\Media\Ring06.wav
-									MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
+									MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON WAS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
 									
 									; 하우스 메모에 FG PA 혹은 LAS PA 입력한 뒤 SO번호에 해당하는 Sales Order 탭으로 이동해서 PMT Method 바꾸기
 									IfMsgBox, Yes
@@ -1064,7 +1064,7 @@ BlockInput, MouseMoveOff
 								}
 
 								SoundPlay, %A_WinDir%\Media\Ring06.wav
-								MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
+								MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON WAS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
 													
 								; 하우스 메모에 FG PA 혹은 LAS PA 입력한 뒤 SO번호에 해당하는 Sales Order 탭으로 이동해서 PMT Method 바꾸기
 								IfMsgBox, Yes
@@ -1301,7 +1301,7 @@ BlockInput, MouseMoveOff
 
 
 				SoundPlay, %A_WinDir%\Media\Ring06.wav
-				MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON IS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
+				MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON WAS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
 									
 				; 하우스 메모에 FG PA 혹은 LAS PA 입력한 뒤 SO번호에 해당하는 Sales Order 탭으로 이동해서 PMT Method 바꾸기
 				IfMsgBox, Yes
