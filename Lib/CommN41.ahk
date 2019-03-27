@@ -1219,13 +1219,13 @@ class CommN41{
 		}
 
 		; 저장하기
-		send, ^s
-		Sleep 700
-		IfWinActive, Sales Order
-		{
-			Send, {Enter}
-			Sleep 300
-		}
+		;~ send, ^s
+		;~ Sleep 700
+		;~ IfWinActive, Sales Order
+		;~ {
+			;~ Send, {Enter}
+			;~ Sleep 300
+		;~ }
 		;~ CommN41.ClickSave()
 		;~ Sleep 500
 		
