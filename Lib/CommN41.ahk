@@ -1193,7 +1193,7 @@ class CommN41{
 					if(PMTMethod != "LAS-CC")	; LAS 도 아니면						
 					{
 						; 신용카드 결제하는것도 아닌데 FG-CC 도 아니고 LAS-CC 도 아니면 제대로 바뀐것이 아니니 재귀호출로 다시 시작
-						MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+;						MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 						Sleep 2000
 						CommN41.changePMTMethodToFGorLAS(CustomerPO)
 					}
@@ -1203,7 +1203,7 @@ class CommN41{
 			{
 				if(PMTMethod != "CREDIT CARD")	; PMTMethod 이 CREDIT CARD 로 바뀌지 않았으면 제대로 바뀐것이 아니므로 재귀호출로 다시 시작
 				{
-					MsgBox, 262144, Title, Credit Card로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+;					MsgBox, 262144, Title, Credit Card로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 					Sleep 2000
 					CommN41.changePMTMethodToFGorLAS(CustomerPO)
 				}
