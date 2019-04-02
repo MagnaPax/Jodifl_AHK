@@ -429,100 +429,6 @@ return
 */
 
 
-/*		
-		; Merge 확인 창이 나올지  Allocation 경고창이 나올지 모르기 때문에 일단 기다렸다 진행해야 됨	
-		Sleep 5000
-		
-		; Merge 확인 창
-		IfWinActive, SO Manager
-		{
-			Sleep 300
-			Send, {Left}
-			Sleep 500
-			Send, {Left}
-			Sleep 500
-			Send, {Enter}
-			Sleep 700
-			
-			WinWaitActive, SO Manager
-			IfWinActive, SO Manager
-			{
-				Sleep 1000
-				Send, {Enter}
-				Sleep 1000			
-				
-				WinWaitActive, Pick Ticket ; Allocation 경고창
-				IfWinActive, Pick Ticket
-				{
-					Sleep 1000
-					Send, {Left}
-					Sleep 500
-					Send, {Enter}
-					Sleep 700
-					
-					
-					WinWaitActive, Pick Ticket ; Pick Ticket # 확인 창
-					IfWinActive, Pick Ticket
-					{
-						Sleep 1000
-						Send, {Enter}
-						Sleep 800						
-						
-						; PreAuthorizedButton 누르는 것부터 프린트 하는 것까지
-						N41_ProcessingForPT.FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation)
-						
-						return
-					}				
-				}			
-			}
-		}
-
-
-
-
-		WinWaitActive, Pick Ticket ; Allocation 경고창
-		
-		Sleep 1000
-		
-;MsgBox, Allocation 경고창
-
-		;~ IfWinActive, Pick Ticket
-		WinWaitActive, Pick Ticket
-		{
-;~ MsgBox, Pick Ticket 열렸음			
-			Sleep 1000
-			Send, {Left}
-			Sleep 500
-			Send, {Enter}
-			Sleep 700
-			
-			
-			WinWaitActive, Pick Ticket ; Pick Ticket # 확인 창
-			IfWinActive, Pick Ticket
-			{
-				Sleep 500
-				Send, {Enter}
-				Sleep 800
-				
-				; Pick Ticket 창이 또 나오면 이전에 에러 메세지 창이 나왔을 것
-				IfWinActive, Pick Ticket
-				{
-					MsgBox, MAYBE 'Warehouse is required!' ERROR HAS BEEN OCCURED`n`nWAREHOUSE INFO ON Sales Order OF THIS ORDER HAS TO BE MODIFIED.`n`nIF OK BUTTON ON Pick Ticket WINDOW ON N41, ALL INFO WILL BE SET AS DEFAULT.
-					return
-				}
-				
-				Sleep 1000
-				
-				; PreAuthorizedButton 누르는 것부터 프린트 하는 것까지
-				N41_ProcessingForPT.FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation)
-			}
-		
-			
-		
-		
-		return
-		}
-*/
 	}
 
 
@@ -573,97 +479,6 @@ N41_ProcessingForPT.PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExc
 return
 */
 
-
-/*		
-		; Merge 확인 창이 나올지  Allocation 경고창이 나올지 모르기 때문에 일단 기다렸다 진행해야 됨	
-		Sleep 5000
-		
-		; Merge 확인 창
-		IfWinActive, SO Manager
-		{
-			Sleep 300
-			Send, {Left}
-			Sleep 500
-			Send, {Left}
-			Sleep 500
-			Send, {Enter}
-			Sleep 700
-			
-			WinWaitActive, SO Manager
-			IfWinActive, SO Manager
-			{
-				Sleep 1000
-				Send, {Enter}
-				Sleep 1000			
-				
-				WinWaitActive, Pick Ticket ; Allocation 경고창
-				IfWinActive, Pick Ticket
-				{
-					Sleep 1000
-					Send, {Left}
-					Sleep 500
-					Send, {Enter}
-					Sleep 700
-					
-					
-					WinWaitActive, Pick Ticket ; Pick Ticket # 확인 창
-					IfWinActive, Pick Ticket
-					{
-						Sleep 1000
-						Send, {Enter}
-						Sleep 800
-
-						; pre authorized 버튼 클릭 않고 인쇄하기
-						N41_ProcessingForPT.PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation)
-						return
-					}				
-				}			
-			}
-		}
-
-
-		WinWaitActive, Pick Ticket ; Allocation 경고창
-		
-		Sleep 1000
-		
-;MsgBox, Allocation 경고창
-
-		;~ IfWinActive, Pick Ticket
-		WinWaitActive, Pick Ticket
-		{
-			Sleep 1000
-			Send, {Left}
-			Sleep 500
-			Send, {Enter}
-			Sleep 700
-			
-			
-			WinWaitActive, Pick Ticket ; Pick Ticket # 확인 창
-			IfWinActive, Pick Ticket
-			{
-				Sleep 500
-				Send, {Enter}
-				Sleep 800			
-				
-				; Pick Ticket 창이 또 나오면 이전에 에러 메세지 창이 나왔을 것
-				IfWinActive, Pick Ticket
-				{
-					MsgBox, MAYBE 'Warehouse is required!' ERROR HAS BEEN OCCURED`n`nWAREHOUSE INFO ON Sales Order OF THIS ORDER HAS TO BE MODIFIED.`n`nIF OK BUTTON ON Pick Ticket WINDOW ON N41, ALL INFO WILL BE SET AS DEFAULT.
-					return
-				}			
-				
-				Sleep 800
-				; pre authorized 버튼 클릭 않고 인쇄하기
-				N41_ProcessingForPT.PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation)
-
-			}
-		}
-
-
-
-
-		return
-*/
 	}
 
 
@@ -785,42 +600,15 @@ BlockInput, MouseMove
 ; 사용자의 마우스 이동 허용
 BlockInput, MouseMoveOff																	
 
-							; 화면에서 Approved 못 찾았으면 주문 페이지 열기 원하는지 묻기
+							; 화면에서 Approved 못 찾았을 때 (디클라인 났을 때)
 							if(result == 0){
-/*								
-								; Allocation 에서 호출된 것이 아닐때는 사용자에게 묻고 해당 주문 웹페이지 열기
-								if(!IsItFromAllocation){							
 
-									MsgBox, 4100, NOT APPROVED, IT'S NOT CC APPROVED.`n`nWOULD YOU LIKE TO OPEN FG OR LAS PAGE OF THIS ORDER TO GET PRE-AUTHORIZATION ON THERE?
-									IfMsgBox, Yes
-									{
-										
-
-;										WinClose, ahk_class Chrome_WidgetWin_1 ; 이상하게 열린 창 다시 사용할때 에러난다 차라리 다 닫고 새로 시작하자									
-										
-										FGFromAll_driver := New FG_ProcessingOfPT
-										LASFromAll_driver := New LAS_ProcessingOfPT
-										N_driver := new N41
-										
-										
-										N_driver.clickPickTicketButton() ; Pick Ticket 화면 열기위해 Pick Ticket 탭 클릭하기
-										CustomerPO := N_driver.getCustPONumberOnPickTicketScreen() ; Pick Ticket 화면에 있는 Customer PO 값 읽어와서 변수에 넣기
-										
-
-										if(RegExMatch(CustomerPO, "imU)MTR")){
-											IsItFromNewOrder = 0
-											IsItFromExcelFile = 1
-											FGFromAll_driver.ProcessingFGOrder(CustomerPO, F_driver, N_driver, IsItFromNewOrder, IsItFromExcelFile) ; ##################### 주문 창 열기 #######################
-										}			
-										; CustomerPO 가 LAS 일때
-										else if(RegExMatch(CustomerPO, "imU)OP")){
-											LASFromAll_driver.ProcessingLASOrder(CustomerPO, LASFromAll_driver, N_driver) ; ##################### 주문 창 열기 #######################
-										}
-									}
-								}
-*/								
 								; Allocation 에서 호출됐을때는 만약 카드가 Decline 나면 사람에게 묻지 말고 그냥 해당 주문 웹페이지 자동으로 열기
-								if(IsItFromAllocation){
+								;~ if(IsItFromAllocation){
+									
+								; 디클라인 났는데 뉴오더 아니라면 무조건 해당 주문 웹 페이지를 자동으로 열기
+								if(!IsItFromNewOrder){
+
 										
 ;									WinClose, ahk_class Chrome_WidgetWin_1 ; 이상하게 열린 창 다시 사용할때 에러난다 차라리 다 닫고 새로 시작하자									
 										
@@ -842,7 +630,7 @@ BlockInput, MouseMoveOff
 										LASFromAll_driver.ProcessingLASOrder(CustomerPO, LASFromAll_driver, N_driver) ; ##################### 주문 창 열기 #######################
 										
 									}
-								}
+								} ; 끝 - if(!IsItFromNewOrder)
 								
 
 
@@ -925,10 +713,13 @@ BlockInput, MouseMoveOff
 										N41_PA = 0
 										CBS_or_ccDecline = 1
 										updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
+MsgBox, 262144, Title, 카드결제 시도했으나 디클라인 나고 웹페이지도 결제 안돼서 No 눌렀음. 이 메세지 창이 사라진 뒤 다음 주문으로 넘어가지 못하고 에러 나나?
+;MsgBox, 262144, Title, NO 클릭했는데-1
 										
 									} ; END끝 - IfMsgBox, No
-
-							}
+							} ; 끝 - if(result == 0)
+							
+							; 디클라인 나지 않고 정상적으로 pre authorize 처리됐을 때
 							else if(result == 1){
 									
 								; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
@@ -1139,6 +930,7 @@ BlockInput, MouseMoveOff
 									N41_PA = 0
 									CBS_or_ccDecline = 1
 									updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
+;MsgBox, 262144, Title, NO 클릭했는데-2									
 										
 								} ; END끝 - IfMsgBox, No								
 
@@ -1242,40 +1034,12 @@ BlockInput, MouseMove
 
 ; 사용자의 마우스 이동 허용
 BlockInput, MouseMoveOff
-/*
-				; Allocation 에서 온 주문이 아닐때는 주문 페이지를 열어볼 지 묻기				
-				if(!IsItFromAllocation){
-					
-					SoundPlay, %A_WinDir%\Media\Ring06.wav
-					MsgBox, 4100, Ask_To_Open_Web_Page, pre-authorized BUTTON IS NOT CLICKED`n`nWOULD YOU LIKE TO OPEN FG OR LAS PAGE OF THIS ORDER?					
 
-					IfMsgBox, Yes
-					{
-;						WinClose, ahk_class Chrome_WidgetWin_1 ; 이상하게 열린 창 다시 사용할때 에러난다 차라리 다 닫고 새로 시작하자									
-
-						FGFromAll_driver := New FG_ProcessingOfPT
-						LASFromAll_driver := New LAS_ProcessingOfPT
-						N_driver := new N41
-						
-						
-						N_driver.clickPickTicketButton() ; Pick Ticket 화면 열기위해 Pick Ticket 탭 클릭하기
-						CustomerPO := N_driver.getCustPONumberOnPickTicketScreen() ; Pick Ticket 화면에 있는 Customer PO 값 읽어와서 변수에 넣기
-						
-
-						if(RegExMatch(CustomerPO, "imU)MTR")){
-							IsItFromNewOrder = 0
-							FGFromAll_driver.ProcessingFGOrder(CustomerPO, F_driver, N_driver, IsItFromNewOrder, IsItFromExcelFile) ; ##################### 주문 창 열기 #######################
-						}			
-						; CustomerPO 가 LAS 일때
-						else if(RegExMatch(CustomerPO, "imU)OP")){
-							LASFromAll_driver.ProcessingLASOrder(CustomerPO, LASFromAll_driver, N_driver) ; ##################### 주문 창 열기 #######################
-						}
-					}
-				}
-*/				
 				; Allocation 에서 온 주문은 그냥 주문 페이지 열기. (cbs보다 FG 혹은 LAS PA 얻어야 되는 일이 많으니까)
-;				else if(IsItFromAllocation){
-				if(IsItFromAllocation){
+;				if(IsItFromAllocation){
+				; 뉴오더가 아니면 그냥 무조건 주문창 열어보자
+				if(!IsItFromNewOrder){
+;MsgBox, 262144, Title, 뉴오더가 아니니 주문창 자동으로 열 예정`n`nIsItFromNewOrder : %IsItFromNewOrder%
 ;					WinClose, ahk_class Chrome_WidgetWin_1 ; 이상하게 열린 창 다시 사용할때 에러난다 차라리 다 닫고 새로 시작하자									
 											
 					FGFromAll_driver := New FG_ProcessingOfPT
@@ -1376,6 +1140,7 @@ BlockInput, MouseMoveOff
 					N41_PA = 0
 					CBS_or_ccDecline = 1
 					updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
+;MsgBox, 262144, Title, NO 클릭했는데-3
 					
 				} ; END끝 - IfMsgBox, No				
 
