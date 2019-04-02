@@ -1105,7 +1105,7 @@ class CommN41{
 	; PMT Method 를 FG-CC 나 LAS-CC 로 바꾸기
 	changePMTMethodToFGorLAS(CustomerPO){
 		
-;		MsgBox, 262144, Title, CustomerPO : %CustomerPO%
+;	MsgBox, 262144, Title, CustomerPO : %CustomerPO%
 		
 
 		Text:="|<PMT Method>*175$57.wnTVa0G00QKMkAk2E03Wn61aCvnnwKMkAmOGGHwx61uTGGSQ5ck/G2GHnUh61OHGGGQ5ck/FnGSTU"
@@ -1137,7 +1137,17 @@ class CommN41{
 			}
 			else if CustomerPO contains Credit_Card
 			{
-				Send, CREDIT
+				; Sale Order 에 있는 Customer PO 번호 읽어서 아무런 값도 없으면 쇼오더라는 뜻이고 결제방법을 신용카드로 변경할 필요 없으니 리턴해서 메소드 끝내기
+				JustReadCustomerPO := CommN41.GetCustPONumber()
+				if(!JustReadCustomerPO)
+					return
+				
+				; 마우스 위치를 PMT Method 로 다시 옮기기
+				MouseMove, (X+W)+20, Y+H//2
+				Sleep 150
+				Click
+				Sleep 150
+				Send, CREDIT ; CREDIT 을 쳐서 PMT Method 를 Credit Card로 바꾸기
 				Sleep 150
 				Send, {Tab}
 				Sleep 150			
@@ -1170,7 +1180,7 @@ class CommN41{
 				{
 					Sleep 150
 					Send, {Down}
-					;~ Sleep 150
+					;~ Sleep 200
 				}
 				Send, {Enter}
 				Sleep 150
@@ -1193,7 +1203,7 @@ class CommN41{
 					if(PMTMethod != "LAS-CC")	; LAS 도 아니면						
 					{
 						; 신용카드 결제하는것도 아닌데 FG-CC 도 아니고 LAS-CC 도 아니면 제대로 바뀐것이 아니니 재귀호출로 다시 시작
-;						MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+;	MsgBox, 262144, Title, FG-CC 혹은 LAS-CC로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 						Sleep 2000
 						CommN41.changePMTMethodToFGorLAS(CustomerPO)
 					}
@@ -1203,7 +1213,7 @@ class CommN41{
 			{
 				if(PMTMethod != "CREDIT CARD")	; PMTMethod 이 CREDIT CARD 로 바뀌지 않았으면 제대로 바뀐것이 아니므로 재귀호출로 다시 시작
 				{
-;					MsgBox, 262144, Title, Credit Card로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
+;	MsgBox, 262144, Title, Credit Card로 바뀌지 않았음. 재귀호출로 바꾸기 다시 시작함.
 					Sleep 2000
 					CommN41.changePMTMethodToFGorLAS(CustomerPO)
 				}
