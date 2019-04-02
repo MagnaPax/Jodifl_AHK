@@ -34,7 +34,8 @@ ComObjError(false)
 global #ofCC_counter ; 램스에서 읽은 카드 갯수 저장하는 변수a
 global URL
 global IsItFromNewOrder, IsItFromExcelFile, IsItFromAllocation, isThereItemsOnOpenSo, driver
-
+global BO_by_Styles ; 스타일별로 뽑는 옵션인지 여러곳에서 알기 위해
+BO_by_Styles = 0
 ;~ SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromExcelFile, SO#FromJODIFLcom, CustMemoFromJODIFLcom, IsItFromAllocation
 
 
@@ -56,34 +57,6 @@ Arr_CC := object()
 Arr_FGInfo := object()
 
 
-;~ JO_driver.ProcessingJodiflcom()
-;~ MsgBox, PAUSE
-
-
-
-/*
-MsgBox
-
-WinActivate, ahk_class FNWND3126
-
-Sleep 150
-
-IfWinExist, Customer P.O or S.O #
-	WinClose
-
-Sleep 150
-
-; Sales Order 클릭
-N_driver.ClickSalesOrderOnTheMenuBar()
-
-; Sales Order 에 있는 리프레쉬 버튼 클릭하기
-N_driver.ClickRefreshButtonOnSalesOrder()
-
-SendInput, % SO#BeingUsedNow
-
-
-Sleep 9000
-*/
 
 
 
@@ -303,7 +276,7 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 			Sleep 150
 			
 			; 혹시 이전에 열린 창이 있으면 닫기
-			IfWinExist, Customer P.O or S.O #
+			IfWinExist, Customer P.O or S.O # or Customer
 				WinClose
 
 			Sleep 150
@@ -317,8 +290,8 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 			N_driver.ClickRefreshButtonOnSalesOrder()
 
 
-			; Customer P.O or S.O # 창 뜰 때까지 기다리기
-			WinWaitActive, Customer P.O or S.O #
+			; Customer P.O or S.O # or Customer 창 뜰 때까지 기다리기
+			WinWaitActive, Customer P.O or S.O # or Customer
 			Sleep 150
 
 
@@ -332,17 +305,14 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 				Send, {Enter}
 				Sleep 100
 			}
-			
-			
 
 
 			; 검색창에 SO#BeingUsedNow 입력하기
 			; BOProcess_by_Style 메소드에서 호출됐으면 SO#BeingUsedNow 값이 엑셀 파일에서 얻은 SO#로 바뀌어서 호출됐음
 			SendInput, % SO#BeingUsedNow
-			Sleep 150			
+			Sleep 300
 			Send, {Enter}
 			Sleep 150
-
 
 			
 			Loop
@@ -383,50 +353,6 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 			orderType := N_driver.getOrderType()
 			
 
-/*
-			; Customer PO 번호가 FG 나 LAS 에서 온 것이면 PMT Method 를 바꾸기
-			; ############################################################################################################################################################################################################################################################
-			if CustomerPO contains MTR, OP
-			{				
-				N_driver.changePMTMethodToFGorLAS(CustomerPO)
-				
-				; 저장하기
-				send, ^s^s
-				Sleep 100
-				N_driver.ClickSave()
-				
-				Sleep 3000
-				
-				; 커서 상태가 작업처리중이면 로딩 중이면 끝날때까지 기다리기
-;				while (A_cursor = "Wait")
-;					Sleep 2000
-			}
-*/
-			
-
-
-/*
-			; 고객이 할인을 받았는지 확인 후 받았으면 J3142 스타일이 있는지 확인해서 가격 바꾸게 하기
-			; 뉴오더일때만 실행
-			if(IsItFromNewOrder){
-				IsThisCustGotDiscount := N_driver.FindCustDCRate()
-				
-				; 할인받은 고객이면 현재 이 주문에 J3142 아이템이 있는지 확인하도록 경고창 띄우기
-				if(IsThisCustGotDiscount){
-					
-					; 사용자의 마우스 이동 허용
-					BlockInput, MouseMoveOff
-
-					SoundPlay, %A_WinDir%\Media\Ring06.wav
-					MsgBox, 262144, DISCOUNT CUSTOMER, THIS CUSTOMER HAS GOT DISCOUNT, PLZ CHECK IF THERE IS J3142 ON THIS ORDER.`n`n할인받은 고객이니 이 주문에 J3142 아이템이 있는지 확인하기
-					
-					; 사용자의 마우스 이동 막음
-					BlockInput, MouseMove					
-					
-				}
-			}
-*/
-			
 
 			; Sale Order 에 있는 Memo 얻기
 			Clipboard := ""
@@ -668,10 +594,9 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 			; 사용자의 마우스 이동 허용
 			BlockInput, MouseMoveOff
 
-
+/*
 ; ######################################################################################################################################################
 if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 아닌것을 자동뽑기 확인하기. 정보 일일히 수동으로 확인해야 됨
-/*
 	if(orderType != "06ATL18"){ ; Order Type 이 2018년 6월의 아틀란타 쇼가 아닌것을 자동뽑기 확인하기. 이 오더는 여름에는 겨울 옷 보내면 안됨. 시간이 지나면 이거 지우기
 ; ######################################################################################################################################################
 */
@@ -782,10 +707,9 @@ if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 
 			}
 		}
 		
-
+/*
 ; ###################################################################
 	} ; 2018년 7월 넘어서 아틀란타 쇼인지 아닌지 비교할 필요가 없으면 이거 지우기
-/*	
 } ; 2019년 1월 넘어서 달라스 쇼에서 온 주문 정보를 수동으로 수정할 필요가 없어지면 이거 지우기
 ; ###################################################################
 
@@ -806,25 +730,6 @@ if(orderType == "06ATL2018"){
 
 
 
-
-
-			;~ ; 뉴오더일때
-			;~ ; 펜딩 오더가 있는지 확인 후 있으면 경고창 띄우기
-			;~ if(IsItFromNewOrder){
-			
-				;~ ; 펜딩 오더가 있는지 확인키 위한 변수.
-				;~ isTherePendingOrder = 0
-				
-				;~ ; 펜딩 오더가 있는지 확인하기
-				;~ ; 펜딩 오더 있으면 isTherePendingOrder 값은 0
-				;~ ; 펜딩 오더 없으면 isTherePendingOrder 값은 1				
-				;~ isTherePendingOrder := N_driver.checkPickTicketSectionToFindIfPendingOrderExists()
-				
-				;~ ; 펜딩 오더가 있으면 경고창 띄우기
-				;~ if(!isTherePendingOrder){
-					;~ MsgBox, 262144, WARNNING, !!!! WARNNING !!!!`n`nCHECK PENDING ORDERS
-				;~ }
-			;~ }
 
 			; 뉴오더일때는 펜딩된 픽티켓이 있다면 경고창 띄우기
 			; 펜딩 오더가 있는지 없는지 확인하는 checkPickTicketSectionToFindIfPendingOrderExists 함수는 위에서 호출해서 이미 isTherePendingOrder 변수에 결과값 저장했다
@@ -911,7 +816,6 @@ if(orderType == "06ATL2018"){
 				; pre-authorized 받고 프린트하기
 				IfMsgBox, Yes
 				{
-					
 					N41_ProcessingForPT_driver.OpenSO_Print_WITH_PreAuthorized(CustomerPO, IsItFromNewOrder)
 					
 					;~ PrintByPayment(IsItFromAllocation)
@@ -920,6 +824,14 @@ if(orderType == "06ATL2018"){
 				; CBS 등 돈 받지 말고 프린트 하기
 				IfMsgBox, No
 				{
+					; 스타일별로 뽑을때는 뉴오더가 아니라고 표시해서 무조건 주문창 열게끔
+					if(BO_by_Styles){
+						IsItFromNewOrder = 0
+	MsgBox, 262144, Title, 스타일별로 뽑을때는 뉴오더가 아니라고 표시해서 무조건 주문창 열게끔`n`nIsItFromNewOrder : %IsItFromNewOrder%
+					}
+					
+					; 스타일별로 뽑을때가 아닐때는 뉴오더라고 표시해보자
+					IsItFromNewOrder = 1
 					N41_ProcessingForPT_driver.OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
 					
 					;~ CBS_Print(IsItFromAllocation)
@@ -2159,20 +2071,22 @@ return
 */
 
 		; Xpath 들
-		TheBlankOfShippingFee_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[6]/div[2]/div/input
+		;~ TheBlankOfShippingFee_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[6]/div[2]/div/input
+		TheBlankOfShippingFee_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[7]/div[2]/div/input
 		SaveButton_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[5]/div/button
 		AuthorizeButton_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[2]/div[2]/div[2]/div[1]/ul/li[2]/span[2]/div/div[1]/div/button[1]
 		AuthorizeButton_Xpath = //*[contains(text(), 'Authorize')]
 		OkButtonInAuthorizeWindow_Xpath = //*[@id='okButton']
 		total#OfQty_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/table/tfoot/tr/td[3] ; 전체 아이템 갯수
-		totlaPrice_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[7]/div[2] ; 제품 가격 합계
+		;~ subTotlaPrice_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[7]/div[2] ; 제품 가격 합계
+		subTotlaPrice_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[3]/div[2] ; 제품 가격 합계
 		
 		
 		total#OfQty := driver.FindElementByXPath(total#OfQty_Xpath).Attribute("innerText")
-		totlaPrice := driver.FindElementByXPath(totlaPrice_Xpath).Attribute("innerText")
+		subTotlaPrice := driver.FindElementByXPath(subTotlaPrice_Xpath).Attribute("innerText")
 		
 		; 알파벳, 숫자, 소숫점(.)만 저장 (알페벳, 숫자, 소숫점(.) 을 제외한 모든 것을 "" 로 바꿈. 즉, 삭제)
-		totlaPrice := RegExReplace(totlaPrice, "[^a-zA-Z0-9.]", "")
+		subTotlaPrice := RegExReplace(subTotlaPrice, "[^a-zA-Z0-9.]", "")
 		
 
 ;~ MsgBox, 262144, Title, totlaPrice : %totlaPrice%
@@ -2182,19 +2096,19 @@ return
 		;	SoundPlay, %A_WinDir%\Media\Ring06.wav
 			;~ if #ofCheckBoxes between 1 and 4
 			;~ if total#OfQty between 1 and 24
-			if totlaPrice between 1 and 399
+			if subTotlaPrice between 1 and 399
 			{
 				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("40")
 		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $50
 			}
 			;~ else if #ofCheckBoxes between 5 and 10
-			else if totlaPrice between 399.1 and 899
+			else if subTotlaPrice between 399.1 and 899
 			{
 				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("60")
 		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $70
 			}
 			;~ else if #ofCheckBoxes between 11 and 100
-			else if totlaPrice between 899.1 and 1300
+			else if subTotlaPrice between 899.1 and 1300
 			{
 				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("130")
 		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $90
@@ -2202,7 +2116,7 @@ return
 			else
 			{
 				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("150")
-				MsgBox, 262144, Title, totlaPrice : $%totlaPrice%`nPUT IN $170
+				MsgBox, 262144, Title, totlaPrice : $%subTotlaPrice%`nPUT IN $170
 			}
 			
 			; Save 버튼 클릭 후 Authorize 버튼 클릭하기
