@@ -335,8 +335,10 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 				; Sale Order 에 있는 Customer PO 번호 얻기
 				CustomerPO := N_driver.GetCustPONumber()
 				i++
-				
-;				MsgBox, % "CustomerPO : " . CustomerPO
+								
+;				MsgBox, 262144, Title, CustomerPO : %CustomerPO%
+				if(CustomerPO == "CREDIT")
+					MsgBox, 262144, Title, 드디어 찾았다!!! 이 Customer PO 번호 저장해놓은 파일 참조해서 반드시 바꿔야 된다
 								
 				;값이 들어있으면 루프 빠져나가기
 				;값이 들어있지 않으면 계속 루프 돌기
@@ -817,9 +819,6 @@ if(orderType == "06ATL2018"){
 				IfMsgBox, Yes
 				{
 					N41_ProcessingForPT_driver.OpenSO_Print_WITH_PreAuthorized(CustomerPO, IsItFromNewOrder)
-					
-					;~ PrintByPayment(IsItFromAllocation)
-	;				MsgBox, 262144, Title, WAIT TO CONTINUE NEXT ORDER
 				}
 				; CBS 등 돈 받지 말고 프린트 하기
 				IfMsgBox, No
@@ -827,15 +826,25 @@ if(orderType == "06ATL2018"){
 					; 스타일별로 뽑을때는 뉴오더가 아니라고 표시해서 무조건 주문창 열게끔
 					if(BO_by_Styles){
 						IsItFromNewOrder = 0
-	MsgBox, 262144, Title, 스타일별로 뽑을때는 뉴오더가 아니라고 표시해서 무조건 주문창 열게끔`n`nIsItFromNewOrder : %IsItFromNewOrder%
+						
+						; pre-authorized 안 받고 프린트하기
+						N41_ProcessingForPT_driver.OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
+;			MsgBox, 262144, Title, <MAIN> 스타일별로 뽑았음. 이 메세지 창 닫으면 리턴함. 여기서 에러나나 **1**
+						return
 					}
-					
+						
 					; 스타일별로 뽑을때가 아닐때는 뉴오더라고 표시해보자
-					IsItFromNewOrder = 1
-					N41_ProcessingForPT_driver.OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
+					else{						
+						IsItFromNewOrder = 1
+						; pre-authorized 안 받고 프린트하기
+						N41_ProcessingForPT_driver.OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
+					}
+
+					; pre-authorized 안 받고 프린트하기
+					;~ N41_ProcessingForPT_driver.OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
 					
-					;~ CBS_Print(IsItFromAllocation)
-	;				MsgBox, 262144, Title, WAIT TO CONTINUE NEXT ORDER
+
+
 				}
 
 			}

@@ -56,16 +56,7 @@ class N41_ProcessingForPT extends CommN41{
 		; Allocation 오더에서 온 것일때는 왼쪽 밑의 Open Allocation 에 있는 버튼 누르기
 		CommN41.ClickCreatePickTicketButtonOnOpenAllocation()
 		
-/*		
-; 체크박스 선택되지 않았다는 에러 메세지 창 문구 떴는지 확인
-; Pick Ticket 버튼 누르자마자 나오는 SO Manager 창은 아이템들이 선택이 안됐다는 경고창. 에러 메세지 창이 떴는지 확인
-Sleep 500
-unCheckedError = 0
-unCheckedError := CommN41.noSelectedCheckboxes_ErrorMessage()
-if(unCheckedError == 1){
-	MsgBox, 262144, Unchecked Error, PLEASE CHECK THE CHECKBOXES
-}
-*/		
+
 		
 		
 ; 픽티켓 마지막 메세지 나올때까지 Yes 와 OK 버튼 나오면 계속 클릭하기
@@ -90,118 +81,7 @@ BO.BOProcess_by_Style(IsItFromAllocation)
 return
 
 		
-/*		
-		; Pick Ticket 버튼 누르자마자 나오는 SO Manager 창은 아이템들이 선택이 안됐다는 경고창이므로
-		; 안내 메세지 띄우고 재귀호출로 다시 시작
-		IfWinActive, SO Manager
-		{
-			Sleep 300
-			Send, {Enter}
-			MsgBox, 262144, NO CHECKED ERROR, PLEASE SELECT ITEMS TO MAKE A PICK TICKET
-			N41_ProcessingForPT.Alloc_Print_WITH_PreAuthorized(CustomerPO)
-		}
-*/		
-		
-/*	
-		; Merge 확인 창이 나올지  Allocation 경고창이 나올지 모르기 때문에 일단 기다렸다 진행해야 됨	
-		Sleep 5000
-		
-		; Merge 확인 창
-		IfWinActive, SO Manager
-		{
-			
-				
-			Sleep 300
-			Send, {Left}
-			Sleep 500
-			Send, {Left}
-			Sleep 500
-			Send, {Enter}
-			Sleep 500
-			
 
-
-			WinWaitActive, SO Manager
-			IfWinActive, SO Manager
-			{
-					
-				Sleep 1000
-				Send, {Enter}
-				Sleep 1000
-				
-				WinWaitActive, Pick Ticket ; Allocation 경고창
-				IfWinActive, Pick Ticket
-				{
-					Sleep 1000
-					Send, {Left}
-					Sleep 500
-					Send, {Enter}
-					Sleep 1000
-					
-					
-					WinWaitActive, Pick Ticket ; Pick Ticket # 확인 창
-					IfWinActive, Pick Ticket
-					{
-						Sleep 1000
-						Send, {Enter}
-						Sleep 1000						
-
-						; PreAuthorizedButton 누르는 것부터 프린트 하는 것까지
-						IsItFromNewOrder = 0
-						IsItFromAllocation = 1
-						N41_ProcessingForPT.FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation)
-						
-;MsgBox, 262144, Title, FromClickingPreAuthorizedButton_To_PrintOutPickTicket 함수 끝내고 돌아왔음 MethodsForPI.ahk 파일의 115 번째 줄
-
-; 열려있는 엑셀 창 사용하기
-Xl := ComObjActive("Excel.Application")
-Xl.Visible := True ;by default excel sheets are invisible
-
-; 첫 번째 Row 값은 읽어서 오더를 처리했으니 엑셀에서 지워주기
-Xl.Sheets(1).Range("A1").EntireRow.Delete
-
-BO.BOProcess_by_Style(IsItFromAllocation)
-						
-
-						
-						return
-					}					
-				}				
-			}		
-		}
-				
-		
-			WinWaitActive, Pick Ticket ; Pick Ticket # 확인 창
-			IfWinActive, Pick Ticket
-			{
-				Sleep 500
-				Send, {Enter}
-				Sleep 800
-				
-				
-;MsgBox, 이제 PRE AUTHORIZATION 버튼 누를것임
-			
-				
-				; PreAuthorizedButton 누르는 것부터 프린트 하는 것까지
-				IsItFromNewOrder = 0
-				IsItFromAllocation = 1
-				N41_ProcessingForPT.FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation)
-					
-;MsgBox, 262144, Title, FromClickingPreAuthorizedButton_To_PrintOutPickTicket 함수 끝내고 돌아왔음 MethodsForPI.ahk 파일의 137 번째 줄
-
-; 열려있는 엑셀 창 사용하기
-Xl := ComObjActive("Excel.Application")
-Xl.Visible := True ;by default excel sheets are invisible
-
-; 첫 번째 Row 값은 읽어서 오더를 처리했으니 엑셀에서 지워주기
-Xl.Sheets(1).Range("A1").EntireRow.Delete
-
-BO.BOProcess_by_Style(IsItFromAllocation)
-				
-			return
-			}
-
-*/
 
 		return
 	} ; Alloc_PrintWithPreAuthorized 메소드 끝
@@ -236,17 +116,6 @@ BO.BOProcess_by_Style(IsItFromAllocation)
 		; Allocation 오더에서 온 것일때는 왼쪽 밑의 Open Allocation 에 있는 버튼 누르기
 		CommN41.ClickCreatePickTicketButtonOnOpenAllocation()
 
-;~ /*
-/*
-; 체크박스 선택되지 않았다는 에러 메세지 창 문구 떴는지 확인
-; Pick Ticket 버튼 누르자마자 나오는 SO Manager 창은 아이템들이 선택이 안됐다는 경고창. 에러 메세지 창이 떴는지 확인
-Sleep 500
-unCheckedError = 0
-unCheckedError := CommN41.noSelectedCheckboxes_ErrorMessage()
-if(unCheckedError == 1){
-	MsgBox, 262144, Unchecked Error, PLEASE CHECK THE CHECKBOXES
-}
-*/
 
 ; 픽티켓 마지막 메세지 나올때까지 Yes 와 OK 버튼 나오면 계속 클릭하기
 N41_ProcessingForPT.PersistentClickingYesAndNoButton()
@@ -256,7 +125,7 @@ N41_ProcessingForPT.PersistentClickingYesAndNoButton()
 IsItFromExcelFile = 1
 IsItFromAllocation = 1
 N41_ProcessingForPT.PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation)
-
+;MsgBox, 262144, Title, 이리로 돌아오나? r1
 
 ; 열려있는 엑셀 창 사용하기
 Xl := ComObjActive("Excel.Application")
@@ -268,114 +137,7 @@ Xl.Sheets(1).Range("A1").EntireRow.Delete
 BO.BOProcess_by_Style(IsItFromAllocation)
 
 return		
-*/		
-		
-/*		
-		; Pick Ticket 버튼 누르자마자 나오는 SO Manager 창은 아이템들이 선택이 안됐다는 경고창이므로
-		; 안내 메세지 띄우고 재귀호출로 다시 시작
-		IfWinActive, SO Manager
-		{
-			Sleep 300
-			Send, {Enter}
-			MsgBox, 262144, NO CHECKED ERROR, PLEASE SELECT ITEMS TO MAKE A PICK TICKET
-			N41_ProcessingForPT.Alloc_Print_WITH_PreAuthorized(CustomerPO)
-		}
-*/				
-		
-		
-/*	
-		; Merge 확인 창이 나올지  Allocation 경고창이 나올지 모르기 때문에 일단 기다렸다 진행해야 됨	
-		Sleep 5000
-		
-		; Merge 확인 창
-		IfWinActive, SO Manager
-		{
-			Sleep 300
-			Send, {Left}
-			Sleep 300
-			Send, {Left}
-			Sleep 300
-			Send, {Enter}
-			Sleep 700
-			
-			WinWaitActive, SO Manager
-			IfWinActive, SO Manager
-			{
-				Sleep 1000
-				Send, {Enter}
-				Sleep 1000			
-				
-				WinWaitActive, Pick Ticket ; Allocation 경고창				
-				IfWinActive, Pick Ticket
-				{
-					Sleep 1000
-					Send, {Left}
-					Sleep 500
-					Send, {Enter}
-					Sleep 1000
-					
-					
-					WinWaitActive, Pick Ticket ; Pick Ticket # 확인 창
-					IfWinActive, Pick Ticket
-					{
-						Sleep 1000
-						Send, {Enter}
-						Sleep 1000
 
-									
-						; pre authorized 버튼 클릭 않고 인쇄하기
-						IsItFromExcelFile = 1
-						IsItFromAllocation = 1
-						N41_ProcessingForPT.PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation)
-
-; 열려있는 엑셀 창 사용하기
-Xl := ComObjActive("Excel.Application")
-Xl.Visible := True ;by default excel sheets are invisible
-
-; 첫 번째 Row 값은 읽어서 오더를 처리했으니 엑셀에서 지워주기
-Xl.Sheets(1).Range("A1").EntireRow.Delete
-
-BO.BOProcess_by_Style(IsItFromAllocation)
-			
-						return
-					}				
-				}			
-			}
-		}
-			
-		
-		
-		
-			
-			
-			WinWaitActive, Pick Ticket ; Pick Ticket # 확인 창
-			IfWinActive, Pick Ticket
-			{
-				Sleep 500
-				Send, {Enter}
-				Sleep 800		
-
-
-			; pre authorized 버튼 클릭 않고 인쇄하기
-			IsItFromExcelFile = 1
-			IsItFromAllocation = 1
-			N41_ProcessingForPT.PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation)
-
-; 열려있는 엑셀 창 사용하기
-Xl := ComObjActive("Excel.Application")
-Xl.Visible := True ;by default excel sheets are invisible
-
-; 첫 번째 Row 값은 읽어서 오더를 처리했으니 엑셀에서 지워주기
-Xl.Sheets(1).Range("A1").EntireRow.Delete
-
-BO.BOProcess_by_Style(IsItFromAllocation)
-			
-			
-			return			
-			}
-
-	
-*/		
 		
 		return
 	} ; Alloc_Print_WITHOUT_PreAuthorized() 메소드 끝
@@ -404,29 +166,29 @@ BO.BOProcess_by_Style(IsItFromAllocation)
 		CommN41.ClickCreatePickTicketButton()
 		
 
-;~ /*
-; 체크박스 선택되지 않았다는 에러 메세지 창 문구 떴는지 확인
-; Pick Ticket 버튼 누르자마자 나오는 SO Manager 창은 아이템들이 선택이 안됐다는 경고창. 에러 메세지 창이 떴는지 확인
-Sleep 500
-unCheckedError = 0
-unCheckedError := CommN41.noSelectedCheckboxes_ErrorMessage()
-if(unCheckedError == 1){
-	MsgBox, 262144, Unchecked Error, PLEASE CHECK THE CHECKBOXES
-	
-	; 1사분면의 Pick Ticket 버튼 다시 누르기
-	CommN41.ClickCreatePickTicketButton()	
-}
+
+		; 체크박스 선택되지 않았다는 에러 메세지 창 문구 떴는지 확인
+		; Pick Ticket 버튼 누르자마자 나오는 SO Manager 창은 아이템들이 선택이 안됐다는 경고창. 에러 메세지 창이 떴는지 확인
+		Sleep 500
+		unCheckedError = 0
+		unCheckedError := CommN41.noSelectedCheckboxes_ErrorMessage()
+		if(unCheckedError == 1){
+			MsgBox, 262144, Unchecked Error, PLEASE CHECK THE CHECKBOXES
+			
+			; 1사분면의 Pick Ticket 버튼 다시 누르기
+			CommN41.ClickCreatePickTicketButton()	
+		}
 
 
-; 픽티켓 마지막 메세지 나올때까지 Yes 와 OK 버튼 나오면 계속 클릭하기
-N41_ProcessingForPT.PersistentClickingYesAndNoButton()
+		; 픽티켓 마지막 메세지 나올때까지 Yes 와 OK 버튼 나오면 계속 클릭하기
+		N41_ProcessingForPT.PersistentClickingYesAndNoButton()
 
 
-; PreAuthorizedButton 누르는 것부터 프린트 하는 것까지
-N41_ProcessingForPT.FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation)
+		; PreAuthorizedButton 누르는 것부터 프린트 하는 것까지
+		N41_ProcessingForPT.FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation)
 
-return
-*/
+		return
+		*/
 
 
 	}
@@ -454,32 +216,31 @@ return
 
 
 
-;~ /*
-; 체크박스 선택되지 않았다는 에러 메세지 창 문구 떴는지 확인
-; Pick Ticket 버튼 누르자마자 나오는 SO Manager 창은 아이템들이 선택이 안됐다는 경고창. 에러 메세지 창이 떴는지 확인
-Sleep 500
-unCheckedError = 0
-unCheckedError := CommN41.noSelectedCheckboxes_ErrorMessage()
-if(unCheckedError == 1){
-	MsgBox, 262144, Unchecked Error, PLEASE CHECK THE CHECKBOXES
-	
-	; 1사분면의 Pick Ticket 버튼 다시 누르기
-	CommN41.ClickCreatePickTicketButton()
-	
-}
+		; 체크박스 선택되지 않았다는 에러 메세지 창 문구 떴는지 확인
+		; Pick Ticket 버튼 누르자마자 나오는 SO Manager 창은 아이템들이 선택이 안됐다는 경고창. 에러 메세지 창이 떴는지 확인
+		Sleep 500
+		unCheckedError = 0
+		unCheckedError := CommN41.noSelectedCheckboxes_ErrorMessage()
+		if(unCheckedError == 1){
+			MsgBox, 262144, Unchecked Error, PLEASE CHECK THE CHECKBOXES
+			
+			; 1사분면의 Pick Ticket 버튼 다시 누르기
+			CommN41.ClickCreatePickTicketButton()
+			
+		}
 
 
-; 픽티켓 마지막 메세지 나올때까지 Yes 와 OK 버튼 나오면 계속 클릭하기
-N41_ProcessingForPT.PersistentClickingYesAndNoButton()
+		; 픽티켓 마지막 메세지 나올때까지 Yes 와 OK 버튼 나오면 계속 클릭하기
+		N41_ProcessingForPT.PersistentClickingYesAndNoButton()
 
 
-; pre authorized 버튼 클릭 않고 인쇄하기
-N41_ProcessingForPT.PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation)
+		; pre authorized 버튼 클릭 않고 인쇄하기
+		N41_ProcessingForPT.PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation)
+;	MsgBox, 262144, Title, 이리로 돌아오나? r2
 
-return
-*/
+		return
 
-	}
+	} ; 끝 - OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
 
 
 
@@ -514,6 +275,11 @@ BlockInput, MouseMove
 			CN41_driver.moveToSONumTab()						; Sales Order 탭으로 이동
 			CN41_driver.changePMTMethodToFGorLAS("Credit_Card")	; PMT Method 를 Credit Card로 바꾸기
 			CN41_driver.clickPickTicketButton()					; Pick Ticket 화면으로 다시 돌아오기
+			CN41_driver.ClickRefreshButtonOnPickTicket()		; Pick Ticket 에 있는 리프레쉬 버튼 클릭하기
+			WinWaitActive, Pick #								; Pick # 창 뜰 때까지 기다리기
+			Sleep 200
+			Send, {Enter}
+			Sleep 200
 			
 			; pre authorized 버튼 클릭
 ;MsgBox, 262144, Title, 카드 아이콘 클릭 예정
@@ -713,8 +479,7 @@ BlockInput, MouseMoveOff
 										N41_PA = 0
 										CBS_or_ccDecline = 1
 										updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
-MsgBox, 262144, Title, 카드결제 시도했으나 디클라인 나고 웹페이지도 결제 안돼서 No 눌렀음. 이 메세지 창이 사라진 뒤 다음 주문으로 넘어가지 못하고 에러 나나?
-;MsgBox, 262144, Title, NO 클릭했는데-1
+
 										
 									} ; END끝 - IfMsgBox, No
 							} ; 끝 - if(result == 0)
@@ -982,7 +747,6 @@ driver.quit()
 	; pre authorized 버튼 클릭 않고 인쇄하기
 	PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation){
 
-
 ; 사용자의 마우스 이동 막음
 BlockInput, MouseMove
 
@@ -1140,7 +904,8 @@ BlockInput, MouseMoveOff
 					N41_PA = 0
 					CBS_or_ccDecline = 1
 					updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
-;MsgBox, 262144, Title, NO 클릭했는데-3
+					
+;MsgBox, 262144, Title, 스타일별로 뽑는것 - No 클릭해서 PRE AUTHORIZE 안 받음 - No 눌러서 THE PRE-AUTHORIZE BUTTON WAS NOT CLICKED. 메세지 창에서 PMT 바꾸지 않음 이거 이후에 에러 날 것 같은데 *!*
 					
 				} ; END끝 - IfMsgBox, No				
 
@@ -1153,6 +918,7 @@ BlockInput, MouseMoveOff
 				; 가끔 store에 있는 정보가 다르면(예를 들어 52 street 과 52 st.) 아이템이 pick ticket에 안 들어가기도 한다
 				CN41_driver.ClickREfreshButtonOnSOManager()
 
+;MsgBox, 262144, Title, PrintWITHOUTClickPreAuthorizedButton`n카드 없이 인쇄한 뒤 오더페이지에서 돈 받았음. 여기에서 에러나나? (1)
 
 ; 사용자의 마우스 이동 허용
 BlockInput, MouseMoveOff

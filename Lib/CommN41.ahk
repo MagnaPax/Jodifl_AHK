@@ -4,6 +4,10 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
+global counter_forN41
+
+counter_forN41 = 0
+
 ;~ class CommN41{
 class CommN41{
 
@@ -1106,7 +1110,9 @@ class CommN41{
 	changePMTMethodToFGorLAS(CustomerPO){
 		
 ;	MsgBox, 262144, Title, CustomerPO : %CustomerPO%
-		
+
+
+
 
 		Text:="|<PMT Method>*175$57.wnTVa0G00QKMkAk2E03Wn61aCvnnwKMkAmOGGHwx61uTGGSQ5ck/G2GHnUh61OHGGGQ5ck/FnGSTU"
 		if ok:=FindText(733,248,150000,150000,0,0,Text)
@@ -1116,7 +1122,59 @@ class CommN41{
 			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 			X_position = (X+W)+20
 			Y_position = Y+H//2
-			MouseMove, (X+W)+20, Y+H//2
+			
+			
+			; PM Method 의 상태를 바꾸기전에 먼저 읽고 바꿀필요 없으면 나가기
+			Loop{
+				PMTMethod = ""
+				
+				MouseMove, (X+W)+20, Y+H//2
+				
+				; PM Method 위에서 마우스 오른쪽 버튼 클릭 후 코드 복사메뉴에서 엔터치기
+				Send, {RButton}
+				Loop, 4
+				{
+					Sleep 150
+					Send, {Down}
+					Sleep 200
+				}
+				Send, {Enter}
+				Sleep 200
+					
+				PMTMethod := Clipboard
+				Sleep 1000
+				
+				; 값을 읽었으면 반복 끝내기
+				if(PMTMethod)
+					break				
+			}
+
+			if CustomerPO contains MTR
+			{
+				if(PMTMethod == "FG-CC"){
+;					MsgBox, 262144, Title, 바꿀필요 없어서 나감
+					return
+				}
+			}
+			else if CustomerPO contains OP
+			{
+				if(PMTMethod == "LAS-CC"){
+;					MsgBox, 262144, Title, 바꿀필요 없어서 나감
+					return
+				}
+			}
+			else if CustomerPO contains Credit_Card
+			{
+				if(PMTMethod == "CREDIT CARD"){
+;					MsgBox, 262144, Title, 바꿀필요 없어서 나감
+					return
+				}
+			}
+			
+			
+			; PMT 값이 원하는 값이 아니면 바꾸기
+			MouseMove, (X+W)+20, Y+H//2 ; 마우스 PMT Method 로 이동시키기
+			Sleep 150
 			Click
 			Sleep 150
 				
@@ -1146,11 +1204,11 @@ class CommN41{
 				MouseMove, (X+W)+20, Y+H//2
 				Sleep 150
 				Click
-				Sleep 150
+				Sleep 200
 				Send, CREDIT ; CREDIT 을 쳐서 PMT Method 를 Credit Card로 바꾸기
-				Sleep 150
+				Sleep 200
 				Send, {Tab}
-				Sleep 150			
+				Sleep 200			
 			}			
 			
 			Sleep 500
@@ -1180,13 +1238,13 @@ class CommN41{
 				{
 					Sleep 150
 					Send, {Down}
-					;~ Sleep 200
+					Sleep 200
 				}
 				Send, {Enter}
-				Sleep 150
+				Sleep 200
 					
 				PMTMethod := Clipboard
-				Sleep 700
+				Sleep 1000
 				
 				; 값을 읽었으면 반복 끝내기
 				if(PMTMethod)
@@ -1653,11 +1711,17 @@ class CommN41{
 			
 			; Customer PO 값 못 읽었으면 재귀호출
 			if(!CustomerPO#){
-				MsgBox, 262144, Title, 값 못 읽었음. 재귀호출로 다시 시작함
+				
+				; 이미 2번 반복했으면 반복 끝내고 그냥 리턴하기
+				if(counter_forN41 >= 2)
+					return CustomerPO#
+				
+;				MsgBox, 262144, Title, 값 못 읽었음. 재귀호출로 다시 시작함. %counter_forN41% 번째 반복하는 것
+				counter_forN41++
 				CommN41.getCustPONumberOnPickTicketScreen()
 			}
 			
-			return CustomerPO#			
+			return CustomerPO#
 			
 		}
 		; 못 찾았으면 재귀호출로 계속 찾기
@@ -2343,7 +2407,27 @@ class CommN41{
 
 
 
+	; Pick Ticket 에 있는 리프레쉬 버튼 클릭하기
+	ClickRefreshButtonOnPickTicket(){
+		
 
+		Text:="|<refresh button on Pick Ticket Tab>*164$12.103070Ds7w3613U1U1kUMkDs7w0s0k0UU"
+		if ok:=FindText(237,129,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Click
+			Sleep 300
+		}
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.ClickRefreshButtonOnPickTicket()
+			
+		}
+	} ; end - ClickRefreshButtonOnPickTicket()
 
 
 
