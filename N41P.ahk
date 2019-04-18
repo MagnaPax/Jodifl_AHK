@@ -2399,18 +2399,6 @@ return
 		
 
 
-
-
-^!l::
-
-	driver.Get("http://duckduckgo.com/")
-	MsgBox
-	return
-
-
-
-
-
 ^+v::
 	;~ MsgBox, ctrl shift v
 	
@@ -2481,6 +2469,32 @@ return
 
 
 
+
+^+o::
+
+
+	; 열려있는 엑셀 창 사용하기
+	Xl := ComObjActive("Excel.Application")
+	Xl.Visible := True ;by default excel sheets are invisible
+	
+	; 14 열(Columns)을 정렬하기
+	xl.cells.sort(xl.columns(14), 1)	
+
+return
+
+
+
+^+k::
+
+
+	; 열려있는 엑셀 창 사용하기
+	Xl := ComObjActive("Excel.Application")
+	Xl.Visible := True ;by default excel sheets are invisible
+	
+	; 2 열(Columns)을 정렬하기
+	xl.cells.sort(xl.columns(2), 1)	
+
+return
 
 
 
