@@ -57,6 +57,12 @@ deleteUselessRows(Xl, 1before_StartRow#, #oflasUselessRows){
 		delRow#--
 	}
 	
+	
+	; 2 열(Columns)을 정렬하기
+	xl.cells.sort(xl.columns(3), 1)
+	
+	MsgBox, 정렬 후 똑같은 SO 번호를 지워야 됨!!!!!!!!!!!!!!!!!!!!!
+	
 	; 현재 활성화된 엑셀 저장
 	Xl.ActiveWorkbook.save()
 	

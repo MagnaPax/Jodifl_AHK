@@ -111,8 +111,11 @@ class CommN41{
 		  Sleep 200
 		}
 		else{
-			SoundPlay, %A_WinDir%\Media\Ring06.wav
-			MsgBox, 262144, No CM Tab Warnning, Please Open Customer Master
+			; 못 찾으면 계속 재귀호출 해서 찾아보기
+			Sleep 700
+			CommN41.ClickCustomerMasterTab()			
+			;~ SoundPlay, %A_WinDir%\Media\Ring06.wav
+			;~ MsgBox, 262144, No CM Tab Warnning, Please Open Customer Master
 		}			
 		
 		return		
