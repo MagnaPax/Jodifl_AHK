@@ -58,6 +58,15 @@ Arr_FGInfo := object()
 
 
 
+		;~ N41_ProcessingForPT_driver := New N41_ProcessingForPT
+
+		;~ N41_ProcessingForPT_driver.allocateClickedItems()
+		
+		
+		
+		;~ N41_ProcessingForPT_driver.Alloc_Print_WITH_PreAuthorized(CustomerPO)
+		
+		;~ MsgBox
 
 
 ;GUI Backgroud
@@ -140,6 +149,7 @@ Click_btn:
 
 	; Jodifl.com 오더 처리하기
 	if(JODIFLcom){
+		
 		
 		; 오더 페이지에서 정보 얻을 배열 선언
 		InfoOfJodiflcom := object()
@@ -619,8 +629,10 @@ if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 
 				
 				; priority 번호가 2인 경우만
 				if(priority# == 2){
+					
+					SoundPlay, %A_WinDir%\Media\Ring06.wav
+					MsgBox, 262144, priority # 2, priority# : %priority#% `n`n Click Ok To continue`n`npriority 번호가 2. 안전을 위해 잠시 멈춤. 계속하려면 Ok 클릭
 						
-;					MsgBox, % "priority# : " . priority#
 
 
 					; 펜딩 오더가 있는지 확인하기
@@ -801,7 +813,13 @@ if(orderType == "06ATL2018"){
 			}
 
 
+; ####################################################################################################################################################################################################
+; ####################################################################################################################################################################################################
+; ####################################################################################################################################################################################################
+; ####################################################################################################################################################################################################
+; ####################################################################################################################################################################################################
 
+/*
 			; Pick Ticket 뽑기
 			; Allocation 처리가 아닐 때 실행
 			; 1사분면에 있는 Pick Ticket 버튼을 누른 뒤 인쇄 진행
@@ -811,7 +829,10 @@ if(orderType == "06ATL2018"){
 				; No 는 CBS등 돈 받지 않고 인쇄
 				; Cancel 는 인쇄하지 말고 다음으로 넘어가기
 				SoundPlay, %A_WinDir%\Media\Ring06.wav
-				MsgBox, 266243, OPTIONS, Yes : PRINT P.T. WITH pre-authorize BY N41`n`nNo : PRINT P.T. WITH no pre-authorize BY N41`n`nCancel : NO PRINTING`n`n%CustMemoFromJODIFLcom%				
+				MsgBox, 266243, OPTIONS, Yes : PRINT P.T. WITH pre-authorize BY N41`n`nNo : PRINT P.T. WITH no pre-authorize BY N41`n`nCancel : NO PRINTING`n`n%CustMemoFromJODIFLcom%
+				
+				
+				Print_WITH_PreAuthorized_AfterAllocateItems()
 				
 				N41_ProcessingForPT_driver := New N41_ProcessingForPT
 				
@@ -848,6 +869,71 @@ if(orderType == "06ATL2018"){
 				}
 
 			}
+*/
+
+;~ /*
+			; Pick Ticket 뽑기
+			; Allocation 처리가 아닐 때 실행
+			; 1사분면에 있는 Pick Ticket 버튼을 누른 뒤 인쇄 진행
+			if(!IsItFromAllocation){
+
+				; Yes 는 pre-authorized 받고 인쇄
+				; No 는 CBS등 돈 받지 않고 인쇄
+				; Cancel 는 인쇄하지 말고 다음으로 넘어가기
+				SoundPlay, %A_WinDir%\Media\Ring06.wav
+				MsgBox, 266243, OPTIONS, Yes : PRINT P.T. WITH pre-authorize BY N41`n`nNo : PRINT P.T. WITH no pre-authorize BY N41`n`nCancel : NO PRINTING`n`n%CustMemoFromJODIFLcom%				
+				
+				N41_ProcessingForPT_driver := New N41_ProcessingForPT
+				
+				; pre-authorized 받고 프린트하기
+				IfMsgBox, Yes
+				{
+					if(BO_by_Styles){
+N41_ProcessingForPT_driver.OpenSO_Print_WITH_PreAuthorized(CustomerPO, IsItFromNewOrder)
+;~ MsgBox, 262144, Title, 스타일 별로 pre-authorized 받고 프린트 하려고 함
+;~ allocateClickedItems()
+
+/*
+WOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
+*/
+					}
+					
+					; 일반적인 뉴오더일때는 allocate 하지 않고 프린트
+					else
+						N41_ProcessingForPT_driver.OpenSO_Print_WITH_PreAuthorized(CustomerPO, IsItFromNewOrder)
+					
+					
+				}
+				; CBS 등 돈 받지 말고 프린트 하기
+				IfMsgBox, No
+				{
+					; 스타일별로 뽑을때는 뉴오더가 아니라고 표시해서 무조건 주문창 열게끔
+					if(BO_by_Styles){
+						IsItFromNewOrder = 0
+						
+						; pre-authorized 안 받고 프린트하기
+;~ MsgBox, 262144, Title, 스타일 별로 pre-authorized '안' 받고 프린트 하려고 함						
+						N41_ProcessingForPT_driver.OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
+;			MsgBox, 262144, Title, <MAIN> 스타일별로 뽑았음. 이 메세지 창 닫으면 리턴함. 여기서 에러나나 **1**
+						return
+					}
+						
+					; 스타일별로 뽑을때가 아닐때는 뉴오더라고 표시해보자
+					else{						
+						IsItFromNewOrder = 1
+						; pre-authorized 안 받고 프린트하기
+						N41_ProcessingForPT_driver.OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
+					}
+
+					; pre-authorized 안 받고 프린트하기
+					;~ N41_ProcessingForPT_driver.OpenSO_Print_WITHOUT_PreAuthorized(CustomerPO, IsItFromNewOrder)
+					
+
+
+				}
+
+			}			
+*/			
 			
 			
 			; Pick Ticket 뽑기
@@ -2476,6 +2562,7 @@ return
 	; 열려있는 엑셀 창 사용하기
 	Xl := ComObjActive("Excel.Application")
 	Xl.Visible := True ;by default excel sheets are invisible
+
 	
 	; 14 열(Columns)을 정렬하기
 	xl.cells.sort(xl.columns(14), 1)	
@@ -2492,13 +2579,46 @@ return
 	Xl.Visible := True ;by default excel sheets are invisible
 	
 	; 2 열(Columns)을 정렬하기
-	xl.cells.sort(xl.columns(2), 1)	
+	xl.cells.sort(xl.columns(2), 1)
+	
+	Sleep 200
+	
+	; 3 열(Columns)을 정렬하기
+	xl.cells.sort(xl.columns(3), 1)	
+	
+	Xl.Rows(1).EntireRow.Insert
 
 return
 
 
 
+^+!s::
+Loop{
+    
+    Sleep 500
+    
+    ; N41 활성화 시키기
+    WinActivate, ahk_class FNWND3126
+	
+	N_driver := new N41
 
+	; Customer Master Tab 클릭하기
+	N_driver.ClickCustomerMasterTab()	
+
+	; Sales Order 클릭
+	N_driver.ClickSalesOrderOnTheMenuBar()
+	
+
+    MsgBox, 262148, title, Would you like to stop this program?, 3
+    
+    IfMsgBox, Yes
+        break
+    
+    IfMsgBox, Timeout
+        continue
+}
+
+return
 
 
 
