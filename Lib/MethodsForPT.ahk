@@ -162,6 +162,10 @@ return
 		WinMinimize, N41 Processing
 		WinMinimize, OPTIONS
 		
+		
+;	allocateClickedItems()
+;	MsgBox
+		
 		; 1사분면의 Pick Ticket 버튼 누르기
 		CommN41.ClickCreatePickTicketButton()
 		
@@ -262,9 +266,9 @@ return
 
 
 	; PreAuthorizedButton 누르는 것부터 프린트 하는 것까지
-	FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation){
-		
-		
+	FromClickingPreAuthorizedButton_To_PrintOutPickTicket(CustomerPO, IsItFromNewOrder, IsItFromAllocation){		
+
+
 ; 사용자의 마우스 이동 막음
 BlockInput, MouseMove
 		
@@ -746,6 +750,7 @@ driver.quit()
 	
 	; pre authorized 버튼 클릭 않고 인쇄하기
 	PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation){
+
 
 ; 사용자의 마우스 이동 막음
 BlockInput, MouseMove
@@ -2171,6 +2176,77 @@ BlockInput, MouseMoveOff
 		
 	
 } ; updPTStatus 메소드 끝
+
+
+
+
+
+
+; 사람에 의해 클릭 된 아이템들 allocate 하기
+allocateClickedItems(){
+	
+	; 객체 생성
+	CommN41 := New CommN41
+	
+	; SO Manager에 있는 Allocate 버튼 클릭하기
+	CommN41.clickAllocateButtonOfSOManager()
+	
+	
+;~ MsgBox, 262144, Title, 가끔 확인창이 떠서 ok 버튼 계속 눌러야 되는 것 만들어야 됨	
+	
+	
+	Loop{
+		
+		; Check All 버튼 클릭하기
+		CommN41.clickCheckAllButtonOnTheAllocatinScreen()
+			
+		; 체크박스 체크됐는지 확인
+		isTheCheckBoxChecked = 0
+		isTheCheckBoxChecked := CommN41.isTheCheckBoxChecked()
+		
+		
+		; 체크박스 체크됐으면 루프 끝
+		if(isTheCheckBoxChecked == 1)
+			break
+		else{
+			MsgBox, 262144, Title, 체크박스가 클릭 안 되었습니다.
+			; 체크박스 못 찾았으면 Uncheck All 버튼 눌러서 체크 해제 하려고 했는데 만약 진짜로 안 클릭 한거면 Uncheck all 버튼이 안 생기잖아. 
+			CommN41.clickUnCheckAllButtonOnTheAllocatinScreen()
+		}
+	}
+	
+	; 화살표 버튼 클릭해서 이 화면 나가기
+	CommN41.clickTheArrowButtonOnTheAllocatinScreen()
+	
+	; 에러 메세지 나오는 지 5번 반복해서 찾아보기. 한 번 찾을때마다 1초씩 기다려서 결국 5초동안 나오는지 찾아보는 동작
+	Loop, 5{
+		Sleep 1000
+	
+		; 에러창 나타나는지 기다린 뒤 나오면 메세지 경고창 띄우기
+		hasTheWindowAppear := CommN41.checkAllocateErrorWindowAppears_1()
+		
+		; 에러창 나왔으면
+		if(hasTheWindowAppear == 1){
+			MsgBox, 262144, Title, 에러 발생!
+			break
+		}	
+	
+	}
+
+	
+	; Save Button
+	CommN41.ClickSave()	
+	
+	; SO Manager 클릭
+	CommN41.OpenSOManager()
+	
+	; SO Manager 에 있는 리프레쉬 버튼 클릭하기
+	CommN41.clickRefreshButtonOnSOManager()
+	
+
+	
+	return
+} ; allocateClickedItems 메소드 끝
 
 
 
