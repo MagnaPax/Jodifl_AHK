@@ -160,7 +160,15 @@ class CommN41{
 		  X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 		  MouseMove, X+W//2, Y+H//2
 		  Click
+		  Sleep 200
 		}
+		
+		else
+		{
+			; 못 찾으면 계속 재귀호출 해서 찾아보기
+			Sleep 500
+			CommN41.OpenSOManager()
+		}		
 		
 	}
 	
@@ -245,7 +253,12 @@ class CommN41{
 		  Click
 		  Sleep 200
 		}
-				
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.ClickSave()
+		}
 		
 		return
 	}
@@ -375,11 +388,21 @@ class CommN41{
 		  X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 		  MouseMove, X+W//2, Y+H//2
 		  Click
-		  Sleep 300
+		  Sleep 1000
+		}
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.ClickREfreshButtonOnSOManager()
 		}
 		
 		return
-	}
+		
+	} ; END - ClickREfreshButtonOnSOManager	
+	
+	
+
 	
 	
 	; Customer Master 에 있는 리프레쉬 버튼 클릭하기
@@ -2431,6 +2454,156 @@ class CommN41{
 			
 		}
 	} ; end - ClickRefreshButtonOnPickTicket()
+	
+	
+	
+	
+	
+	; SO Manager에 있는 Allocate 버튼 클릭하기
+	clickAllocateButtonOfSOManager(){
+		
+;~ MsgBox, clickAllocateButtonOfSOManager 메소드 들어왔음
+
+		Text:="|<Allocate Button on SO Manager>*154$39.000000U0000087y0002/zw000WTzk0Tsbw00428zzk0jW33y05zkUDk0iu40y05nEU000zy40005zE0000ju000040E0000zy4"
+		if ok:=FindText(394,334,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+5, Y+H//2
+			Sleep 150
+			Click
+			Sleep 150
+		}
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.clickAllocateButtonOfSOManager()			
+		}
+		return
+	} ; end - clickAllocateButtonOfSOManager()
+	
+	
+	
+	
+	; Check All 버튼 클릭하기
+	clickCheckAllButtonOnTheAllocatinScreen(){
+		
+
+		Text:="|<Check All Button of Allocate by SO Detail>*127$50.SA003032QH000k0ka0yC7BUS9UAYGPk5WM39wUw38a0mE8D0z9lAaGPM8mLX8sQn66a"
+		if ok:=FindText(335,35,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Sleep 150
+			Click
+			Sleep 1000
+		}
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.clickCheckAllButtonOnTheAllocatinScreen()			
+		}
+		
+		return
+		
+	} ; end - clickCheckAllButtonOnTheAllocatinScreen
+	
+	
+	
+	; 체크박스 체크됐는지 확인
+	isTheCheckBoxChecked(){
+		
+
+		Text:="|<check box checked>*162$13.zzzzzzw060305U6k6O6Ba6S361U0k0Tzw"
+		if ok:=FindText(77,205,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Sleep 150
+			
+			; 체크박스 체크됐으면 1 리턴
+			return 1
+		}
+		
+		; 체크박스 체크 안 됐으면 0 리턴
+		return 0		
+		
+	} ; end - isTheCheckBoxChecked()
+	
+	
+	; Uncheck All 버튼 클릭하기
+	clickUnCheckAllButtonOnTheAllocatinScreen(){
+
+		Text:="|<Uncheck All button>*126$62.W00A003032MU03000k0ka9wQyC7BUS9WN9gYGPk5WMaG39wUw38a9YUmE8D0z9qN9gaGPM8mL6Fn8sQn66a"
+		if ok:=FindText(335,35,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Sleep 150
+			Click
+			Sleep 150			
+		}
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.clickUnCheckAllButtonOnTheAllocatinScreen()
+		}		
+		return
+		
+	}
+	
+	
+	
+	
+	; 화살표 버튼 클릭해서 이 화면 나가기
+	clickTheArrowButtonOnTheAllocatinScreen(){
+		
+
+		Text:="|<arrow button>*174$22.zzzy000M001U0060U0M301UC060w0M3s1UDk60zUM3z1UDU60q0M2A1U0k601UM061U006000M001zzzy"
+		if ok:=FindText(166,35,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Click
+			Sleep 150
+		}		
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.clickTheArrowButtonOnTheAllocatinScreen()
+		}		
+		
+		return
+	} ; end - clickTheArrowButtonOnTheAllocatinScreen
+	
+	
+	
+	; allocate 에러창 뜨는 지 확인 - 1
+	checkAllocateErrorWindowAppears_1(){		
+
+		Text:="|<allocate error message - 1>*146$172.49040U2E00000E000U0EV0w7WTST0MY0E201000001000201W44MUAF162WED7SwYMDCQ7Ytnlu8+8EUY1F448+91YYUGG04mE2H91AYUcV22E54SEV4Y4Hm79A1mD0t8wQWI4G4890WF127mEF88YY898U4YW2G9ET8EUY3t448F91YkWGEUYX0GGA9AX14V1688YEFa2Y3lnj9C3m71t8QwS88/rXkR1FxsE00000000000000000U000000000000000000000000000A00000000002"
+		if ok:=FindText(993,548,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			
+			return 1
+		}
+		else
+			return 0
+	} ; 끝 - checkAllocateErrorWindowAppears
+	
+	
+	
 
 
 
