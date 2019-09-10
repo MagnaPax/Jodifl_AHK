@@ -28,6 +28,13 @@ ComObjError(false)
 
 
 
+;~ #Include [Excel]_InsertingORDeletingAndSettingHeightOFRowsINExcel.ahk
+;~ #Include [Excel]_ObtainFirstrow_Lastrow_#UsedrowsfromExcel.ahk
+;~ #Include [Excel]_Joe Glines'sExcelFunctions.ahk
+;~ #Include [Excel]_InsertORDeleteColumns.ahk
+
+
+
 
 
 
@@ -149,7 +156,6 @@ Click_btn:
 
 	; Jodifl.com 오더 처리하기
 	if(JODIFLcom){
-		
 		
 		; 오더 페이지에서 정보 얻을 배열 선언
 		InfoOfJodiflcom := object()
@@ -324,7 +330,6 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 			Send, {Enter}
 			Sleep 150
 
-			
 			Loop
 			{					
 				; Sale Order 에 있는 고객 코드 얻기
@@ -364,6 +369,30 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 			; Sales Order 에서 Order Type 얻기
 			orderType := N_driver.getOrderType()
 			
+			
+			; 뉴오더일때만 할인이 있는지 확인 후 있으면 Discount Rate 복붙하기
+			if(IsItFromNewOrder)
+				N_driver.copyDiscountRateAndPasteIfExist()
+			
+
+
+
+			; 뉴오더일때만 Customer PO에 맞는 PMT Method로 바꾸기
+			if(IsItFromNewOrder){
+;MsgBox, 262144, Title, CustomerPO : %CustomerPO%
+				if CustomerPO contains MTR
+				{
+;MsgBox, 262144, Title, FG 주문임
+					N_driver.changePMTMethodToFGorLAS(CustomerPO)	; PMT Method 를 FG-CC 나 LAS-CC 로 바꾸기
+;MsgBox, 262144, Title, FG-CC 로 바뀌었나?
+				}
+				else if CustomerPO contains OP
+				{
+;MsgBox, 262144, Title, LAS 주문임
+					N_driver.changePMTMethodToFGorLAS(CustomerPO)	; PMT Method 를 FG-CC 나 LAS-CC 로 바꾸기
+;MsgBox, 262144, Title, LAS-CC 로 바뀌었나?					
+				}
+			}
 
 
 			; Sale Order 에 있는 Memo 얻기
@@ -606,9 +635,40 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 			; 사용자의 마우스 이동 허용
 			BlockInput, MouseMoveOff
 
+
+
+;~ /*
+; #############################################################
+; 2019년 8월 달라스 쇼 오더를 주의할 필요가 없게 되면 비활성화 시키기
+if(orderType == "08DAL19"){
+	SoundPlay, %A_WinDir%\Media\Ring02.wav
+	MsgBox, 262160, Title, 이거 2019년 8월 달라스 쇼. 픽티켓 만들기 전 메모 확인
+}
+
+; 2019년 8월 매직 쇼 오더를 주의할 필요가 없게 되면 비활성화 시키기
+if(orderType == "08MAG19"){
+	SoundPlay, %A_WinDir%\Media\Ring02.wav
+	MsgBox, 262160, Title, 이거 2019년 8월 매직 쇼. 픽티켓 만들기 전 메모 확인
+}
+*/
+;~ /*
+; 2019년 8월 아틀란타 쇼 오더를 주의할 필요가 없게 되면 비활성화 시키기
+if(orderType == "08ATL19"){
+	SoundPlay, %A_WinDir%\Media\Ring02.wav
+	MsgBox, 262160, Title, 이거 2019년 8월 아틀란타 쇼. 픽티켓 만들기 전 메모 확인
+}
+
+if SO#BeingUsedNow contains 3000
+{
+    MsgBox, 262160, Title, 이거 2019년 8월 아틀란타 쇼. 픽티켓 만들기 전 메모 확인
+}
+; ############################################################
+*/
+
+
 /*
 ; ######################################################################################################################################################
-if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 아닌것을 자동뽑기 확인하기. 정보 일일히 수동으로 확인해야 됨
+if(orderType != "06DAL2019"){ ; Order Type 이 2019년 6월의 달라스 쇼가 아닌것을 자동뽑기 확인하기. 정보 일일히 수동으로 확인해야 됨
 	if(orderType != "06ATL18"){ ; Order Type 이 2018년 6월의 아틀란타 쇼가 아닌것을 자동뽑기 확인하기. 이 오더는 여름에는 겨울 옷 보내면 안됨. 시간이 지나면 이거 지우기
 ; ######################################################################################################################################################
 */
@@ -630,8 +690,8 @@ if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 
 				; priority 번호가 2인 경우만
 				if(priority# == 2){
 					
-					SoundPlay, %A_WinDir%\Media\Ring06.wav
-					MsgBox, 262144, priority # 2, priority# : %priority#% `n`n Click Ok To continue`n`npriority 번호가 2. 안전을 위해 잠시 멈춤. 계속하려면 Ok 클릭
+					;~ SoundPlay, %A_WinDir%\Media\Ring06.wav
+					;~ MsgBox, 262144, priority # 2, priority# : %priority#% `n`n Click Ok To continue`n`npriority 번호가 2. 안전을 위해 잠시 멈춤. 계속하려면 Ok 클릭
 						
 
 
@@ -658,15 +718,21 @@ if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 
 						if(doesHouseMemoExist){
 							MsgBox, 262144, Memo, Customer Memo`n`n%CustMemoOnSOTab%`n`n`n`nHouse Memo`n`n%HouseMemoOnSOTab%			
 						}				
-					}
+					}					
 					
 					; 뉴오더가 아닐때 주문화면 한 번 확인하게끔 환기시키기 위해 효과음 발생
 					; 뉴오더일때는 어차피 주문마다 정지하기 때문에 여기서 효과음 들려줄 필요 없음
+					; 컴퓨터 2대를 사용해서 어차피 매번 멈추기 때문에 이것 사용할 필요가 없어서 비활성화 시키려고했는데 음...
 					else if(!IsItFromNewOrder){
-						SoundPlay, %A_WinDir%\Media\Ring02.wav
+						SoundPlay, %A_WinDir%\Media\Ring02.wav			
 					}
-								
-							
+					
+
+					; 컴퓨터 2대를 사용하기 때문에 priority 번호가 2라도 한 번 멈추고 확인케 하기 위해
+					SoundPlay, %A_WinDir%\Media\Ring06.wav
+					MsgBox, 262144, priority # 2, priority# : %priority#% `n`n Click Ok To continue`n`npriority 번호가 2. 안전을 위해 잠시 멈춤. 계속하려면 Ok 클릭														
+
+
 					
 					
 						
@@ -688,7 +754,8 @@ if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 
 
 
 							; 카드 정보 읽기
-							ccInfo := N_driver.checkCC()
+;							ccInfo := N_driver.checkCC()
+							ccInfo = 0
 								
 							; 카드가 있으면
 							if(ccInfo){
@@ -718,28 +785,14 @@ if(orderType != "01DAL2019"){ ; Order Type 이 2019년 1월의 달라스 쇼가 
 ;					else
 ;						MsgBox, 펜딩오더 있음(자동으로 픽티켓 뽑지 않음)
 				}
-			}
+			} ; 끝end - if(IsItFromAllocation)
 		}
-		
+
 /*
 ; ###################################################################
-	} ; 2018년 7월 넘어서 아틀란타 쇼인지 아닌지 비교할 필요가 없으면 이거 지우기
-} ; 2019년 1월 넘어서 달라스 쇼에서 온 주문 정보를 수동으로 수정할 필요가 없어지면 이거 지우기
+	} ; 2019년 7월 넘어서 아틀란타 쇼인지 아닌지 비교할 필요가 없으면 이거 비활성화 하기
+} ; 2019년 7월 넘어서 달라스 쇼에서 온 주문 정보를 수동으로 수정할 필요가 없어지면 이거 비활성화 하기
 ; ###################################################################
-
-; #############################################################
-; 2018 달라스 쇼 살펴볼 필요가 없게되면 지우기
-if(orderType == "06DAL2018"){
-if(orderType == "01DAL2019"){
-	SoundPlay, %A_WinDir%\Media\Ring06.wav
-	MsgBox, 262144, Title, 이거 6월 달라스 쇼. 겨울용품 보내지 말기
-}
-; 2018 아틀란타 쇼 살펴볼 필요가 없게되면 지우기
-if(orderType == "06ATL2018"){
-	SoundPlay, %A_WinDir%\Media\Ring06.wav
-	MsgBox, 262144, Title, 이거 6월 아틀란타 쇼. 겨울용품 보내지 말기
-} 
-; ############################################################
 */
 
 
@@ -2129,45 +2182,25 @@ return
 
 
 !F2::
+/*
+run % "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe --remote-debugging-port=9222" ( winExist("ahk_class Chrome_WidgetWin_1") ? " --new-window " : " " ) URL   ;;이렇게 열린 크롬 창은 ChromeGet() 함수에 의해 재사용 될 수 있음 (새 창으로 열림)
+Sleep 3000
+driver := ChromeGet()
+
+MsgBox, PAUSE
+*/		
+
+	WinActivate, FashionGo Vendor Admin - Google Chrome
 
 	WinMinimize, N41 Processing
 	
 	; 만약 현재 페이지가 FG 페이지라면
 	if(RegExMatch(driver.Url, "imU)fashiongo")){
 
-/*
-		;~ driver := ChromeGet()
-
-		; 현재 페이지의 HTML 소스 코드 읽기
-		Xpath = //*
-		HTML_Source := driver.FindElementByXPath(Xpath).Attribute("outerHTML")
-		
-		Sleep 700
-		
-		;~ MsgBox, % HTML_Source
-
-		; 백오더 된 아이템은 체크박스가 활성화 되지 않는다
-		; 현재 화면에 활성화 된 체크박스가 몇 개 있는지 알아보기 위해
-		; 현재 화면에 있는 모든 활성화 된 체크박스 Str_#ofCheckBoxes 배열에 저장
-		UnquotedOutputVar = imU)<div\s_ngcontent-c7=""\sclass="check-square"><div
-		UnquotedOutputVar = class="check-square"><div
-
-		FoundPos = 1
-		Str_#ofCheckBoxes := object()
-		while(FoundPos := RegExMatch(HTML_Source, UnquotedOutputVar, SubPat, FoundPos + strLen(SubPat)))
-		{
-	;		MsgBox, % SubPat1
-			Str_#ofCheckBoxes.Insert(SubPat1)
-		}
-
-
-		; 소스코드에서 읽을 때는 아이템에 있는 체크박스 갯수보다 2개가 더 많다. 아마도 Total 옆에 있는 체크박스 갯수포함 다른 것까지 세는 것 같다. 그래서 Str_#ofCheckBoxes 배열 갯수에서 2개를 빼준다
-		#ofCheckBoxes := Str_#ofCheckBoxes.Maxindex() - 2
-*/
-
 		; Xpath 들
-		;~ TheBlankOfShippingFee_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[6]/div[2]/div/input
-		TheBlankOfShippingFee_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[7]/div[2]/div/input
+		TheBlankOfShippingFee_Xpath = //input[@class='ng-valid ng-dirty ng-touched']
+		TheBlankOfShippingFee_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[8]/div[2]/div/input
+		
 		SaveButton_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[5]/div/button
 		AuthorizeButton_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[2]/div[2]/div[2]/div[1]/ul/li[2]/span[2]/div/div[1]/div/button[1]
 		AuthorizeButton_Xpath = //*[contains(text(), 'Authorize')]
@@ -2175,6 +2208,7 @@ return
 		total#OfQty_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/table/tfoot/tr/td[3] ; 전체 아이템 갯수
 		;~ subTotlaPrice_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[7]/div[2] ; 제품 가격 합계
 		subTotlaPrice_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[4]/div[2]/div[2]/div/div/div[3]/div/div[3]/div[2] ; 제품 가격 합계
+		PaymentStatus_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[2]/div[2]/div[2]/div[1]/ul/li[1]/span[2]/div/span[1] ; Payment Status
 		
 		
 		total#OfQty := driver.FindElementByXPath(total#OfQty_Xpath).Attribute("innerText")
@@ -2186,58 +2220,84 @@ return
 
 ;~ MsgBox, 262144, Title, totlaPrice : %totlaPrice%
 		
-		Loop, 2{
+		shippingFee = 0
+		Loop{
 			; 수량에 맞는 금액 입력하기
 		;	SoundPlay, %A_WinDir%\Media\Ring06.wav
 			;~ if #ofCheckBoxes between 1 and 4
 			;~ if total#OfQty between 1 and 24
 			if subTotlaPrice between 1 and 399
 			{
-				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("40")
+				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("40").sendKeys(driver.Keys.TAB)
 		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $50
 			}
 			;~ else if #ofCheckBoxes between 5 and 10
 			else if subTotlaPrice between 399.1 and 899
 			{
-				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("60")
+				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("60").sendKeys(driver.Keys.TAB)
 		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $70
 			}
 			;~ else if #ofCheckBoxes between 11 and 100
 			else if subTotlaPrice between 899.1 and 1300
 			{
-				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("130")
+				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("130").sendKeys(driver.Keys.TAB)
 		;		MsgBox, 262144, Title, #ofCheckBoxes : %#ofCheckBoxes%`nPUT IN $90
 			}
 			else
 			{
-				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("150")
+				driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).sendKeys(driver.Keys.CONTROL, "a").SendKeys("150").sendKeys(driver.Keys.TAB)
 				MsgBox, 262144, Title, totlaPrice : $%subTotlaPrice%`nPUT IN $170
 			}
 			
 			; Save 버튼 클릭 후 Authorize 버튼 클릭하기
-			Sleep 100
+			Sleep 500
 			driver.FindElementByXPath(SaveButton_Xpath).click()
-			Sleep 300
+			Sleep 500
+			driver.FindElementByXPath(SaveButton_Xpath).click()
+			Sleep 500
 			
+			; 배송비가 입력 안 되는 에러를 줄이기 위해 화면 리프레쉬 후 화면을 아래 끝으로 내려보기
+			; 페이지 리프레쉬 해보기
+			driver.refresh()
+			Sleep 1000			
+			driver.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);")
+			Sleep 500
 			
-		;~ shippingCostWhichHasBeenPutIn := driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("innerText")
-		;~ MsgBox, 262144, Title, shippingCostWhichHasBeenPutIn : %shippingCostWhichHasBeenPutIn%
-		;~ Sleep 300
-		;~ MsgBox, % "outerHTML : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("outerHTML")
-		;~ MsgBox, % "textContent : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("textContent")
-		;~ MsgBox, % "innerText : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("innerText")
-		;~ MsgBox, % "option value : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("option value")
-		;~ MsgBox, % "innerTEXT : " . driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("innerTEXT")
-		;~ MsgBox, % "getElementByXpath : " . driver.getElementByXpath(TheBlankOfShippingFee_Xpath)
-		;~ MsgBox, % "getElementsByXpath : " . driver.getElementsByXpath(TheBlankOfShippingFee_Xpath)
-			
-			; 배송료가 입력됐으면 루프 빠져나감
-;			if(driver.FindElementByXPath(TheBlankOfShippingFee_Xpath.Attribute("innerText"))){
-;				break			
-;			}
-;			else
-;				MsgBox, 262144, Title, 배송료가 입력되지 않았음. 다시 입력함				
+			; 배송료가 제대로 저장됐는지 확인 후 금액이 들어있으면 루프 빠져나가기
+			shippingFee := driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("value")
+			if(shippingFee != 0)
+				break
+			else
+				shippingFee = 0
 		}
+		
+;~ driver.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);")
+;MsgBox, 262144, Title, shippingFee : %shippingFee%`n배송료 제대로 입력됐나?
+
+		
+		
+		; 이미 다른 벤더에 의해 Decline 났으면 배송료만 입력한 뒤 이 핫키 빠져나가기
+		theResult := driver.FindElementByXPath(PaymentStatus_Xpath).Attribute("innerText")
+		if theResult contains Pending
+		{
+			SoundPlay, %A_WinDir%\Media\Ring02.wav
+			MsgBox, 262160, Title, 디클라인!!`nIT'S DECLINED!!!`nCLICK OK TO CONTINUE
+			
+			; 디클라인 난 것 넘기지 않기 위해 화면 위로 옮기기
+			;~ driver.FindElementByXPath(PaymentStatus_Xpath).click()			
+			; 상태 확인하기 쉽게 하기 위해 화면 위로 올리기
+			driver.ExecuteScript("window.scrollTo(document.body.scrollHeight,0);")						
+
+			
+			; N41 동작시키기 위한 메세지 창들 활성화 시키기 (마우스로 움직이기 귀찮아서)
+			WinActivate, OPTIONS
+			WinActivate, Memo
+			WinActivate, UPS STATUS
+			WinActivate, NOT APPROVED
+			WinActivate, NOT PRE-AUTHORIZED
+			
+			return
+		}		
 
 		
 		
@@ -2269,11 +2329,14 @@ return
 			}
 		}
 		
+		
+		
 		Sleep 3000
+		
+		
 		
 		; 제대로 결제됐는지 확인
 		; 1초마다 제대로 결제됐는지 확인 후 제대로 결제됐으면 루프 빠져나오기		
-		PaymentStatus_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[2]/div[2]/div[2]/div[1]/ul/li[1]/span[2]/div/span[1]
 		
 		Loop, 10
 		{
@@ -2331,8 +2394,13 @@ return
 		; Pending 이 아닐때만 화면 아래로 내리기
 		if theResult not contains Pending
 		{
-			; 금액 확인하기 쉽기 위해 배송료 입력칸 클릭해서 화면 아래로 내리기
-			driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).click()			
+			; 금액 확인하기 쉽게 하기 위해 화면 아래로 내리기
+			driver.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);")
+			
+			; 배송료 얼마 입력됐는지 띄워주기
+			SoundPlay, %A_WinDir%\Media\Ring06.wav
+			shippingFee := driver.FindElementByXPath(TheBlankOfShippingFee_Xpath).Attribute("value")
+			MsgBox, 262144, Title, %shippingFee%`n`n배송료 금액 숫자가 있다면 배송료 제대로 입력된 것
 		}
 
 
@@ -2591,6 +2659,10 @@ return
 return
 
 
++F12::
+Send, 999
+return
+
 
 ^+!s::
 Loop{
@@ -2619,6 +2691,291 @@ Loop{
 }
 
 return
+
+
+
+
+
+; ### 티파니 고객 찾아서 삭제하기 ###
+^#!t::
+
+Xl := ComObjActive("Excel.Application")	; 열려있는 엑셀 창 사용하기
+
+; Constants
+xlValues := -4163
+xlWhole := 1
+
+
+TiffanyOnlyCustomerList := ["AHN AND AHN COLLECTI", "ALLURE", "AMBIANCE-PLACERVILLE", "AUBURN UNIVERSITY", "BETSEYS BOUTIQUE SHO", "BETTY BE GOOD BOUTIQ", "BOHO BLU", "BOOP DE DOOP", "CHARLI ROSE-CO", "COBOS BOUTIQUE", "COBOS-STARKVILLE", "ENTOURAGE", "FINNLEYS", "FINNLEYS 2", "FLAUNT BOUTIQUE-ROUN", "FOCUSED HOLDINGS", "JOSIES BOUTIQUE", "JUST JEWELRY", "K-S WHOLESALE", "KIKILARUE", "MAGNOLIA BTQ FRANKLI", "ROOLEE", "SHOP DRESS UP", "STYLEFOX", "THE COLLECTION DBA D", "THE GIRLIE BOUTIQUE", "THE PINK LILY BOUTIQ", "THREADS BOUTIQUE", "TY ALEXANDERS", "UNIQUE BOUTIQUE-SUTT", "UNIVERSITY BOOK STOR", "WAKEFIELDS-INC", "WREN AND IVORY LLC", "MY STORY", "B&B DEP STORE SOUTH"]
+
+
+; 배열(TiffanyOnlyCustomerList)에 들어있는 값의 갯수만큼만 반복
+Loop % TiffanyOnlyCustomerList.Maxindex(){	
+
+	FindThis := TiffanyOnlyCustomerList[A_Index]  ; Look for this.	
+	
+	Loop{
+		
+		; Determine the total range. Get the last cell in that range.
+		LastRow := Xl.Sheets(1).UsedRange.Rows.Count  ; Get the number of rows in the used range.
+		MyRange := Xl.Sheets(1).Range("A1:Z" LastRow)  ; Get the range of all cells in column A-Z in the used range.
+		LastCell := MyRange.Cells(MyRange.Cells.Count)  ; The last cell in the used range.
+
+		; Find the first cell.
+		FoundCell := MyRange.Find(FindThis, LastCell, xlValues, xlWhole)  ; LookIn:=xlValues, LookAt:=xlWhole
+		FirstAddr := FoundCell.Address  ; The while-loop below will exit when it reaches this cell.	
+			
+		row# := RegExReplace(FirstAddr, "\D")	; 찾은 단어가 있는 셀 위치에서 숫자만 찾아서 배열에 저장
+		
+		; row# 에 값이 없으면, 즉 해당 키워드를 찾지 못해서 FirstAddr 변수에서 숫자를 추출하지 못했으면 루프 빠져나가기
+		if(!row#)
+			break
+
+;MsgBox, % "The first found cell in the range is " FirstAddr " with a value of '" FoundCell.Value "'."
+
+		; 찾은 티파니 고객의 row 삭제하기
+		#ofRowToReadAddedOne :=  "A" . row#
+;MsgBox, % #ofRowToReadAddedOne
+		Xl.Sheets(1).Range(#ofRowToReadAddedOne).EntireRow.Delete
+	}
+
+;MsgBox, % FindThis . " 이(가) 이 엑셀파일에 없거나 모두 찾아서 삭제했습니다. 다음으로 넘어갑니다."
+	GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가
+
+}
+
+MsgBox, 262144, Title, 티파니 고객 모두 지웠음
+return
+
+
+
+
+
+
+;## 엑셀에서 중복 자료 삭제하기 ##
+^#!d::
+
+	WinMinimize, N41 Processing
+
+	MsgBox, 262144, Title, 중복된 고객 코드를 지운 뒤 아이템 번호별로 다시 정렬합니다. 시작 전에 정렬할 열(Columns) 값을 확인 후 바꿔야 됩니다.`n`nallocate 된 파일은 바꿀 필요 없습니다.
+
+	; 만약 엑셀 창이 열려있지 않으면 열릴때까지 무한 반복으로 경고창 표시하기
+	IfWinNotExist, ahk_class XLMAIN
+	{
+		loop{
+			MsgBox, 262144, No Excel file Warning, PLEASE OPEN AN ORDER EXCEL FILE
+			IfWinExist, ahk_class XLMAIN
+				break
+		}
+	}	
+	
+	
+	; 열려있는 엑셀 창 사용하기
+	Xl := ComObjActive("Excel.Application")
+	Xl.Visible := True ;by default excel sheets are invisible
+	
+	
+	
+	
+		; 중복값 지우기 위해 일단
+		; 고객 코드가 있는 2열(Columns)로 정렬
+		xl.cells.sort(xl.columns(2), 1)
+
+		;엑셀 값의 끝 row 번호 알아낸 후 i 에 값 넣기
+		XL_Handle(XL,1) ;get handle to Excel Application
+		i := XL_Last_Row(XL)
+		
+;		MsgBox 고객코드로 정렬 했습니다. 마지막 행 번호는 %i%
+		
+		locOfCheckColumns := "B"
+		
+		j = 1
+		Loop{
+
+			k := j + 1
+
+			#ofRowToRead := locOfCheckColumns . j
+			#ofRowToReadAddedOne :=  locOfCheckColumns . k
+			
+			
+			var1 := Xl.Range(#ofRowToRead).Value
+			var2 := Xl.Range(#ofRowToReadAddedOne).Value
+			
+;			MsgBox, % "j : " . j . "`nk : " . k . "`n`n" . "var1 : " . var1 . "`nvar2 : " . var2
+			
+			
+			if(var1 == ""){
+				break
+			}
+						
+
+			; 만약 지금 얻은 SO# 값이 이전 SO# 값을 저장하고 있는 previousNumber 값과 같다면 
+			; 중복된 값이니 현재 Row 삭제한 뒤 루프 처음으로 돌아가기
+			IfEqual, var1, %var2%
+			{
+				
+;			MsgBox, % var1 . "`n" . var2 . "`n`n" . "delete" . "`n`n" . "i : " . i . "`nj : " . j
+;			MsgBox, % #ofRowToReadAddedOne . "를 지웁니다"
+				Xl.Sheets(1).Range(#ofRowToReadAddedOne).EntireRow.Delete
+				
+				continue
+			}
+			
+			IfNotEqual, var1, %var2%
+			{
+				j++
+				
+				continue
+			}
+			
+			
+
+		}
+		
+		
+		
+;MsgBox 스타일 별로 정렬한 뒤 20개 넘는 아이템들은 빈 줄 삽입하기. 
+
+	; 20개 넘는 아이템만 빈줄 삽입해서 나누는 메소드 호출하기
+	insertAEmptyRowForItemsMoreThan20()
+	
+		
+	; 20개 넘는 아이템만 빈줄 삽입해서 나누는 메소드
+	insertAEmptyRowForItemsMoreThan20(){
+		
+		Xl := ComObjActive("Excel.Application")
+		Xl.Visible := True ;by default excel sheets are invisible
+
+		j = 1 ; 기준 스타일 번호의 줄 저장 변수
+		k = 1 ; 비교할 스타일 번호의 줄 저장할 변수
+		#ofStyle = 0 ; 같은 스타일이 몇개인지 세기 위해
+		
+		
+		; 색깔이 있는 4열(Columns)로 정렬
+		xl.cells.sort(xl.columns(4), 1)
+		; 스타일 넘버가 있는 3열 정렬
+		xl.cells.sort(xl.columns(3), 1)
+		
+		
+		locOfStyle# := "C"
+		
+		Loop{
+
+			#ofRowToRead := locOfStyle# . j
+			#ofRowToReadAddedOne :=  locOfStyle# . k
+			
+			
+			standStyle# := Xl.Range(#ofRowToRead).Value
+			Style#ToBeCompared := Xl.Range(#ofRowToReadAddedOne).Value
+			
+			;~ MsgBox, % standStyle# . "`n" . Style#ToBeCompared . "`n" . "j : " . j . "`n" . "k : " . k
+			
+			; 스타일 번호가 없는 빈칸이면 루프 끝내고 나가기
+			if(standStyle# == ""){
+				break
+			}
+						
+
+			; standStyle# 변수와 Style#ToBeCompared 변수 값이 같으면
+			; 다음 아이템 비교하기위해 루프 계속 진행하기
+			IfEqual, standStyle#, %Style#ToBeCompared%
+			{
+;				MsgBox, % "아이템이 같음`n`n" . standStyle# . "`n" . Style#ToBeCompared . "`n" . "j : " . j . "`n" . "k : " . k
+
+				; 다음줄로 넘어가기 위해
+				k := k + 1
+				
+				; 같은 아이템이 몇개인지 확인하기 위해
+				#ofStyle++ 
+				
+				continue
+			}
+			
+			; 기준 스타일 번호와 지금 스타일 번호가 다르면 
+			else IfNotEqual, standStyle#, %Style#ToBeCompared%
+			{
+				
+;				MsgBox, % "아이템이 다름`n`n" . standStyle# . "`n" . Style#ToBeCompared . "`n" . "j : " . j . "`n" . "k : " . k
+				
+				; 20개 넘는 아이템만 빈줄 삽입해서 나누기
+				;~ if(#ofStyle >= 2){ ; #################################################### 아이템이 1개든 2개든 스타일번호가 바뀔때마다 빈줄 넣고싶을때는 이것 사용하기 ####################################################
+				if(#ofStyle >= 20){
+					
+;					MsgBox, % standStyle# . "`n" . Style#ToBeCompared . "`n" . "j : " . j . "`n" . "k : " . k
+					
+					; 10 개 넘는 아이템의 끝을 표시해주기 위해 엑셀에 빈줄 넣기
+					Xl.Rows(k).EntireRow.Insert
+					
+					; 처음을 표시해주기 위해 빈줄 삽입해야하는데 만약 처음 표시할 빈줄 이전에 빈줄이 있다면 빈줄 삽입하지 않기. 만약 빈줄을 삽입하게 되면 빈줄이 연달아 2개가 되니까
+					#ofRowToRead := "C" . j-1
+					standStyle# := Xl.Range(#ofRowToRead).Value
+					
+					; 앞선 줄이 빈줄이 아닐때만 
+					if(standStyle# != ""){
+						
+						; 처음을 다른 아이템과 나누기 위한 빈줄 삽입
+						Xl.Rows(j).EntireRow.Insert
+						
+						; 10개 넘는 아이템의 처음과 끝을 표시해주기 위해 처음과 맨끝의 빈줄 2줄 입력했기 때문에 2 증가
+						j := k + 2
+						k := k + 2
+						#ofStyle = 1						
+;						MsgBox, % "j : " . j . "`n" . "k : " . k
+						continue
+					}
+					
+					; 20개 넘는 아이템이지만 첫줄은 삽입 않고 마지막 줄만 삽입했기 때문에 1 증가
+					j := k + 1
+					k := k + 1
+					#ofStyle = 1
+;					MsgBox, % "j : " . j . "`n" . "k : " . k
+					continue
+				}
+				
+				; 스타일 번호가 같은 갯수가 20개가 안되면 다음으로 넘어가기
+				; k는 이미 스타일 번호가 다른 다음줄이기 때문에 기준 스타일 번호 줄을 k로 하기
+				j := k
+				#ofStyle = 1
+;				MsgBox, % "다음의 j k 값`n`n" . "j : " . j . "`n" . "k : " . k
+				continue
+			}
+			
+			
+			;~ GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가
+
+		}
+		
+
+;		SoundPlay, %A_WinDir%\Media\Ring06.wav
+;		MsgBox, 262144, Title, THE ITEMS HAVE BEEN DEVIDED.
+
+		return		
+		
+		
+		
+		
+	} ; method ends - insertAEmptyRowForItemsMoreThan20()
+			
+		
+		
+		
+		
+		
+		
+
+/*
+	;엑셀 값의 끝 row 번호 알아낸 후 lastLine#OfRow 에 값 넣기
+	XL_Handle(XL,1) ;get handle to Excel Application
+	;~ i := XL_Last_Row(XL)
+	lastLine#OfRow := XL_Last_Row(XL)
+	;~ GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가
+MsgBox, % "lastLine#OfRow : " . lastLine#OfRow	
+*/	
+
+MsgBox, 4100, Wintitle, 끝
+
+return
+
 
 
 

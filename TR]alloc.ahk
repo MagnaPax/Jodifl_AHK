@@ -17,16 +17,58 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 
+	
+;GUI Backgroud
+;~ Gui, Show, w230 h200, Refine The Allocation, AlwaysOnTop Window
+Gui, Refine_The_Allocation: New
+Gui, Refine_The_Allocation:Show, w230 h200, Refine The Allocation, AlwaysOnTop Window
+WinSet, AlwaysOnTop, On, Refine The Allocation
 
-	MsgBox, 262144, REFINE ALLOCATION FILE, CLICK OK TO CONTINUE
 
+;Check Box OF REMOVE duplicate
+Gui, Add, CheckBox, x25 y20 w200 h40 vRemoveDuplicate, REMOVE`nDUPLICATE CUSTOMER NAMES
+
+;Check Box OF LEAVE duplicate
+Gui, Add, CheckBox, x25 y55 w200 h40 vLeaveDuplicate, LEAVE`nDUPLICATE CUSTOMER NAMES
+
+
+
+;엔터 버튼
+;~ Gui, Add, Button, x225 y19 w100 h110 +default gClick_btn, Enter
+Gui, Add, Button, x25 y110 w180 h40 +default gClick_btn, CONTINUE
+
+;GUI시작 시 포커스를 REMOVE duplicate 라디오 박스에 위치
+GuiControl, Focus, RemoveDuplicate
+
+; 엑셀 파일 열라는 안내 문구
+Gui, Add, Text, x20 y165 w200 h40 , ## PLEASE OPEN THE EXCEL FILE ##
+
+
+return
+
+
+
+
+
+
+Click_btn:
+
+
+	; RemoveDuplicate 체크박스 체크됐는지 상태값 얻기 위해
+	GuiControlGet, RemoveDuplicate
+	
+	
+	; 이름이 Refine_The_Allocation인 GUI 없앰
+	gui, Refine_The_Allocation:Destroy	
+	
+
+	
 
 	; 화면 모드 Relative로 설정하기
 	CoordMode, Mouse, Relative
 
 	; 사용자의 키보드와 마우스 입력은 Click, MouseMove, MouseClick, 또는 MouseClickDrag이 진행 중일 때 무시됩니다 
 	BlockInput, Mouse
-
 
 
 	; 만약 엑셀 창이 열려있지 않으면 열릴때까지 무한 반복으로 경고창 표시하기
@@ -37,7 +79,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 			IfWinExist, ahk_class XLMAIN
 				break
 		}
-	}
+	}	
+	
+
 	
 	
 	
@@ -143,26 +187,19 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 
+	; 중복 제거를 체크했을 때
+	if(RemoveDuplicate){
 
+		; 중복값 지우기 위해 일단
+		; 2 열(Columns)을 정렬하기
+		xl.cells.sort(xl.columns(2), 1)
+		GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가	
 
-; #############################################################
-;	MsgBox, 262144, Title, 고객명(2열)로 정렬 후 중복값 지우기
-; #############################################################	
-	
-	; 중복값 지우기 위해 일단
-	; 2 열(Columns)을 정렬하기
-	xl.cells.sort(xl.columns(2), 1)
-	GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가	
+		;엑셀 값의 끝 row 번호 알아낸 후 i 에 값 넣기
+		XL_Handle(XL,1) ;get handle to Excel Application
+		i := XL_Last_Row(XL)
+		GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가
 
-
-
-	;엑셀 값의 끝 row 번호 알아낸 후 i 에 값 넣기
-	XL_Handle(XL,1) ;get handle to Excel Application
-	i := XL_Last_Row(XL)
-	GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가	
-
-
-;~ MsgBox
 		
 		j = 1
 		Loop{
@@ -176,7 +213,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 			var1 := Xl.Range(#ofRowToRead).Value
 			var2 := Xl.Range(#ofRowToReadAddedOne).Value
 			
-;			MsgBox, % var1 . "`n" . var2
+;			MsgBox, % "j : " . j . "`nk : " . k . "`n`n" . "var1 : " . var1 . "`nvar2 : " . var2
 			
 			
 			if(var1 == ""){
@@ -190,9 +227,10 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 			{
 				
 ;				MsgBox, % var1 . "`n" . var2 . "`n`n" . "delete" . "`n`n" . "i : " . i . "`nj : " . j
+;				MsgBox, % #ofRowToReadAddedOne . "를 지웁니다"
 				Xl.Sheets(1).Range(#ofRowToReadAddedOne).EntireRow.Delete
 				
-				GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가				
+				GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가	
 				continue
 			}
 			
@@ -209,7 +247,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 		}
 		
-		
+	}
+
+
 			
 
 
@@ -225,8 +265,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 
-	; 10개 넘는 아이템만 빈줄 삽입해서 나누기
-	insertAEmptyRowForItemsMoreThan10()
+	; 20개 넘는 아이템만 빈줄 삽입해서 나누기
+	insertAEmptyRowForItemsMoreThan20()
 
 	; 프로그래스 바 닫기
 	Gui Destroy
@@ -243,7 +283,18 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 	StringTrimRight, fileName, fileName, 5
 	
 	; 파일 이름 뒤에 -REFINED 추가
-	fileName := fileName . "-REFINED"
+	fileName := fileName . "-REFINED"	
+	
+/*	
+	; 중복 허용을 체크했을 때 파일 이름 뒤에 -REFINED 추가	
+	if(LeaveDuplicate)
+		fileName := fileName . "-REFINED"	
+	
+	; 중복 제거를 체크했을 때 파일 이름 뒤에 -REFINED-No_Duplicate 추가	
+	if(RemoveDuplicate)
+		fileName := fileName . "-REFINED-No_Duplicate"
+*/	
+	
 	
 	; 파일 저장 위치+파일명 만들기
 	path := path . "\" . fileName	
@@ -284,8 +335,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 	
 	
 	
-	; 10개 넘는 아이템만 빈줄 삽입해서 나누기
-	insertAEmptyRowForItemsMoreThan10(){
+	; 20개 넘는 아이템만 빈줄 삽입해서 나누기
+	insertAEmptyRowForItemsMoreThan20(){
 		
 		Xl := ComObjActive("Excel.Application")
 		Xl.Visible := True ;by default excel sheets are invisible
@@ -339,9 +390,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 				
 ;				MsgBox, % "아이템이 다름`n`n" . standStyle# . "`n" . Style#ToBeCompared . "`n" . "j : " . j . "`n" . "k : " . k
 				
-				; 10개 넘는 아이템만 빈줄 삽입해서 나누기
+				; 20개 넘는 아이템만 빈줄 삽입해서 나누기
 				;~ if(#ofStyle >= 2){ ; #################################################### 아이템이 1개든 2개든 스타일번호가 바뀔때마다 빈줄 넣고싶을때는 이것 사용하기 ####################################################
-				if(#ofStyle >= 10){
+				if(#ofStyle >= 20){
 					
 ;					MsgBox, % standStyle# . "`n" . Style#ToBeCompared . "`n" . "j : " . j . "`n" . "k : " . k
 					
@@ -366,7 +417,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 						continue
 					}
 					
-					; 10개 넘는 아이템이지만 첫줄은 삽입 않고 마지막 줄만 삽입했기 때문에 1 증가
+					; 20개 넘는 아이템이지만 첫줄은 삽입 않고 마지막 줄만 삽입했기 때문에 1 증가
 					j := k + 1
 					k := k + 1
 					#ofStyle = 1
@@ -374,7 +425,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 					continue
 				}
 				
-				; 스타일 번호가 같은 갯수가 10개가 안되면 다음으로 넘어가기
+				; 스타일 번호가 같은 갯수가 20개가 안되면 다음으로 넘어가기
 				; k는 이미 스타일 번호가 다른 다음줄이기 때문에 기준 스타일 번호 줄을 k로 하기
 				j := k
 				#ofStyle = 1
@@ -396,7 +447,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 		
 		
 		
-	} ; method ends - insertAEmptyRowForItemsMoreThan10()
+	} ; method ends - insertAEmptyRowForItemsMoreThan20()
 	
 	
 	

@@ -477,6 +477,15 @@ BlockInput, MouseMoveOff
 									
 									IfMsgBox, No
 									{
+										; BTR 인지 묻고 맞으면 Memo란에 BTR 쓰기
+										MsgBox, 262148, NOT BTR CONFIRMATION, BTR인가?
+										IfMsgBox, Yes
+										{
+											CommN41_driver := New CommN41
+											CommN41_driver.clickPickTicketButton()	; Pick Ticket 버튼 클릭하는 메소드
+											CommN41_driver.findMemoOnPickTicketTab_and_PutBTROnIt() ; 픽티켓 탭에 있는 Memo 찾아서 BTR 써넣기
+										}
+										
 										; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
 										FG_PA = 0
 										LAS_PA = 0
@@ -693,6 +702,15 @@ BlockInput, MouseMoveOff
 								
 								IfMsgBox, No
 								{
+									; BTR 인지 묻고 맞으면 Memo란에 BTR 쓰기
+									MsgBox, 262148, NOT BTR CONFIRMATION, BTR인가?
+									IfMsgBox, Yes
+									{
+										CommN41_driver := New CommN41										
+										CommN41_driver.clickPickTicketButton()	; Pick Ticket 버튼 클릭하는 메소드
+										CommN41_driver.findMemoOnPickTicketTab_and_PutBTROnIt() ; 픽티켓 탭에 있는 Memo 찾아서 BTR 써넣기
+									}
+									
 									; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
 									FG_PA = 0
 									LAS_PA = 0
@@ -749,7 +767,7 @@ driver.quit()
 	
 	
 	; pre authorized 버튼 클릭 않고 인쇄하기
-	PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation){
+	0000000000_OLD___________PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation){
 
 
 ; 사용자의 마우스 이동 막음
@@ -903,6 +921,15 @@ BlockInput, MouseMoveOff
 				
 				IfMsgBox, No
 				{
+					; BTR 인지 묻고 맞으면 Memo란에 BTR 쓰기
+					MsgBox, 262148, NOT BTR CONFIRMATION, BTR인가?
+					IfMsgBox, Yes
+					{
+						CommN41_driver := New CommN41
+						CommN41_driver.clickPickTicketButton()	; Pick Ticket 버튼 클릭하는 메소드
+						CommN41_driver.findMemoOnPickTicketTab_and_PutBTROnIt() ; 픽티켓 탭에 있는 Memo 찾아서 BTR 써넣기
+					}					
+					
 					; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
 					FG_PA = 0
 					LAS_PA = 0
@@ -938,7 +965,301 @@ driver.quit()
 
 		return
 	} ; PrintWITHOUTClickPreAuthorizedButton 메소드 끝
-	
+
+
+
+
+
+
+
+
+
+
+
+
+	; pre authorized 버튼 클릭 않고 인쇄하기
+	PrintWITHOUTClickPreAuthorizedButton(CustomerPO, IsItFromExcelFile, IsItFromNewOrder, IsItFromAllocation){
+
+		Sleep 3000
+
+		; Allocation 에서 온 주문은 그냥 주문 페이지 열기. (cbs보다 FG 혹은 LAS PA 얻어야 되는 일이 많으니까)
+;		if(IsItFromAllocation){
+		; 뉴오더가 아니면 그냥 무조건 주문창 열어보자
+		if(!IsItFromNewOrder){
+;MsgBox, 262144, Title, 뉴오더가 아니니 주문창 자동으로 열 예정`n`nIsItFromNewOrder : %IsItFromNewOrder%
+;		WinClose, ahk_class Chrome_WidgetWin_1 ; 이상하게 열린 창 다시 사용할때 에러난다 차라리 다 닫고 새로 시작하자									
+											
+			FGFromAll_driver := New FG_ProcessingOfPT
+			LASFromAll_driver := New LAS_ProcessingOfPT
+			N_driver := new N41
+
+
+			N_driver.clickPickTicketButton() ; Pick Ticket 화면 열기위해 Pick Ticket 탭 클릭하기
+			CustomerPO := N_driver.getCustPONumberOnPickTicketScreen() ; Pick Ticket 화면에 있는 Customer PO 값 읽어와서 변수에 넣기
+			
+			if(!CustomerPO){
+				SoundPlay, %A_WinDir%\Media\Ring02.wav
+				MsgBox, 262148, No NOT CustomerPO, Customer PO 번호가 없음 PO 값을 다시 읽을까요?
+				
+				IfMsgBox, Yes
+					CustomerPO := N_driver.getCustPONumberOnPickTicketScreen() ; Pick Ticket 화면에 있는 Customer PO 값 읽어와서 변수에 넣기
+			}
+
+			if(RegExMatch(CustomerPO, "imU)MTR")){
+				IsItFromNewOrder = 0
+				FGFromAll_driver.ProcessingFGOrder(CustomerPO, F_driver, N_driver, IsItFromNewOrder, IsItFromExcelFile) ; ##################### 주문 창 열기 #######################
+			}			
+			; CustomerPO 가 LAS 일때
+			else if(RegExMatch(CustomerPO, "imU)OP")){
+				LASFromAll_driver.ProcessingLASOrder(CustomerPO, LASFromAll_driver, N_driver) ; ##################### 주문 창 열기 #######################
+			}				
+		}
+
+
+
+		SoundPlay, %A_WinDir%\Media\Ring06.wav
+		MsgBox, 262148, NOT PRE-AUTHORIZED, THE PRE-AUTHORIZE BUTTON WAS NOT CLICKED.`n`nWOULD YOU LIKE TO CHANGE PMT Method of Sales Order AND LEAVE MESSAGE THAT 'FG PA' or 'LAS PA' ON THE HOUSE MEMO?
+									
+		; 하우스 메모에 FG PA 혹은 LAS PA 입력한 뒤 SO번호에 해당하는 Sales Order 탭으로 이동해서 PMT Method 바꾸기
+		IfMsgBox, Yes
+		{
+			; 만약 현재 페이지가 FG 페이지라면
+			if(RegExMatch(driver.Url, "imU)fashiongo")){
+											
+				; 제대로 결제됐는지 확인
+				PaymentStatus_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-order-detail/div[2]/div[2]/div[2]/div[1]/ul/li[1]/span[2]/div/span[1]
+											
+				payment_Status := driver.FindElementByXPath(PaymentStatus_Xpath).Attribute("innerText")
+										
+				if payment_Status not contains Authorized
+				{
+					MsgBox, 262144, PAYMENT ERROR, IT'S NOT PREAUTHORIZED. 결제 됐는지 확인 후 진행
+				}
+			} ; END끝 - if(RegExMatch(driver.Url, "imU)fashiongo"))
+										
+			; 객체 생성
+			CommN41_driver := New CommN41
+										
+			; Customer PO # 에 맞는 메모 남기기
+			CommN41_driver.clickPickTicketButton()
+			CustomerPO := ""
+			Loop{
+				CustomerPO := CommN41_driver.getCustPONumberOnPickTicketScreen() ; CUSTOMER PO 가져오기
+			if(CustomerPO)
+				break
+			}
+			CommN41_driver.PutMemoIntoHouseMemoOnPickTicket() ; 하우스 메모 위치로 이동
+			if CustomerPO contains MTR
+			{
+				Send, FG PA
+				Sleep 100
+				Send, ^s
+			}
+			else if CustomerPO contains OP
+			{
+				Send, LAS PA
+				Sleep 100
+				Send, ^s
+			}
+										
+										
+			; Sales Order 탭으로 이동해서 PMT Method 바꾸기
+			CommN41.moveToSONumTab()						; Sales Order 탭으로 이동
+			CommN41.changePMTMethodToFGorLAS(CustomerPO)	; PMT Method 바꾸기
+
+			; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
+			if CustomerPO contains MTR
+			{
+				FG_PA = 1
+				LAS_PA = 0
+			}
+			else if CustomerPO contains OP
+			{
+				FG_PA = 0
+				LAS_PA = 1											
+			}
+			N41_PA = 0
+			CBS_or_ccDecline = 0								
+			updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 현재 화면 pick ticket 의 상태를 파일에 저장하는 메소드
+			
+			; 인쇄 후 무엇인지 알려주기 위해
+			if CustomerPO contains MTR
+				whatisthestatus = 1	; FG 에서 결제로 메세지창에 표시
+
+			else if CustomerPO contains OP
+				whatisthestatus = 2	; LAS 에서 결제로 메세지창에 표시
+			
+		} ; END끝 - IfMsgBox, Yes
+
+		IfMsgBox, No
+		{
+/*			
+			; BTR 인지 묻고 맞으면 Memo란에 BTR 쓰기
+			MsgBox, 262404, NOT BTR CONFIRMATION, BTR인가?
+			IfMsgBox, Yes
+			{
+				CommN41_driver := New CommN41
+				CommN41_driver.clickPickTicketButton()	; Pick Ticket 버튼 클릭하는 메소드
+				CommN41_driver.findMemoOnPickTicketTab_and_PutBTROnIt() ; 픽티켓 탭에 있는 Memo 찾아서 BTR 써넣기
+				whatisthestatus = 3	; BTR 이라고 메세지창에 표시
+			}
+*/			
+			whatisthestatus = 4	; 가결제 못 받았음.으로 메세지창에 표시
+			
+/*			
+			MsgBox, 262404, CHANGE PMT METHOD, PMT Method 를 바꿀까요?
+			IfMsgBox, Yes
+			{
+				; Sales Order 탭으로 이동해서 PMT Method 바꾸기
+				CommN41.moveToSONumTab()						; Sales Order 탭으로 이동
+				CommN41.changePMTMethodToFGorLAS(CustomerPO)	; PMT Method 바꾸기
+			}
+*/
+			; 현재 화면 pick ticket 의 상태(FG PA, LAS PA, N41 PA, CBS)를 파일에 저장하는 메소드
+			FG_PA = 0
+			LAS_PA = 0
+			N41_PA = 0
+			CBS_or_ccDecline = 1
+			updPTStatus(FG_PA, LAS_PA, N41_PA, CBS_or_ccDecline) ; 메소드
+					
+					
+		} ; END끝 - IfMsgBox, No
+				
+				
+		; 사용자의 마우스 이동 막음
+;		BlockInput, MouseMove
+		CommN41_driver := New CommN41
+		CommN41_driver.clickPickTicketButton()	; Pick Ticket 버튼 클릭하는 메소드	
+		CommN41_driver.ClickRefreshButtonOnPickTicket()	; ; Pick Ticket 에 있는 리프레쉬 버튼 클릭하기
+		WinWaitActive, Pick #, , 2
+		if ErrorLevel
+		{
+			MsgBox, 262144, ERROR, 창 안떴음
+			return
+		}
+		else
+			Send, {Enter}
+		
+		
+
+		; Print 버튼 클릭
+		Text:="|<Print Button>*165$17.0007s08A0E40U81TES0wZx982GTwY01802TzwzztU0lzz000E"
+		if ok:=FindText(359,129,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Click					
+						
+			Sleep 1000
+						
+			; 프린트 창 최대화 하기
+			WinWaitActive, Pick Ticket Print
+			WinMaximize, Pick Ticket Print
+					
+			; 안에 있는 프린트 버튼 클릭
+			Text:="|<Print Button2>*186$18.000TzyQ0yQ0SQ3CQ0CI0C40O002002002002002o0Dw0Dw0TzzzU"
+			if ok:=FindText(199,44,150000,150000,0,0,Text)
+			{
+				CoordMode, Mouse
+				X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+				MouseMove, X+W//2, Y+H//2
+				Click
+							
+				Sleep 500
+						
+				; 에러창 나오면 프로그램 다시 시작하기
+				IfWinActive, Microsoft Visual C++ Runtime Library
+				{						
+					MsgBox, 262144, ALERT, RESTART THE APPLICATION DUE TO WARNING WINDOW`nYOU SHOULD KEEP CURRENT PICK TICKET NUMBER
+	;				Reload
+					return
+				}
+							
+				Send, {Down}
+				Sleep 200
+				Send, {Down}
+				Sleep 200
+				Send, {Enter} ; Print Now 눌러서 인쇄하기
+							
+				Sleep 3000
+				WinActivate, Pick Ticket Print
+				WinClose, Pick Ticket Print ; 프린트 창 닫기
+				Sleep 700
+				
+			} ; 끝 - if ok:=FindText(199,44,150000,150000,0,0,Text)
+		} ; 끝 - if ok:=FindText(359,129,150000,150000,0,0,Text)
+
+
+; 사용자의 마우스 이동 허용
+BlockInput, MouseMoveOff
+		
+		; 픽티켓이 어떤 상태인지 알려주기 위해
+		if(whatisthestatus == 1)
+			MsgBox, 262144, FG, FG 에서 결제
+		else if(whatisthestatus == 2)
+			MsgBox, 262144, LAS, LAS 에서 결제
+		else if(whatisthestatus == 3)
+			MsgBox, 262144, BTR, BTR
+		else if(whatisthestatus == 4)
+			MsgBox, 262144, NOT PREAUTHORIZED, 가결제 못 받았음. 아래 중 하나`n`n1. N41 에서 PRE-AUTHORIZED`n2. FG or LAS DECLINE`n3. CBS(EBS)
+
+		
+		
+		CN41_driver := New CommN41
+		
+			
+		CN41_driver.clickPickTicketTabToGoToThere()	; pick ticket 탭에 들어가기 위해 버튼 클릭하기		
+		CN41_driver.ClickREfresh()	; Pick Ticket 탭에 있는 Refresh Button 클릭하기
+		WinWaitActive, Pick #		
+		Sleep 300
+		Send, {Enter}
+		Sleep 700
+		#ofPrintCount := CN41_driver.getNumberOfPrintCountOnPckTicketTab()	; PICK TICKET 탭에서 인쇄가 몇 번 됐는지 그 횟수 얻기
+;MsgBox, 262144, Title, 이 픽티켓이 인쇄된 횟수 : %#ofPrintCount%
+		if(#ofPrintCount >= 2){
+			SoundPlay, %A_WinDir%\Media\Ring02.wav
+			MsgBox, 262160, Title, 경고!! 이 픽티켓이 1번 이상 인쇄됐습니다!!`nCLICK OK TO CONTINUE
+		}
+		CN41_driver.OpenSOManager()	; SO MANAGER 탭 누르고 끝내기
+		
+
+		; 아이템이 제대로 pick ticket에 들어갔는지 확인하기위해 SO Manager 에 있는 refresh 버튼 클릭해서
+		; 가끔 store에 있는 정보가 다르면(예를 들어 52 street 과 52 st.) 아이템이 pick ticket에 안 들어가기도 한다
+		CN41_driver.ClickREfreshButtonOnSOManager()
+
+;MsgBox, 262144, Title, PrintWITHOUTClickPreAuthorizedButton`n카드 없이 인쇄한 뒤 오더페이지에서 돈 받았음. 여기에서 에러나나? (1)
+
+
+
+driver.quit()
+
+
+
+		return
+	} ; PrintWITHOUTClickPreAuthorizedButton 메소드 끝
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	
 	
@@ -1150,12 +1471,12 @@ class LAS_ProcessingOfPT extends LA{
 				if(BuyerNotes)
 				{				
 					SoundPlay, %A_WinDir%\Media\Ring06.wav
-					MsgBox, 4100, Memo, `n`n`n`n`n`n`n`n`n`n`n%BuyerNotes%`n`n%AdditionalInfo%`n`n%StaffNotes%`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=`n`n`nREADY TO UPDATE CUSTOMER INFO`n`n`nIF YOU CLICK Yes, IT'LL OPEN Customer Master AND UPDATE THE CUSTOMER'S INFO ON IT.
+					MsgBox, 4100, Memo, `n`n`n`n`n`n`n`n`n`n`n%BuyerNotes%`n`n%AdditionalInfo%`n`n%StaffNotes%`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=`n`n주소 등 고객 정보를 갱신합니다`nREADY TO UPDATE CUSTOMER INFO`n`n`nIF YOU CLICK Yes, IT'LL OPEN Customer Master AND UPDATE THE CUSTOMER'S INFO ON IT.
 				}
 				else{	
 
 					SoundPlay, %A_WinDir%\Media\Ring06.wav
-					MsgBox, 4100, Memo, READY TO UPDATE CUSTOMER INFO`n`n`nIF YOU CLICK Yes, IT'LL OPEN Customer Master AND UPDATE THE CUSTOMER'S INFO ON IT.
+					MsgBox, 4100, Memo, 주소 등 고객 정보를 갱신합니다`nREADY TO UPDATE CUSTOMER INFO`n`n`nIF YOU CLICK Yes, IT'LL OPEN Customer Master AND UPDATE THE CUSTOMER'S INFO ON IT.
 				}
 
 
@@ -1375,13 +1696,13 @@ MsgBox, 배열에 들어있는 값들 확인 완료
 					
 				SoundPlay, %A_WinDir%\Media\Ring02.wav ; Ring03 이 이상하면 Ring02 써보기
 				;~ SoundPlay, %A_WinDir%\Media\Ring03.wav
-				MsgBox, 4100, Memo, `n`n`n`n`n`n`n`n`n`n`n%BuyerNotes%`n`n%AdditionalInfo%`n`n%StaffNotes%`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=`n`n`nREADY TO UPDATE CUSTOMER INFO`n`n`nIF YOU CLICK Yes, IT'LL OPEN Customer Master AND UPDATE THE CUSTOMER'S INFO ON IT.
+				MsgBox, 4100, Memo, `n`n`n`n`n`n`n`n`n`n`n%BuyerNotes%`n`n%AdditionalInfo%`n`n%StaffNotes%`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n`n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=`n`n주소 등 고객 정보를 갱신합니다`nREADY TO UPDATE CUSTOMER INFO`n`n`nIF YOU CLICK Yes, IT'LL OPEN Customer Master AND UPDATE THE CUSTOMER'S INFO ON IT.
 			}
 			; 메모 내용이 없으면 간단하게 업데이트 할지만 묻기
 			else{
 
 				SoundPlay, %A_WinDir%\Media\Ring06.wav
-				MsgBox, 4100, Memo, READY TO UPDATE CUSTOMER INFO`n`n`nIF YOU CLICK Yes, IT'LL OPEN Customer Master AND UPDATE THE CUSTOMER'S INFO ON IT.
+				MsgBox, 4100, Memo, 주소 등 고객 정보를 갱신합니다`nREADY TO UPDATE CUSTOMER INFO`n`n`nIF YOU CLICK Yes, IT'LL OPEN Customer Master AND UPDATE THE CUSTOMER'S INFO ON IT.
 			}
 
 			; No 눌렀으면 고객정보 업데이트 하지 않기
@@ -1803,7 +2124,6 @@ class JODIFL extends CommWeb{
 ;			MsgBox, 크롬창 열려있음
 			driver := ChromeGet()
 ;			MsgBox, % driver.Window.Title
-
 		
 			; 지금 열려있는 크롬창의 WINDOW TITLE 에 Magento Admin 가 포함되어 있지 않으면 JODIFL 창 새로 열기
 			if driver.Window.Title not contains Magento Admin

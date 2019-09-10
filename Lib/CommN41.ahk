@@ -336,7 +336,7 @@ class CommN41{
 		  X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 		  MouseMove, X+W//2, Y+H//2
 		  Click
-		  Sleep 200
+		  Sleep 700
 		}
 
 		return
@@ -1075,6 +1075,84 @@ class CommN41{
 		return 0
 		
 	} ; checkCC() 메소드 끝
+	
+	
+	
+	
+	; Cust DC Rate에 할인이 있는 지 확인 후 있으면 Discount Rate 복붙하기
+	copyDiscountRateAndPasteIfExist(){
+		
+		discountRate = 0
+		
+		Text:="|<Cust DC Rate>*183$64.D008T3kT081Y00VWN140U42Hr6B04PrSk9N8Mw0F99D0YsVXk1wQjo2Eu6B04aGkNdNcMaMFP9AwwwlwD16yrc"
+		if ok:=FindText(410,202,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, (X+W)+15, Y+H//2
+			Sleep 150
+			
+			; 마우스 오른쪽 버튼 클릭 후 값 얻기
+			Send, {RButton}
+			Loop, 4
+			{
+				Sleep 150
+				Send, {Down}
+				;~ Sleep 150
+			}
+			Send, {Enter}
+			Sleep 150
+			
+			discountRate := Clipboard
+			Sleep 150
+			
+			; 할인값이 있으면 Discount Rate 에 붙여넣기
+			if(discountRate){
+
+				; 사용자의 마우스 이동 허용
+				BlockInput, MouseMoveOff
+				
+				SoundPlay, %A_WinDir%\Media\Ring06.wav
+				MsgBox, 262144, DISCOUNT CUSTOMER, 할인율 발견. 티파니 고객인지 확인 후 진행. OK 누르면 복사-붙이기 진행됨
+				
+				; 사용자의 마우스 이동 막음
+				BlockInput, MouseMove
+
+				Text:="|<Discnt Rate>*182$55.y80023s10MU001140UAOwQxkXSvqBmHGEF99D6i898DXZzXFo4Y4aGklCOOG2/N9z5st9V6yrc"
+				if ok:=FindText(515,202,150000,150000,0,0,Text)
+				{
+					CoordMode, Mouse
+					X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+					MouseMove, (X+W)+15, Y+H//2
+					Click
+					Sleep 150
+					Send, ^v{Enter}
+					
+					; 2초동안 할인율을 중복으로 입력할건지 묻는 메세지창 나오길 기다림
+					WinWaitActive, Sales Order, , 2
+					if ErrorLevel
+					{
+						; 2초 안에 메세지 창이 안 나오면 새로운 값이 들어간 것이 아니라는 뜻. 리턴으로 함수 빠져나감
+						return
+					}
+					else{
+						Send, {Enter} ; 메세지 창이 활성화 됐으면 엔터 침
+						Sleep 150
+						Click
+						Sleep 150
+						Send, ^s
+						Sleep 3000
+						Send, ^s
+						Sleep 3000
+					}
+				}
+			}
+			; 할인값이 없으면 함수 빠져나가기
+			else
+				return
+		}
+	}
+	
 	
 	
 	
@@ -2172,6 +2250,7 @@ class CommN41{
 			; File name 으로 넘어가서 해당스타일번호-색깔 형식으로 파일명을 만들어서 (바탕화면에) 저장 후 Done! 윈도우 창이 나오면 엔터치기
 			Send, !n
 			Sleep 100
+			StringReplace, OOSColor, OOSColor, /, , All
 			Send, %OOSStyle#%-%OOSColor%
 			Sleep 100
 			Send, {Enter}
@@ -2604,10 +2683,108 @@ class CommN41{
 	
 	
 	
+	
+	; 픽티켓 탭에 있는 Memo 찾아서 BTR 써넣기
+	findMemoOnPickTicketTab_and_PutBTROnIt(){
 
+		Text:="|<Memo on Pick Ticket>*184$31.n0003NU003wnnywqtB9GTxyYtVOkGQkh9d+EKbYZs8"
+		if ok:=FindText(1099,174,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, (X+W)+30, Y+H//2
+			Sleep 500
+			Click
+			Sleep 150
+			Send, {End}
+			Sleep 150
+			Send, {Enter}
+			Sleep 150			
+			Send, BTR
+			Send, ^s
+			Sleep 2500
+			Send, ^s
+			Sleep 1000
+		}
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.findMemoOnPickTicketTab_and_PutBTROnIt()
+		}		
+		
+		return
+		
+	} ; 끝 - findMemoOnPickTicketTab_and_PutBTROnIt
+	
+	
+	
+	
+	
+	; PICK TICKET 탭에서 인쇄가 몇 번 됐는지 그 횟수 얻기
+	getNumberOfPrintCountOnPckTicketTab(){
+		
+		Text:="|<>*200$55.y20US000Ln00ENU00/szzQ8bYrjwyQYA2OOGzuCO63BBBT17B11aaajUXaUnHHHLkFnMDDDdjs"
+		if ok:=FindText(1105,312,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, (X+W)+30, Y+H//2
+			Sleep 200
+			
+			; Print Count 값 위에서 마우스 오른쪽 버튼 클릭 후 코드 복사메뉴에서 엔터치기
+			Send, {RButton}
+			Loop, 4
+			{
+				Sleep 150
+				Send, {Down}
+				;~ Sleep 150
+			}
+			Send, {Enter}
+			Sleep 150
+							
+			#ofPrintCount := Clipboard
+			Sleep 150			
+			
+		}
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.getNumberOfPrintCountOnPckTicketTab()
+		}				
+		
+		return #ofPrintCount
+		
+	}
+	
+	
+	
+	; pick ticket 탭에 들어가기 위해 버튼 클릭하기
+	clickPickTicketTabToGoToThere(){		
 
-
-
+		Text:="|<PICK TICKET>*133$68.s0000000000200000000000U0000U00400DzwSE87y10128V4E2080E0EW8F5DY29wbDDzwFI+0WVG928W7Z308cMyEW8V1Es2+784DzsEI/0WVO10U044yM8bnSQzzk00000000C0s000000003UC000000002"
+		if ok:=FindText(203,57,150000,150000,0,0,Text)
+		{
+			CoordMode, Mouse
+			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
+			MouseMove, X+W//2, Y+H//2
+			Click
+			Sleep 1000
+		}
+		
+		else
+		{
+			; 못 찾았으면 재귀호출해서 계속 찾기
+			Sleep 500
+			CommN41.clickPickTicketTabToGoToThere()
+		}					
+		
+		return
+	}
+	
+	
+	
 
 
 

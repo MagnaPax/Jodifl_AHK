@@ -9,7 +9,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; 바탕화면에 저장된 엑셀 파일 옮기기
 moveTheFileOnDesktopFromItToTheExcelFileFolder(OOSStyle#, OOSColor){
 
-	FileMove, C:\Users\JODIFL4\Desktop\%OOSStyle#%-%OOSColor%.xls*, %A_ScriptDir%\CreatedFiles\Excel Files
+	;~ FileMove, C:\Users\JODIFL4\Desktop\%OOSStyle#%-%OOSColor%.xls*, %A_ScriptDir%\CreatedFiles\Excel Files
+	FileMove, %A_Desktop%\%OOSStyle#%-%OOSColor%.xls*, %A_ScriptDir%\CreatedFiles\Excel Files
 	
 	Sleep 1000
 	

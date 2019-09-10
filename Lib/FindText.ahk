@@ -56,7 +56,7 @@ Menu, Tray, Default, Main_Window
 Menu, Tray, Click, 1
 ; The capture range can be changed by adjusting the numbers
 ;----------------------------
-  ww:=20, hh:=10
+  ww:=60, hh:=10
   ;~ ww:=125, hh:=15
 ;----------------------------
 nW:=2*ww+1, nH:=2*hh+1

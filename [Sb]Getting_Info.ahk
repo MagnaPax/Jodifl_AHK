@@ -15,5 +15,16 @@ MsgBox % driver.findElementsByName("cat").item[1].Attribute("option value")
 MsgBox % driver.findElementByName("s").Attribute("innerTEXT")
 
 
+/*
+; 이거 복붙해서 다른 프로그램에서 쓰기
+MsgBox % "** value 값**`n" . driver.FindElementByXPath(Xpath).Attribute("value") ;lowercase value
+MsgBox % "**outerHTML**`n" . driver.FindElementByXPath(Xpath).Attribute("outerHTML")
+MsgBox % "**textContent**`n" . driver.FindElementByXPath(Xpath).Attribute("textContent")
+MsgBox % "**innerText**`n" . driver.FindElementByXPath(Xpath).Attribute("innerText")
+MsgBox % "**option value**`n" . driver.FindElementByXPath(Xpath).Attribute("option value")
+MsgBox % "**innerTEXT**`n" . driver.FindElementByXPath(Xpath).Attribute("innerTEXT")
+*/
+
+
 Esc::
 Exitapp

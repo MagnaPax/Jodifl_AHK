@@ -36,6 +36,17 @@ goToURl_AfterLogIn_IfNeeded(driver, URL){
 		if(RegExMatch(driver.Url, "imU)login")){
 			
 			
+			; driver 를 넘겨줘서 로그인 한 뒤 다시 driver 넘겨받기
+			driver := FG_LoginOnly(driver)
+			
+			Sleep 1000
+;MsgBox, % "URL`n`n" . URL
+			
+			; 원하는 URL로 이동
+			driver.Get(url)
+			
+			
+/*			
 			; chrome_Profile.txt 파일을 EmptyFile.txt 로 덮어씌워 초기화 하기
 			FileCopy, %A_ScriptDir%\CreatedFiles\EmptyFile.txt, %A_ScriptDir%\CreatedFiles\NewWindowProcessing\chrome_Profile.txt, 1
 ;MsgBox, 뭔가 엉킨것 같기에 chrome_Profile.txt 파일 내용을 초기화 했습니다.
@@ -66,7 +77,7 @@ goToURl_AfterLogIn_IfNeeded(driver, URL){
 			; 이제는 로그인 화면으로 넘어가지 않고 제대로 뉴오더 화면으로 곧장 이동한다
 			driver.Get(url)
 			
-;~ /*			
+			
 			; 원래 여기서 멈춰야 되는데 이상하게 로그인이 안돼서 밑에 코드 추가했음
 			; FG 로그인 페이지라면
 			if(RegExMatch(driver.Url, "imU)login")){
@@ -80,11 +91,11 @@ goToURl_AfterLogIn_IfNeeded(driver, URL){
 				driver.Get(URL)				
 				
 			}
-*/			
+			
 			
 ;MsgBox, 내가 가고 싶은 페이지. 로그인 한 뒤 열렸음
 				
-			
+*/			
 		} ; if 닫기 - FG 로그인 페이지라면
 		
 	} ; if 닫기 - 만약 현재 페이지가 FG 페이지라면
@@ -260,9 +271,10 @@ goToURl_AfterLogIn_IfNeeded(driver, URL){
 		; ############
 		; 천희 ID & PW
 		; ############
-		Loginname = customer3
+		;~ Loginname = customer3
+		;~ Password = Jo123456789.		
 		Loginname = CHUNHEEHAN
-		Password = Jo123456789
+		Password = Jodifl123.
 
 
 		; 아이디 입력		
