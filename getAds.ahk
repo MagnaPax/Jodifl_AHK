@@ -25,9 +25,10 @@ Loop{
 	Loop{	
 		
 
-		; Marketing Tools -> Fixed Price Ads -> Purchase Ads 로 이동 
+		; Marketing Tools -> Fixed Price Ads -> Purchase Ads 로 이동		
 		URL = https://vendoradmin.fashiongo.net/#/ads/purchase
 		driver.Get(URL)
+
 		
 		
 		; 지금 페이지가 로그인 페이지라면 로그인하기
@@ -59,16 +60,26 @@ Loop{
 		page_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-purchase-ads/div[3]/div[1]/div[2]/div[2]/div[1]/div/select
 ;		changeStatusOfTheDropBoxUntilItsChanged(page_Xpath, "Mobile Main Page", 15, driver) ; Mobile Main Page 메뉴 상태 값이 15라서 제대로 바뀌었는지 상태 확인 하는 값으로 15를 넘겨줌		
 ;		changeStatusOfTheDropBoxUntilItsChanged(page_Xpath, "New Arrivals Page", 1, driver) ; New Arrivals Page
+;       changeStatusOfTheDropBoxUntilItsChanged(page_Xpath, "Women Page", 5, driver) ; Women Page Page
+		
+		
+        
+        
+        
         
 
 
 		
 		; Spot 드롭다운 박스 상태를 Mobile Main Small 로 바꾸기
-		Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-purchase-ads/div[3]/div[1]/div[2]/div[2]/div[2]/div/select
-;		changeStatusOfTheDropBoxUntilItsChanged(Xpath, "Mobile Main Small", 71, driver) ; Mobile Main Small 메뉴 상태 값이 71이라 제대로 바뀌었는지 상태 확인 하는 값으로 71를 넘겨줌
-;		changeStatusOfTheDropBoxUntilItsChanged(Xpath, "New Arrival Left", 7, driver) ; New Arrival Left
-		changeStatusOfTheDropBoxUntilItsChanged(Xpath, "New Arrival Right", 8, driver) ; New Arrival Right
-		Sleep 1000
+		sPot_Xpath = /html/body/fg-root/div[1]/fg-secure-layout/div/div[2]/fg-purchase-ads/div[3]/div[1]/div[2]/div[2]/div[2]/div/select
+;		changeStatusOfTheDropBoxUntilItsChanged(sPot_Xpath, "Mobile Main Small", 71, driver) ; Mobile Main Small 메뉴 상태 값이 71이라 제대로 바뀌었는지 상태 확인 하는 값으로 71를 넘겨줌
+;		changeStatusOfTheDropBoxUntilItsChanged(sPot_Xpath, "New Arrival Left", 7, driver) ; New Arrival Left
+;		changeStatusOfTheDropBoxUntilItsChanged(sPot_Xpath, "New Arrival Right", 8, driver) ; New Arrival Right
+;		changeStatusOfTheDropBoxUntilItsChanged(sPot_Xpath, "Top Right", 3, driver) ; Women Page -> Top Right		
+		changeStatusOfTheDropBoxUntilItsChanged(sPot_Xpath, "New In Right", 8, driver) ; New In -> New In Right
+        
+
+		Sleep 1700	
 
 
 
@@ -78,11 +89,11 @@ Loop{
 		
 		
 		
-MsgBox, 262144, Title, 나 때문에 다른 사람도 RE-CAPCHA 경고 뜬 것 같음. 실험을 위해 다음에는 프로그램 사용 말고 그냥 손으로 해보자.`n`n먼저 로그인 해 둔 뒤 [[02:59:50]] 에 프로그램 시작하기. 미리 로그인 해두었으면 페이지 넘어가는데 5초 걸림.
+;MsgBox, 262144, Title, 나 때문에 다른 사람도 RE-CAPCHA 경고 뜬 것 같음. 실험을 위해 다음에는 프로그램 사용 말고 그냥 손으로 해보자.`n`n먼저 로그인 해 둔 뒤 [[02:59:56]] 에 프로그램 시작하기. 5초가 살짝 안되게 4.X초 걸림. 미리 로그인 해두었으면 페이지 넘어가는데 5초 걸림.
 		
 		
 		;~ Xpath = //*[@title='09/01/2019 (Sun)']
-		Xpath = //*[@title='09/15/2019 (Sun)']		
+		Xpath = //*[@title='12/15/2019 (Sun)']		
 
 		
         
@@ -131,16 +142,33 @@ MsgBox, 262144, Title, 나 때문에 다른 사람도 RE-CAPCHA 경고 뜬 것 �
 		dayAndDate5 = 09/06/2019 (Fri)
 		dayAndDate6 = 09/07/2019 (Sat)
 */		
-;~ /*		
-		dayAndDate0 = 09/15/2019 (Sun)
-		dayAndDate1 = 09/16/2019 (Mon)
-		dayAndDate2 = 09/17/2019 (Tue)
-		dayAndDate3 = 09/18/2019 (Wed)
-		dayAndDate4 = 09/19/2019 (Thu)
-		dayAndDate5 = 09/20/2019 (Fri)
-		dayAndDate6 = 09/21/2019 (Sat)
-*/		
-		
+/*		
+		dayAndDate0 = 10/20/2019 (Sun)
+		dayAndDate1 = 10/21/2019 (Mon)
+		dayAndDate2 = 10/22/2019 (Tue)
+		dayAndDate3 = 10/23/2019 (Wed)
+		dayAndDate4 = 10/24/2019 (Thu)
+		dayAndDate5 = 10/25/2019 (Fri)
+		dayAndDate6 = 10/26/2019 (Sat)
+*/
+
+        ; 화요일만 잡기
+;       dayAndDate2 = 12/03/2019 (Tue)
+; 		Xpath_temp = //*[@title='%dayAndDate2%']
+;		driver.FindElementByXPath(Xpath_temp).click()
+        
+        ; 수요일만 잡기
+;        dayAndDate3 = 11/06/2019 (Wed)
+;  		Xpath_temp = //*[@title='%dayAndDate3%']
+;		driver.FindElementByXPath(Xpath_temp).click()
+        
+        ; 목요일만 잡기
+        dayAndDate4 = 12/12/2019 (Thu)
+		Xpath_temp = //*[@title='%dayAndDate4%']
+		driver.FindElementByXPath(Xpath_temp).click()
+        
+        
+/*		
 		; 여러 칸 누르기 위해 컨트롤 키 누름
 		driver.sendKeys(driver.Keys.CONTROL)
 
@@ -167,7 +195,7 @@ MsgBox, 262144, Title, 나 때문에 다른 사람도 RE-CAPCHA 경고 뜬 것 �
 		
 		; 컨트롤 해제
 		driver.sendKeys(driver.Keys.CONTROL)
-		
+*/		
         
 
 
@@ -181,7 +209,8 @@ if(RegExMatch(outerHTML, needle))
 }		
 */
 
-;MsgBox, 칸 다 선택했음
+
+;MsgBox, 262144, Title, 칸 다 선택했음
 
 
 
@@ -588,11 +617,16 @@ Esc::
 			
 			; 드롭박스의 현재 상태 값을 얻기
 			CurrentStatus := driver.FindElementByXPath(Xpath).Attribute("value")
+			Sleep 100
+			
+;MsgBox, % "현재 드롭박스 상태 : " . CurrentStatus
 			
 			; 드롭박스 상태값이 원하는 것을 바뀌었으면 루프 빠져나가기
 			if CurrentStatus contains %statusWhichHasToBe%
 			;~ if(CurrentStatus == StatusToBePreferred)
-				break				
+				break
+				
+			Sleep 150
 		}
 
 		
@@ -640,6 +674,7 @@ Esc::
               X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
               MouseMove, X+W//2, Y+H//2
               Click
+              Sleep 500
           }
           else
           {

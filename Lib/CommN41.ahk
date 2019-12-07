@@ -1414,6 +1414,9 @@ class CommN41{
 	; SO Manager 화면의 왼쪽 밑 Pick Ticket 섹션에서 Pick Date 날짜 가져오기
 	getPickDateOnPickTicketSectionOfSOManager(){
 		
+		
+;		MsgBox, 262144, Title, 픽티켓 섹션에서 픽티켓 날짜 가져옵니다.
+		
 		i = 1
 		Clipboard := ""
 		pickDate := ""
@@ -1423,10 +1426,11 @@ class CommN41{
 		Text:="|<Pick Date>*122$43.wU83k10F04140U8dmkWStoJBEFd9/mUk8nYz1EQ4GGEUce2999EHYVswnc"
 		if ok:=FindText(626,695,150000,150000,0,0,Text)
 		{
+			
 			CoordMode, Mouse
 			X:=ok.1, Y:=ok.2, W:=ok.3, H:=ok.4, Comment:=ok.5
 			MouseMove, X+W//2, (Y+H)+13
-			Sleep 150		
+			Sleep 150
 
 			; 고객 코드명 위에서 마우스 오른쪽 버튼 클릭 후 코드 복사메뉴에서 엔터치기
 			Send, {RButton}
@@ -1889,17 +1893,17 @@ class CommN41{
 		
 		MouseMove, 100, 100 ; 마우스 포인터가 찾으려는 곳에 겹쳐져서 못 찾는 것을 방지하기 위해 일단 임의의 위치로 마우스 포인터 옮김
 		
-		Sleep 100
+		Sleep 500
 		
 ;MsgBox, 262144, Title, 마지막 메세지 창 떴는지 확인하는 메소드 lastPTMessage_ReadyToGoCCAndPrinting 들어옴
 ;Sleep 100
 
-		Text:="|<Last_Message_Of_Making_PT>*146$115.y0U23m0UDc2020000U040E1140E101010000E02CSwUWXd0WCYRsTnlss9AY2EFH50FAIGEB89YY4YG78D9308YAD84YQWS0G94Y44Vk4G7442GGF809YWG22Mg29Wn2199Aa0YQRt117H14RAtkYbXlkM"
+		Text:="|<Last Message Window(Totla Pick Ticket Made)>*147$117.y0E11t0E7m0U0U00080102088U20804040001008Qxt157G12CYRsTnlss96G188dWU8H54Y3G2N918WEt1t8M12EkwUGFm9s14G98893U8G7442GGF808mF911AK12MgkUGGH9U93Xj888uM8Fonb2GSD71U"
 		if ok:=FindText(2968,410,150000,150000,0,0,Text)
 		{
 
 ;MsgBox, 262144, Title, 마지막 메세지 창 찾았음
-;Sleep 200
+;Sleep 500
 
 			; 마지막 메세지 창의 OK 버튼 찾아서 누르기
 			Text:="|<OK>*157$14.D4wN+2IUq89m2IlYblC"

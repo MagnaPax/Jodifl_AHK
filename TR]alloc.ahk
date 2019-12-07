@@ -7,6 +7,14 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
+
+; 에러 메세지 경고창 안 뜨게 하는 함수
+ComObjError(false)
+
+
+
+
+
 #Include %A_ScriptDir%\lib\
 
 
@@ -24,13 +32,11 @@ Gui, Refine_The_Allocation: New
 Gui, Refine_The_Allocation:Show, w230 h200, Refine The Allocation, AlwaysOnTop Window
 WinSet, AlwaysOnTop, On, Refine The Allocation
 
-
 ;Check Box OF REMOVE duplicate
-Gui, Add, CheckBox, x25 y20 w200 h40 vRemoveDuplicate, REMOVE`nDUPLICATE CUSTOMER NAMES
+Gui, Add, CheckBox, x25 y20 w200 h40 vRemoveDuplicate, REMOVE`nSAME CUSTOMER NAMES
 
 ;Check Box OF LEAVE duplicate
-Gui, Add, CheckBox, x25 y55 w200 h40 vLeaveDuplicate, LEAVE`nDUPLICATE CUSTOMER NAMES
-
+Gui, Add, CheckBox, x25 y55 w200 h40 vLeaveDuplicate, LEAVE ON`nSAME CUSTOMER NAMES
 
 
 ;엔터 버튼
@@ -86,7 +92,7 @@ Click_btn:
 	
 	
 	; 아이템 찾는 동안 보여줄 프로그래스 바
-	TotalLoops = 25000
+	TotalLoops = 35000
 	Gui, -Caption +AlwaysOnTop +LastFound
 	Gui, Add, Text, x12 y9 w170 h20 , P  R  O  C  E  S  S  I  N  G  .  .  .
 	Gui, Add, Progress, w410 Range0-%TotalLoops% vProgress
@@ -310,6 +316,8 @@ Click_btn:
 
 
 	Exitapp
+
+
 
 	Esc::
 	Exitapp	

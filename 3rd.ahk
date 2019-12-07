@@ -1,6 +1,6 @@
 ﻿/*
 1. 1st.ahk 파일 실행해서 각 아이템파일 pending_styles_not_shipped 폴더에 저장
-;~ 2. '저녁이있는엑셀-어느범위-시작셀 : A2' 이용해서 저장된 파일들을 통합
+;~ 2. '저녁이있는엑셀 - 내용합치기 - 폴더선택 후 - 어느범위-시작셀 : A2' 이용해서 저장된 파일들을 통합
 3. 통합된 파일을 연 뒤 이것 이용해서 중복된 고객 코드, 티파니 고객 코드 삭제하기
 */
 
@@ -106,7 +106,8 @@ Xl := ComObjActive("Excel.Application")	; 열려있는 엑셀 창 사용하기
 	XL_Col_Delete(XL,RG:="D|E|H:J|M|O|P|R|S|U|W|Z|AA") ;Delete columns
 	GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가	
 	
-	
+MsgBox, 262144, Title, 정렬에 방해되는 통합 열 지웠음
+
 	; 열의 넓이 설정하기
 	XL_Col_Width_Set(XL,RG:="E=25")
 	GuiControl,,Progress, +4 ; 프로그래스 바 1씩 증가	

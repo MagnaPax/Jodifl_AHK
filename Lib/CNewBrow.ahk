@@ -1085,6 +1085,8 @@ openNewTab_clickMostTopPO#(driver, CustomerPO){
 			Sleep 3000			
 		}
 		
+		Sleep 3000
+		
 		; 화면에서 Customer PO 에 있는 outer HTML 값 outerHTMLofTheCustomerPO 에 저장하기
 		outerHTMLofTheCustomerPO := driver.FindElementByXPath("(//*[contains(text(), '" CustomerPO "')])[1]").Attribute("outerHTML")
 		;~ Sleep 100

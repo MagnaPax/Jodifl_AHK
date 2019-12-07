@@ -155,7 +155,7 @@ Click_btn:
 
 
 	; Jodifl.com 오더 처리하기
-	if(JODIFLcom){
+	if(JODIFLcom){		
 		
 		; 오더 페이지에서 정보 얻을 배열 선언
 		InfoOfJodiflcom := object()
@@ -600,8 +600,8 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 				; SO Manager 화면에서 priority 번호 얻기
 				priority# := N_driver.getPriorityOnSOManager()
 				
-				; priority 번호가 7번이면 더이상 진행하지 않고 리턴해서 다음 주문으로 넘어가기
-				if(priority# == 7){
+				; priority 번호가 1번이면 더이상 진행하지 않고 리턴해서 다음 주문으로 넘어가기
+				if(priority# == 1){
 					return
 				}
 			}
@@ -639,12 +639,13 @@ BasicProcessing(SO#BeingUsedNow, EndSO#, CustomerPO, IsItFromNewOrder, IsItFromE
 
 ;~ /*
 ; #############################################################
-; 2019년 8월 달라스 쇼 오더를 주의할 필요가 없게 되면 비활성화 시키기
-if(orderType == "08DAL19"){
+; 2019년 10월 달라스 쇼 오더를 주의할 필요가 없게 되면 비활성화 시키기
+if(orderType == "10DAL19"){
 	SoundPlay, %A_WinDir%\Media\Ring02.wav
-	MsgBox, 262160, Title, 이거 2019년 8월 달라스 쇼. 픽티켓 만들기 전 메모 확인
+	MsgBox, 262160, Title, 이거 2019년 10월 달라스 쇼. 픽티켓 만들기 전 메모 확인
 }
-
+*/
+/*
 ; 2019년 8월 매직 쇼 오더를 주의할 필요가 없게 되면 비활성화 시키기
 if(orderType == "08MAG19"){
 	SoundPlay, %A_WinDir%\Media\Ring02.wav
@@ -652,12 +653,13 @@ if(orderType == "08MAG19"){
 }
 */
 ;~ /*
-; 2019년 8월 아틀란타 쇼 오더를 주의할 필요가 없게 되면 비활성화 시키기
-if(orderType == "08ATL19"){
+; 2019년 10월 아틀란타 쇼 오더를 주의할 필요가 없게 되면 비활성화 시키기
+if(orderType == "10ATL19"){
 	SoundPlay, %A_WinDir%\Media\Ring02.wav
-	MsgBox, 262160, Title, 이거 2019년 8월 아틀란타 쇼. 픽티켓 만들기 전 메모 확인
+	MsgBox, 262160, Title, 이거 2019년 10월 아틀란타 쇼. 픽티켓 만들기 전 메모 확인
 }
-
+*/
+/*
 if SO#BeingUsedNow contains 3000
 {
     MsgBox, 262160, Title, 이거 2019년 8월 아틀란타 쇼. 픽티켓 만들기 전 메모 확인
@@ -2706,7 +2708,7 @@ xlValues := -4163
 xlWhole := 1
 
 
-TiffanyOnlyCustomerList := ["AHN AND AHN COLLECTI", "ALLURE", "AMBIANCE-PLACERVILLE", "AUBURN UNIVERSITY", "BETSEYS BOUTIQUE SHO", "BETTY BE GOOD BOUTIQ", "BOHO BLU", "BOOP DE DOOP", "CHARLI ROSE-CO", "COBOS BOUTIQUE", "COBOS-STARKVILLE", "ENTOURAGE", "FINNLEYS", "FINNLEYS 2", "FLAUNT BOUTIQUE-ROUN", "FOCUSED HOLDINGS", "JOSIES BOUTIQUE", "JUST JEWELRY", "K-S WHOLESALE", "KIKILARUE", "MAGNOLIA BTQ FRANKLI", "ROOLEE", "SHOP DRESS UP", "STYLEFOX", "THE COLLECTION DBA D", "THE GIRLIE BOUTIQUE", "THE PINK LILY BOUTIQ", "THREADS BOUTIQUE", "TY ALEXANDERS", "UNIQUE BOUTIQUE-SUTT", "UNIVERSITY BOOK STOR", "WAKEFIELDS-INC", "WREN AND IVORY LLC", "MY STORY", "B&B DEP STORE SOUTH"]
+TiffanyOnlyCustomerList := ["AHN AND AHN COLLECTI", "ALLURE", "AMBIANCE-PLACERVILLE", "AUBURN UNIVERSITY", "BETSEYS BOUTIQUE SHO", "BETTY BE GOOD BOUTIQ", "BOHO BLU", "BOOP DE DOOP", "CHARLI ROSE-CO", "COBOS BOUTIQUE", "COBOS-STARKVILLE", "ENTOURAGE", "FINNLEYS", "FINNLEYS 2", "FLAUNT BOUTIQUE-ROUN", "FOCUSED HOLDINGS", "JOSIES BOUTIQUE", "JUST JEWELRY", "K-S WHOLESALE", "KIKILARUE", "MAGNOLIA BTQ FRANKLI", "ROOLEE", "SHOP DRESS UP", "STYLEFOX", "THE COLLECTION DBA D", "THE GIRLIE BOUTIQUE", "THE PINK LILY BOUTIQ", "THREADS BOUTIQUE", "TY ALEXANDERS", "UNIQUE BOUTIQUE-SUTT", "UNIVERSITY BOOK STOR", "WAKEFIELDS-INC", "WREN AND IVORY LLC", "MY STORY", "B&B DEP STORE SOUTH", "ANGELS FRAGRANCES", "ANGELS FRAGRANCES", "THEWILLOWTREE", "SHOP-STYLE-YOUR-SENS", "GINGERS COLLECTION", "PERFECTLY PRISCILLA", "ALISONS LETTERLAND-G", "AVENUE HILL"]
 
 
 ; 배열(TiffanyOnlyCustomerList)에 들어있는 값의 갯수만큼만 반복
@@ -2775,19 +2777,22 @@ return
 	Xl.Visible := True ;by default excel sheets are invisible
 	
 	
-	
+
 	
 		; 중복값 지우기 위해 일단
 		; 고객 코드가 있는 2열(Columns)로 정렬
 		xl.cells.sort(xl.columns(2), 1)
+		;~ xl.cells.sort(xl.columns(7), 1)	; BO by Style 에서는 7열에 고객 코드가 있다
 
 		;엑셀 값의 끝 row 번호 알아낸 후 i 에 값 넣기
 		XL_Handle(XL,1) ;get handle to Excel Application
 		i := XL_Last_Row(XL)
 		
 ;		MsgBox 고객코드로 정렬 했습니다. 마지막 행 번호는 %i%
+
 		
-		locOfCheckColumns := "B"
+		locOfCheckColumns := "B"		; B에 고객 코드가 있다
+		;~ locOfCheckColumns := "G"		; BO by Style 에서는 G에 고객 코드가 있다
 		
 		j = 1
 		Loop{
@@ -2831,6 +2836,10 @@ return
 			
 
 		}
+		
+		;~ MsgBox, 262144, Title, IT'S END
+;		return
+		
 		
 		
 		

@@ -1270,6 +1270,8 @@ driver.quit()
 	; Yes, OK 버튼 나올때마다 계속 클릭하다가 픽티켓 만드는 마지막 확인 창이 나오면 정지하고 메소드 나가기
 	PersistentClickingYesAndNoButton(){
 		
+;MsgBox, 262144, Title, 픽티켓 만드는 마지막 확인 창이 나올때까지 ok 버튼, Yes 버튼 나오면 누르는 메소드 들어옴
+		
 		; 사용자의 마우스 이동 막음
 		BlockInput, MouseMove
 		
@@ -1287,6 +1289,7 @@ driver.quit()
 			
 			; 사용자의 마우스 이동 허용
 			BlockInput, MouseMoveOff			
+
 			
 			; 픽티켓 마지막 확인 창 떴으니 메소드 끝내고 나가기
 			return
@@ -1300,7 +1303,9 @@ driver.quit()
 		if(readyToGoThroughCCAndPrinting == 1){
 			
 			; 사용자의 마우스 이동 허용
-			BlockInput, MouseMoveOff			
+			BlockInput, MouseMoveOff
+
+;MsgBox, 262144, Title, ok 버튼 이제 다 눌렀음
 			
 			; 픽티켓 마지막 확인 창 떴으니 메소드 끝내고 나가기
 			return			
@@ -2088,6 +2093,8 @@ class JODIFL extends CommWeb{
 	ProcessingJodiflcom(){
 		
 ;		MsgBox, in the ProcessingJodiflcom Method
+
+
 		
 		; 변수들 값 초기화
 		SO#ofThisWebOrder := ""
@@ -2107,24 +2114,25 @@ class JODIFL extends CommWeb{
 		FileRead, PreviouseUrl, %A_ScriptDir%\CreatedFiles\jodifl.com\PreviouseUrl.txt
 
 ;		MsgBox, % CustPo#OfJodiflWeb
-		
+
 		
 		; 오더 페이지 열기 위한 기본 url
 		; 여기에 개별 Customer PO 번호를 더해서 해당 오더 페이지를 열게된다
 		BasicUrlOfEachOrderPages = https://www.jodifl.com/index.php/admin/sales_order/view/order_id/ ; 옛날 주소
 		BasicUrlOfEachOrderPages = https://www.jodifl.com/index.php/__admin/sales_order/view/order_id/
 		
-		
+
 		
 		; 이전에 처리된 JODIFL 창이 없으면 새로 창 열기
 		; 일단 현재 크롬창이 열려 있는지 확인 하기
 		;~ IfWinExist, ahk_class Chrome_WidgetWin_1
 		IfWinExist, ahk_exe chrome.exe
 		{
+
 ;			MsgBox, 크롬창 열려있음
 			driver := ChromeGet()
 ;			MsgBox, % driver.Window.Title
-		
+
 			; 지금 열려있는 크롬창의 WINDOW TITLE 에 Magento Admin 가 포함되어 있지 않으면 JODIFL 창 새로 열기
 			if driver.Window.Title not contains Magento Admin
 			{
